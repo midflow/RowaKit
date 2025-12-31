@@ -380,6 +380,192 @@
 - Full docs site (future enhancement)
 
 ---
+# RowaKit Table – Stage A Hotfix Issues (A-11 → A-14)
+
+> Mục tiêu: hoàn thiện **Stage A (MVP)** để đạt **Definition of Done** đúng như tài liệu lifecycle đã chốt.  
+> Các issues dưới đây **KHÔNG mở scope**, **KHÔNG thêm feature**, chỉ là **hotfix bắt buộc**.
+
+---
+
+## 🟥 A-11: Add RowaKitTable Component Tests (BẮT BUỘC)
+
+**Tags:** `stage:A`, `test`, `core`  
+**Priority:** 🔥 Critical
+
+### 🎯 Goal
+Đảm bảo **RowaKit Table** hoạt động ổn định, không regress các behavior cốt lõi của Stage A.
+
+### 📌 Scope
+Chỉ test **behavior**, không test layout hay CSS chi tiết.
+
+### 🛠 Tasks
+Tạo file:
+```
+packages/table/src/__tests__/RowaKitTable.test.tsx
+```
+
+Viết tests cho các case sau:
+
+1. **Pagination**
+   - Render table với mock fetcher
+   - Click “next page”
+   - Assert fetcher được gọi với `{ page: 2 }`
+
+2. **Page size change**
+   - Change page size (ví dụ 10 → 20)
+   - Assert fetcher được gọi với `{ page: 1, pageSize: 20 }`
+
+3. **Sorting**
+   - Click header sortable:
+     - none → asc
+     - asc → desc
+     - desc → none
+   - Assert:
+     - `sort.field`, `sort.direction`
+     - `page` reset về `1`
+
+4. **Error → Retry**
+   - Mock fetcher reject
+   - Assert error state render
+   - Click “Retry”
+   - Assert fetcher được gọi lại
+
+5. **Actions confirm**
+   - Click delete action
+   - Assert `onClick` **chưa được gọi**
+   - Confirm
+   - Assert `onClick(row)` được gọi đúng
+
+### ✅ Acceptance Criteria
+- `pnpm test` pass
+- Không dùng snapshot tests
+- Không test visual details
+
+### ❌ Out of scope
+- Accessibility tests
+- Visual regression tests
+
+---
+
+## 🟥 A-12: Rename exports to RowaKitTable (Brand Fix)
+
+**Tags:** `stage:A`, `dx`, `branding`  
+**Priority:** 🔥 Critical
+
+### 🎯 Goal
+Chốt branding chính thức **RowaKit Table**, tránh để tên demo “SmartTable”.
+
+### 📌 Scope
+- Export component chính là:
+  ```ts
+  export { RowaKitTable }
+  ```
+- Có thể giữ alias:
+  ```ts
+  export const SmartTable = RowaKitTable
+  ```
+  (alias **không dùng trong docs**)
+
+### 🛠 Tasks
+- Rename file:
+  ```
+  SmartTable.tsx → RowaKitTable.tsx
+  ```
+- Update imports trong:
+  - demo app
+  - README
+- README **chỉ sử dụng** `RowaKitTable`
+
+### ✅ Acceptance Criteria
+- Copy code trong README là dùng được ngay
+- Demo vẫn chạy, không breaking change
+
+### ❌ Out of scope
+- Deprecation warning
+- Major version bump
+
+---
+
+## 🟠 A-13: Apply CSS classes & tokens (Remove inline styles)
+
+**Tags:** `stage:A`, `ui`, `cleanup`  
+**Priority:** ⚠️ High
+
+### 🎯 Goal
+Dùng đúng **CSS tokens & classes** đã có, giảm inline style.
+
+### 📌 Scope
+Refactor `RowaKitTable.tsx`:
+
+- Thay inline styles bằng class:
+  - table
+  - header
+  - cell
+  - loading
+  - error
+  - empty
+  - pagination
+  - actions
+
+### 🛠 Tasks
+- Áp dụng các class `.rowakit-table-*` hiện có
+- Inline style **chỉ giữ khi thật cần** (ví dụ width động)
+- Loading state:
+  - Dùng spinner CSS nếu đã có
+  - Không chỉ hiển thị text “Loading…”
+
+### ✅ Acceptance Criteria
+- Import `@rowakit/table/styles` có tác dụng rõ ràng
+- Không thay đổi behavior logic
+
+### ❌ Out of scope
+- Theme system
+- Dark mode
+- Responsive redesign
+
+---
+
+## 🟡 A-14: README & Package Metadata Cleanup
+
+**Tags:** `stage:A`, `docs`, `chore`  
+**Priority:** Medium
+
+### 🎯 Goal
+Chuẩn bị project ở trạng thái **OSS-ready**, tránh gây nhầm lẫn cho user.
+
+### 🛠 Tasks
+- Xoá duplicate import trong README:
+  ```ts
+  import '@rowakit/table/styles';
+  ```
+- Fix `package.json` metadata:
+  - `repository`
+  - `homepage`
+  - `bugs`
+- Ensure README:
+  - Một quickstart duy nhất
+  - Không còn tên “SmartTable”
+
+### ✅ Acceptance Criteria
+- README clean, dễ đọc
+- Metadata trỏ đúng repo GitHub
+
+---
+
+## ✅ Completion Rule
+
+Stage A chỉ được coi là **DONE** khi:
+- A-01 → A-10 **đã hoàn thành**
+- A-11 → A-14 **đã hoàn thành**
+- Không có feature ngoài scope Stage A
+
+---
+
+> Sau khi hoàn tất A-11 → A-14, **RowaKit Table v0.1** có thể:
+> - Dùng thật trong internal apps
+> - Publish OSS
+> - Bắt đầu Stage B khi có nhu cầu thực tế
+---
 
 # Stage B — v1.0 Issues
 

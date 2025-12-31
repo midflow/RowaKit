@@ -394,7 +394,7 @@ describe('SmartTable Styling', () => {
   });
 
   describe('Table Width', () => {
-    it('table has width 100%', async () => {
+    it('table has rowakit-table class', async () => {
       const { container } = render(
         <SmartTable fetcher={fetcher} columns={[col.text<User>('name')]} />
       );
@@ -403,11 +403,11 @@ describe('SmartTable Styling', () => {
         expect(screen.getByText('Alice')).toBeDefined();
       });
 
-      const table = container.querySelector('table');
-      expect(table?.style.width).toBe('100%');
+      const tableContainer = container.querySelector('.rowakit-table');
+      expect(tableContainer).toBeTruthy();
     });
 
-    it('table has border-collapse', async () => {
+    it('table element exists within container', async () => {
       const { container } = render(
         <SmartTable fetcher={fetcher} columns={[col.text<User>('name')]} />
       );
@@ -417,7 +417,7 @@ describe('SmartTable Styling', () => {
       });
 
       const table = container.querySelector('table');
-      expect(table?.style.borderCollapse).toBe('collapse');
+      expect(table).toBeTruthy();
     });
   });
 });

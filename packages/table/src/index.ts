@@ -29,7 +29,7 @@ export type {
 export { col } from './column-helpers';
 
 // Components
-export { SmartTable } from './components/SmartTable';
+export { RowaKitTable, SmartTable } from './components/SmartTable';
 export type { SmartTableProps } from './components/SmartTable';
 
 export const VERSION = '0.1.0';

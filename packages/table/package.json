@@ -50,13 +50,13 @@
   ],
   "author": "RowaKit Team",
   "license": "MIT",
-  "homepage": "https://github.com/rowakit/rowakit/tree/main/packages/table#readme",
+  "homepage": "https://github.com/midflow/RowaKit/tree/main/packages/table#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rowakit/rowakit.git",
+    "url": "https://github.com/midflow/RowaKit.git",
     "directory": "packages/table"
   },
   "bugs": {
-    "url": "https://github.com/rowakit/rowakit/issues"
+    "url": "https://github.com/midflow/RowaKit/issues"
   }
 }

@@ -130,7 +130,7 @@ function renderCell<T>(
 
     case 'actions': {
       return (
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div className="rowakit-table-actions">
           {column.actions.map((action) => {
             const isDisabled =
               isLoading ||
@@ -157,15 +157,10 @@ function renderCell<T>(
                 onClick={handleClick}
                 disabled={isDisabled || action.loading}
                 type="button"
-                style={{
-                  padding: '0.25rem 0.5rem',
-                  fontSize: '0.875rem',
-                  cursor: isDisabled || action.loading ? 'not-allowed' : 'pointer',
-                  opacity: isDisabled || action.loading ? 0.5 : 1,
-                }}
+                className="rowakit-button rowakit-button-secondary"
               >
                 {action.icon && typeof action.icon === 'string' ? (
-                  <span style={{ marginRight: '0.25rem' }}>{action.icon}</span>
+                  <span>{action.icon}</span>
                 ) : (
                   action.icon
                 )}
@@ -244,7 +239,7 @@ function renderCell<T>(
  * }
  * ```
  */
-export function SmartTable<T>({
+export function RowaKitTable<T>({
   fetcher,
   columns,
   defaultPageSize = 20,
@@ -372,7 +367,7 @@ export function SmartTable<T>({
 
   return (
     <div className={`rowakit-table${className ? ` ${className}` : ''}`}>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <table>
         <thead>
           <tr>
             {columns.map((column) => {
@@ -386,14 +381,6 @@ export function SmartTable<T>({
                 <th
                   key={column.id}
                   onClick={isSortable ? () => handleSort(String(field)) : undefined}
-                  style={{
-                    textAlign: 'left',
-                    padding: '0.75rem',
-                    borderBottom: '2px solid #e5e7eb',
-                    fontWeight: 600,
-                    cursor: isSortable ? 'pointer' : 'default',
-                    userSelect: 'none',
-                  }}
                   role={isSortable ? 'button' : undefined}
                   tabIndex={isSortable ? 0 : undefined}
                   onKeyDown={isSortable ? (e) => {
@@ -417,44 +404,22 @@ export function SmartTable<T>({
         <tbody>
           {isLoading && (
             <tr>
-              <td
-                colSpan={columns.length}
-                style={{
-                  padding: '2rem',
-                  textAlign: 'center',
-                  color: '#6b7280',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                  <span>Loading...</span>
-                </div>
+              <td colSpan={columns.length} className="rowakit-table-loading">
+                <div className="rowakit-table-loading-spinner"></div>
+                <span>Loading...</span>
               </td>
             </tr>
           )}
 
           {isError && (
             <tr>
-              <td
-                colSpan={columns.length}
-                style={{
-                  padding: '2rem',
-                  textAlign: 'center',
-                }}
-              >
-                <div style={{ color: '#dc2626', marginBottom: '1rem' }}>
+              <td colSpan={columns.length} className="rowakit-table-error">
+                <div className="rowakit-table-error-message">
                   {dataState.error ?? 'An error occurred'}
                 </div>
                 <button
                   onClick={handleRetry}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    backgroundColor: '#3b82f6',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '0.25rem',
-                    cursor: 'pointer',
-                    fontSize: '0.875rem',
-                  }}
+                  className="rowakit-button rowakit-button-primary"
                   type="button"
                 >
                   Retry
@@ -465,14 +430,7 @@ export function SmartTable<T>({
 
           {isEmpty && (
             <tr>
-              <td
-                colSpan={columns.length}
-                style={{
-                  padding: '2rem',
-                  textAlign: 'center',
-                  color: '#6b7280',
-                }}
-              >
+              <td colSpan={columns.length} className="rowakit-table-empty">
                 No data
               </td>
             </tr>
@@ -484,13 +442,7 @@ export function SmartTable<T>({
               return (
                 <tr key={key}>
                   {columns.map((column) => (
-                    <td
-                      key={column.id}
-                      style={{
-                        padding: '0.75rem',
-                        borderBottom: '1px solid #e5e7eb',
-                      }}
-                    >
+                    <td key={column.id}>
                       {renderCell(column, row, isLoading, setConfirmState)}
                     </td>
                   ))}
@@ -502,18 +454,10 @@ export function SmartTable<T>({
 
       {/* Pagination Controls */}
       {dataState.total > 0 && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '1rem',
-            borderTop: '1px solid #e5e7eb',
-          }}
-        >
+        <div className="rowakit-table-pagination">
           {/* Left: Page size selector */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <label htmlFor="page-size" style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+          <div className="rowakit-table-pagination-left">
+            <label htmlFor="page-size">
               Rows per page:
             </label>
             <select
@@ -521,14 +465,6 @@ export function SmartTable<T>({
               value={query.pageSize}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
               disabled={isLoading}
-              style={{
-                padding: '0.25rem 0.5rem',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.25rem',
-                fontSize: '0.875rem',
-                cursor: isLoading ? 'not-allowed' : 'pointer',
-                opacity: isLoading ? 0.5 : 1,
-              }}
             >
               {pageSizeOptions.map((size) => (
                 <option key={size} value={size}>
@@ -539,24 +475,16 @@ export function SmartTable<T>({
           </div>
 
           {/* Center: Page info */}
-          <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+          <div className="rowakit-table-pagination-center">
             Page {query.page} of {totalPages} ({dataState.total} total)
           </div>
 
           {/* Right: Previous/Next buttons */}
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div className="rowakit-table-pagination-right">
             <button
               onClick={handlePreviousPage}
               disabled={!canGoPrevious}
-              style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: canGoPrevious ? '#3b82f6' : '#e5e7eb',
-                color: canGoPrevious ? 'white' : '#9ca3af',
-                border: 'none',
-                borderRadius: '0.25rem',
-                cursor: canGoPrevious ? 'pointer' : 'not-allowed',
-                fontSize: '0.875rem',
-              }}
+              className="rowakit-button rowakit-button-primary rowakit-button-pagination"
               type="button"
               aria-label="Previous page"
             >
@@ -565,15 +493,7 @@ export function SmartTable<T>({
             <button
               onClick={handleNextPage}
               disabled={!canGoNext}
-              style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: canGoNext ? '#3b82f6' : '#e5e7eb',
-                color: canGoNext ? 'white' : '#9ca3af',
-                border: 'none',
-                borderRadius: '0.25rem',
-                cursor: canGoNext ? 'pointer' : 'not-allowed',
-                fontSize: '0.875rem',
-              }}
+              className="rowakit-button rowakit-button-primary rowakit-button-pagination"
               type="button"
               aria-label="Next page"
             >
@@ -586,62 +506,24 @@ export function SmartTable<T>({
       {/* Confirmation Modal */}
       {confirmState && (
         <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-          }}
+          className="rowakit-modal-backdrop"
           onClick={() => setConfirmState(null)}
           role="dialog"
           aria-modal="true"
           aria-labelledby="confirm-dialog-title"
         >
-          <div
-            style={{
-              backgroundColor: 'white',
-              padding: '1.5rem',
-              borderRadius: '0.5rem',
-              maxWidth: '400px',
-              width: '90%',
-              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2
-              id="confirm-dialog-title"
-              style={{
-                fontSize: '1.25rem',
-                fontWeight: '600',
-                marginBottom: '1rem',
-                color: '#111827',
-              }}
-            >
+          <div className="rowakit-modal" onClick={(e) => e.stopPropagation()}>
+            <h2 id="confirm-dialog-title" className="rowakit-modal-title">
               Confirm Action
             </h2>
-            <p style={{ marginBottom: '1.5rem', color: '#6b7280', fontSize: '0.875rem' }}>
+            <p className="rowakit-modal-content">
               Are you sure you want to {confirmState.action.label.toLowerCase()}? This action cannot be
               undone.
             </p>
-            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+            <div className="rowakit-modal-actions">
               <button
                 onClick={() => setConfirmState(null)}
-                style={{
-                  padding: '0.5rem 1rem',
-                  backgroundColor: '#f3f4f6',
-                  color: '#374151',
-                  border: 'none',
-                  borderRadius: '0.25rem',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                }}
+                className="rowakit-button rowakit-button-secondary"
                 type="button"
               >
                 Cancel
@@ -651,16 +533,7 @@ export function SmartTable<T>({
                   void confirmState.action.onClick(confirmState.row);
                   setConfirmState(null);
                 }}
-                style={{
-                  padding: '0.5rem 1rem',
-                  backgroundColor: '#ef4444',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.25rem',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                }}
+                className="rowakit-button rowakit-button-danger"
                 type="button"
               >
                 Confirm
@@ -672,3 +545,8 @@ export function SmartTable<T>({
     </div>
   );
 }
+
+/**
+ * @deprecated Use RowaKitTable instead. SmartTable is kept as an alias for backward compatibility.
+ */
+export const SmartTable = RowaKitTable;

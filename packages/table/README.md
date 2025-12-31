@@ -30,10 +30,8 @@ yarn add @rowakit/table
 ### 1. Import the component and styles
 
 ```tsx
-import { SmartTable, col } from '@rowakit/table';
+import { RowaKitTable, col } from '@rowakit/table';
 import type { Fetcher } from '@rowakit/table';
-import '@rowakit/table/styles'; // Import default styles
-
 import '@rowakit/table/styles'; // Import default styles
 
 interface User {
@@ -73,7 +71,7 @@ const fetchUsers: Fetcher<User> = async (query) => {
 ```tsx
 function UsersTable() {
   return (
-    <SmartTable
+    <RowaKitTable
       fetcher={fetchUsers}
       columns={[
         col.text('name', { header: 'Name', sortable: true }),
@@ -110,7 +108,7 @@ The table automatically handles:
 
 ## API Reference
 
-### `<SmartTable>`
+### `<RowaKitTable>`
 
 Main table component.
 
@@ -309,7 +307,7 @@ The table includes built-in pagination controls that appear automatically when d
 **Configuration:**
 
 ```typescript
-<SmartTable
+<RowaKitTable
   fetcher={fetchUsers}
   columns={columns}
   defaultPageSize={20}              // Initial page size (default: 20)
@@ -365,7 +363,7 @@ The table supports single-column sorting with automatic state management and vis
 Add `sortable: true` to column options:
 
 ```typescript
-<SmartTable
+<RowaKitTable
   fetcher={fetchUsers}
   columns={[
     col.text('name', { sortable: true }),
@@ -438,7 +436,7 @@ The table provides built-in support for row actions with confirmation dialogs, l
 **Basic Actions:**
 
 ```typescript
-<SmartTable
+<RowaKitTable
   fetcher={fetchUsers}
   columns={[
     col.text('name'),
@@ -600,7 +598,7 @@ col.actions([
 ### Basic Table
 
 ```tsx
-<SmartTable
+<RowaKitTable
   fetcher={fetchUsers}
   columns={[
     col.text('name'),
@@ -615,7 +613,7 @@ col.actions([
 
 ```tsx
 // Simple sortable columns
-<SmartTable
+<RowaKitTable
   fetcher={fetchUsers}
   columns={[
     col.text('name', { sortable: true }),
@@ -651,7 +649,7 @@ const fetchUsers: Fetcher<User> = async ({ page, pageSize, sort }) => {
 ### With Custom Formatting
 
 ```tsx
-<SmartTable
+<RowaKitTable
   fetcher={fetchProducts}
   columns={[
     col.text('name'),
@@ -672,7 +670,7 @@ const fetchUsers: Fetcher<User> = async ({ page, pageSize, sort }) => {
 ### With Actions
 
 ```tsx
-<SmartTable
+<RowaKitTable
   fetcher={fetchUsers}
   columns={[
     col.text('name'),
@@ -734,7 +732,7 @@ const fetchUsers: Fetcher<User> = async (query) => {
 
 ```tsx
 // Basic pagination with defaults
-<SmartTable
+<RowaKitTable
   fetcher={fetchUsers}
   columns={[
     col.text('name'),
@@ -746,7 +744,7 @@ const fetchUsers: Fetcher<User> = async (query) => {
 />
 
 // Custom pagination settings
-<SmartTable
+<RowaKitTable
   fetcher={fetchUsers}
   columns={columns}
   defaultPageSize={25}
@@ -778,7 +776,7 @@ const fetchUsers: Fetcher<User> = async ({ page, pageSize }) => {
 ### With Custom Columns
 
 ```tsx
-<SmartTable
+<RowaKitTable
   fetcher={fetchUsers}
   columns={[
     col.custom('user', (row) => (
@@ -807,14 +805,14 @@ const fetchUsers: Fetcher<User> = async ({ page, pageSize }) => {
 
 ```tsx
 // Using field name
-<SmartTable
+<RowaKitTable
   fetcher={fetchUsers}
   columns={[...]}
   rowKey="id"
 />
 
 // Using function
-<SmartTable
+<RowaKitTable
   fetcher={fetchUsers}
   columns={[...]}
   rowKey={(user) => `user-${user.id}`}
@@ -841,7 +839,7 @@ The table will now have sensible default styling with proper spacing, borders, h
 Override or extend styles using the `className` prop:
 
 ```tsx
-<SmartTable
+<RowaKitTable
   fetcher={fetchUsers}
   columns={[...]}
   className="my-custom-table"
@@ -952,7 +950,7 @@ For complete control, you can skip the default styles and write your own:
 // Use your own styles with the base classes
 import './my-table-styles.css';
 
-<SmartTable
+<RowaKitTable
   fetcher={fetchUsers}
   columns={[...]}
   className="my-completely-custom-table"
@@ -1006,7 +1004,7 @@ const fetchProducts: Fetcher<Product> = async (query) => {
 };
 
 // Columns are type-checked
-<SmartTable<Product>
+<RowaKitTable<Product>
   fetcher={fetchProducts}
   columns={[
     col.text<Product>('name'),     // ✅ 'name' exists on Product
@@ -1072,3 +1070,4 @@ Contributions welcome! Please read our [contributing guidelines](CONTRIBUTING.md
 ---
 
 Made with ❤️ by the RowaKit team
+
