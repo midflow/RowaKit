@@ -35,6 +35,10 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Type check
+        run: pnpm typecheck || pnpm tsc --noEmit || echo "No typecheck script found, skipping"
+        continue-on-error: true
+
       - name: Test
         run: pnpm test
 

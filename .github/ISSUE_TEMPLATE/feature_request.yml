@@ -1,0 +1,124 @@
+name: Feature Request
+description: Suggest a new feature for RowaKit Table (within scope)
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ⚠️ Important: Scope Guard
+        
+        **RowaKit is NOT a generic data grid.** We follow a strict philosophy:
+        - **Server-side first**: pagination, sorting, filtering happen on the server
+        - **Core small + escape hatch**: use `col.custom()` for one-offs
+        - **Business tables, not spreadsheets**
+        
+        **Requests that will be REJECTED:**
+        - ❌ Virtualization / infinite scroll
+        - ❌ Grouping / pivot tables
+        - ❌ Client-side data engines
+        - ❌ Inline cell editing / spreadsheet features
+        - ❌ Query builder UI
+        - ❌ Column pinning / resizing / drag-drop
+        
+        Please read [docs/DECISIONS_SCOPE_LOCK.md](../../docs/DECISIONS_SCOPE_LOCK.md) before proceeding.
+
+  - type: checkboxes
+    id: scope-check
+    attributes:
+      label: Scope Verification
+      description: Please confirm this request is within RowaKit's scope
+      options:
+        - label: I have read the scope guard above and understand RowaKit's philosophy
+          required: true
+        - label: This feature does NOT turn RowaKit into a generic data grid
+          required: true
+        - label: This feature aligns with "server-side first, core small + escape hatch"
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem are you trying to solve? Why can't `col.custom()` solve it?
+      placeholder: |
+        I need to display currency values consistently across many tables.
+        Using col.custom() in every table is repetitive and error-prone.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How would you like this to work?
+      placeholder: |
+        Add a col.currency() helper that formats numbers as currency.
+        
+        Example:
+        col.currency('price', { locale: 'en-US', currency: 'USD' })
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you tried solving this with existing features? Why didn't they work?
+      placeholder: |
+        - col.custom() works but is repetitive
+        - col.text() with format function is verbose
+    validations:
+      required: true
+
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Roadmap Stage
+      description: Which stage does this belong to? (See docs/ROADMAP.md)
+      options:
+        - Stage A (MVP - already shipped)
+        - Stage B (v1.0 - badges, numbers, basic filters)
+        - Stage C (v1.5+ - if there's demand)
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Real-World Use Cases
+      description: Provide concrete examples of where you'd use this feature
+      placeholder: |
+        1. E-commerce product table with prices
+        2. Invoice line items table
+        3. Financial report tables
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - Nice to have
+        - Important for my use case
+        - Blocking my adoption of RowaKit
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other context, mockups, or examples?
+      placeholder: Screenshots, links to similar features in other libraries, etc.
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to submit a PR for this feature
+          required: false

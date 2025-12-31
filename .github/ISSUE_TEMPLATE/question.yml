@@ -1,0 +1,63 @@
+name: Question / Discussion
+description: Ask a question about RowaKit Table usage or design decisions
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your question! Please check existing discussions and issues first.
+        
+        For general discussions, consider using [GitHub Discussions](../../discussions).
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: |
+        How do I implement custom cell rendering with col.custom()?
+        Why doesn't RowaKit support virtualization?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Question Category
+      description: What is this question about?
+      options:
+        - How to use a feature
+        - Design decisions / philosophy
+        - Best practices
+        - Troubleshooting
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: What Have You Tried?
+      description: |
+        What have you already attempted? Include relevant code if applicable.
+      render: typescript
+      placeholder: |
+        I tried using col.custom() but I'm not sure how to...
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other relevant information?
+      placeholder: Links to docs you've read, related issues, etc.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Before Asking
+      options:
+        - label: I have searched existing issues and discussions
+          required: true
+        - label: I have read the README and documentation
+          required: true
