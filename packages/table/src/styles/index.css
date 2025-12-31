@@ -1,0 +1,18 @@
+/**
+ * RowaKit Table Styles - Main Entry Point
+ * 
+ * Import this file in your application to use RowaKit Table with default styles:
+ * 
+ * ```tsx
+ * import '@rowakit/table/styles';
+ * ```
+ * 
+ * Or import individually:
+ * ```tsx
+ * import '@rowakit/table/styles/tokens.css';  // Design tokens only
+ * import '@rowakit/table/styles/table.css';   // Table styles only
+ * ```
+ */
+
+@import './tokens.css';
+@import './table.css';

@@ -1,0 +1,319 @@
+/**
+ * RowaKit Table Styles
+ * 
+ * Default styles using design tokens.
+ * Import this file in your app to use default styling.
+ */
+
+/* ============================================================================
+ * TABLE CONTAINER
+ * ============================================================================ */
+
+.rowakit-table {
+  width: 100%;
+  font-family: var(--rowakit-font-family);
+  font-size: var(--rowakit-font-size-sm);
+  line-height: var(--rowakit-line-height-normal);
+  color: var(--rowakit-table-body-color);
+  background-color: var(--rowakit-table-bg);
+  
+  /* Enable horizontal scroll on small screens */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rowakit-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--rowakit-table-bg);
+}
+
+/* ============================================================================
+ * TABLE HEADER
+ * ============================================================================ */
+
+.rowakit-table thead th {
+  text-align: left;
+  padding: var(--rowakit-table-header-padding);
+  border-bottom: var(--rowakit-table-header-border-width) solid var(--rowakit-table-header-border-color);
+  font-weight: var(--rowakit-table-header-font-weight);
+  color: var(--rowakit-table-header-color);
+  background-color: var(--rowakit-table-header-bg);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.rowakit-table thead th[role="button"] {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.rowakit-table thead th[role="button"]:hover {
+  background-color: var(--rowakit-color-gray-50);
+}
+
+.rowakit-table thead th[role="button"]:focus {
+  outline: 2px solid var(--rowakit-color-primary-500);
+  outline-offset: -2px;
+}
+
+/* ============================================================================
+ * TABLE BODY
+ * ============================================================================ */
+
+.rowakit-table tbody td {
+  padding: var(--rowakit-table-cell-padding);
+  border-bottom: var(--rowakit-border-width) solid var(--rowakit-table-cell-border-color);
+}
+
+.rowakit-table tbody tr:hover {
+  background-color: var(--rowakit-table-row-hover-bg);
+}
+
+.rowakit-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ============================================================================
+ * LOADING STATE
+ * ============================================================================ */
+
+.rowakit-table-loading {
+  padding: var(--rowakit-spacing-2xl);
+  text-align: center;
+  color: var(--rowakit-state-loading-color);
+}
+
+.rowakit-table-loading-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--rowakit-color-gray-200);
+  border-top-color: var(--rowakit-color-primary-500);
+  border-radius: 50%;
+  animation: rowakit-spin 0.6s linear infinite;
+}
+
+@keyframes rowakit-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================================
+ * ERROR STATE
+ * ============================================================================ */
+
+.rowakit-table-error {
+  padding: var(--rowakit-spacing-2xl);
+  text-align: center;
+}
+
+.rowakit-table-error-message {
+  color: var(--rowakit-state-error-color);
+  background-color: var(--rowakit-state-error-bg);
+  padding: var(--rowakit-spacing-md) var(--rowakit-spacing-lg);
+  border-radius: var(--rowakit-border-radius);
+  margin-bottom: var(--rowakit-spacing-lg);
+}
+
+/* ============================================================================
+ * EMPTY STATE
+ * ============================================================================ */
+
+.rowakit-table-empty {
+  padding: var(--rowakit-spacing-2xl);
+  text-align: center;
+  color: var(--rowakit-state-empty-color);
+}
+
+/* ============================================================================
+ * PAGINATION
+ * ============================================================================ */
+
+.rowakit-table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--rowakit-pagination-padding);
+  border-top: var(--rowakit-border-width) solid var(--rowakit-pagination-border-color);
+  background-color: var(--rowakit-pagination-bg);
+  gap: var(--rowakit-spacing-lg);
+  flex-wrap: wrap;
+}
+
+.rowakit-table-pagination-left,
+.rowakit-table-pagination-right {
+  display: flex;
+  align-items: center;
+  gap: var(--rowakit-spacing-sm);
+}
+
+.rowakit-table-pagination-center {
+  font-size: var(--rowakit-font-size-sm);
+  color: var(--rowakit-color-gray-500);
+}
+
+.rowakit-table-pagination label {
+  font-size: var(--rowakit-font-size-sm);
+  color: var(--rowakit-color-gray-500);
+}
+
+.rowakit-table-pagination select {
+  padding: var(--rowakit-spacing-xs) var(--rowakit-spacing-sm);
+  border: var(--rowakit-border-width) solid var(--rowakit-color-gray-300);
+  border-radius: var(--rowakit-border-radius);
+  font-size: var(--rowakit-font-size-sm);
+  background-color: var(--rowakit-table-bg);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.rowakit-table-pagination select:hover {
+  border-color: var(--rowakit-color-gray-400);
+}
+
+.rowakit-table-pagination select:focus {
+  outline: 2px solid var(--rowakit-color-primary-500);
+  outline-offset: 1px;
+  border-color: var(--rowakit-color-primary-500);
+}
+
+.rowakit-table-pagination select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================================================
+ * BUTTONS
+ * ============================================================================ */
+
+.rowakit-button {
+  padding: var(--rowakit-button-padding-sm);
+  font-size: var(--rowakit-font-size-sm);
+  font-weight: var(--rowakit-font-weight-medium);
+  border: none;
+  border-radius: var(--rowakit-button-border-radius);
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.rowakit-button:focus {
+  outline: 2px solid var(--rowakit-color-primary-500);
+  outline-offset: 2px;
+}
+
+.rowakit-button-primary {
+  background-color: var(--rowakit-button-primary-bg);
+  color: var(--rowakit-button-primary-color);
+}
+
+.rowakit-button-primary:hover:not(:disabled) {
+  background-color: var(--rowakit-button-primary-hover-bg);
+}
+
+.rowakit-button-secondary {
+  background-color: var(--rowakit-button-secondary-bg);
+  color: var(--rowakit-button-secondary-color);
+}
+
+.rowakit-button-secondary:hover:not(:disabled) {
+  background-color: var(--rowakit-button-secondary-hover-bg);
+}
+
+.rowakit-button-danger {
+  background-color: var(--rowakit-button-danger-bg);
+  color: var(--rowakit-button-danger-color);
+}
+
+.rowakit-button-danger:hover:not(:disabled) {
+  background-color: var(--rowakit-button-danger-hover-bg);
+}
+
+.rowakit-button:disabled {
+  background-color: var(--rowakit-button-disabled-bg);
+  color: var(--rowakit-button-disabled-color);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.rowakit-button-pagination {
+  padding: var(--rowakit-button-padding);
+}
+
+/* ============================================================================
+ * ACTION BUTTONS
+ * ============================================================================ */
+
+.rowakit-table-actions {
+  display: flex;
+  gap: var(--rowakit-spacing-sm);
+}
+
+/* ============================================================================
+ * MODAL
+ * ============================================================================ */
+
+.rowakit-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--rowakit-modal-backdrop-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--rowakit-z-modal);
+  padding: var(--rowakit-spacing-lg);
+}
+
+.rowakit-modal {
+  background-color: var(--rowakit-modal-bg);
+  padding: var(--rowakit-modal-padding);
+  border-radius: var(--rowakit-modal-border-radius);
+  max-width: 400px;
+  width: 100%;
+  box-shadow: var(--rowakit-modal-shadow);
+}
+
+.rowakit-modal-title {
+  font-size: var(--rowakit-font-size-xl);
+  font-weight: var(--rowakit-font-weight-semibold);
+  margin-bottom: var(--rowakit-spacing-lg);
+  color: var(--rowakit-color-gray-900);
+}
+
+.rowakit-modal-content {
+  margin-bottom: var(--rowakit-spacing-xl);
+  color: var(--rowakit-color-gray-500);
+  font-size: var(--rowakit-font-size-sm);
+}
+
+.rowakit-modal-actions {
+  display: flex;
+  gap: var(--rowakit-spacing-md);
+  justify-content: flex-end;
+}
+
+/* ============================================================================
+ * RESPONSIVE
+ * ============================================================================ */
+
+@media (max-width: 640px) {
+  .rowakit-table-pagination {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--rowakit-spacing-md);
+  }
+  
+  .rowakit-table-pagination-left,
+  .rowakit-table-pagination-center,
+  .rowakit-table-pagination-right {
+    justify-content: center;
+  }
+  
+  .rowakit-modal {
+    max-width: 100%;
+    margin: var(--rowakit-spacing-lg);
+  }
+}
