@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Initial MVP release (Stage A complete)
-- `SmartTable` component with server-side data fetching
+- `RowaKitTable` component with server-side data fetching (with `SmartTable` alias for backward compatibility)
 - Column helper functions: `col.text()`, `col.date()`, `col.boolean()`, `col.actions()`, `col.custom()`
 - Built-in data fetching state machine (loading, error, empty, success)
 - Pagination UI with configurable page sizes
@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Features
 
 #### Core Components
-- **SmartTable**: Main table component with server-side first approach
+- **RowaKitTable**: Main table component with server-side first approach
 - **Fetcher Contract**: Standardized interface for data fetching with pagination, sorting, and filters
 - **Column System**: Type-safe column definitions with flexible rendering options
 
@@ -130,9 +130,9 @@ import '@rowakit/table/styles';
 
 Use the component:
 ```tsx
-import { SmartTable, col } from '@rowakit/table';
+import { RowaKitTable, col } from '@rowakit/table';
 
-<SmartTable
+<RowaKitTable
   fetcher={fetchData}
   columns={[
     col.text('name'),

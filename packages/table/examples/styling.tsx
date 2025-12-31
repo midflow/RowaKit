@@ -11,7 +11,7 @@
 /* eslint-disable no-console */
 
 import React from 'react';
-import { SmartTable, col } from '@rowakit/table';
+import { RowaKitTable, col } from '@rowakit/table';
 import type { Fetcher } from '@rowakit/table';
 import '@rowakit/table/styles';
 
@@ -134,7 +134,7 @@ export function TasksTableWithCustomStyling() {
 
       <h1>Tasks Dashboard</h1>
       
-      <SmartTable
+      <RowaKitTable
         fetcher={fetchTasks}
         className="custom-theme-table"
         columns={[

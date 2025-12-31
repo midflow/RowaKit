@@ -13,7 +13,7 @@ export default function App() {
     <div className="demo-container">
       <div className="demo-header">
         <h1>RowaKit Table - Examples</h1>
-        <p>Interactive demonstrations of SmartTable features</p>
+        <p>Interactive demonstrations of RowaKit Table features</p>
       </div>
 
       <div className="demo-nav">

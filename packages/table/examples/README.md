@@ -1,6 +1,6 @@
 # @rowakit/table Examples
 
-This directory contains practical examples demonstrating various features and use cases of the SmartTable component.
+This directory contains practical examples demonstrating various features and use cases of the RowaKitTable component.
 
 ## Examples
 
@@ -50,7 +50,7 @@ This directory contains practical examples demonstrating various features and us
 Copy any example file into your React project and adjust the imports:
 
 ```tsx
-import { SmartTable, col } from '@rowakit/table';
+import { RowaKitTable, col } from '@rowakit/table';
 import '@rowakit/table/styles';
 ```
 

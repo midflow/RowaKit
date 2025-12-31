@@ -1,5 +1,5 @@
 /**
- * SmartTable Component
+ * RowaKit Table Component
  *
  * Core table rendering component that maps columns to table cells.
  * Handles all column types: text, date, boolean, actions, and custom.
@@ -189,7 +189,7 @@ function renderCell<T>(
 // ============================================================================
 
 /**
- * SmartTable - Server-side table component for internal/business apps.
+ * RowaKitTable - Server-side table component for internal/business apps.
  *
  * This component renders a table with headers and body based on column definitions.
  * It handles all column types (text, date, boolean, actions, custom) and provides
@@ -203,7 +203,7 @@ function renderCell<T>(
  *
  * @example
  * ```tsx
- * import { SmartTable, col } from '@rowakit/table';
+ * import { RowaKitTable, col } from '@rowakit/table';
  *
  * interface User {
  *   id: string;
@@ -220,7 +220,7 @@ function renderCell<T>(
  *
  * function UsersTable() {
  *   return (
- *     <SmartTable
+ *     <RowaKitTable
  *       fetcher={fetchUsers}
  *       columns={[
  *         col.text('name', { header: 'Name', sortable: true }),

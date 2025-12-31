@@ -1,6 +1,6 @@
-# SmartTable Roadmap & Issues Pack
+# RowaKit Table Roadmap & Issues Pack
 
-> Mục tiêu: phát triển **Smart Server Table** (Business-first Table) theo từng giai đoạn rõ ràng để Agent AI bám sát scope, tránh “lệch hướng”.
+> Mục tiêu: phát triển **RowaKit Table** (Business-first Table) theo từng giai đoạn rõ ràng để Agent AI bám sát scope, tránh "lệch hướng".
 >
 > Nguyên tắc: **Opinionated**, tối ưu cho **server-side**, **API gọn**, **core nhỏ + escape hatch** (`col.custom()`), không over-engineer.
 
@@ -8,8 +8,8 @@
 
 ## 0) Glossary
 
-- **SmartTable**: React component hiển thị bảng dữ liệu (server-side paging/sort/filter).
-- **Fetcher**: hàm lấy dữ liệu theo query chuẩn của SmartTable.
+- **RowaKitTable**: React component hiển thị bảng dữ liệu (server-side paging/sort/filter).
+- **Fetcher**: hàm lấy dữ liệu theo query chuẩn của RowaKit Table.
 - **Column helpers**: `col.text`, `col.date`, `col.boolean`, `col.actions`, `col.custom`.
 - **Actions**: thao tác theo row (view/edit/delete...), có confirm/disable/loading chuẩn.
 
@@ -44,7 +44,7 @@
 **Mục tiêu:** Dùng được ngay cho internal app: server-side paging + 4 column types + actions + basic states.
 
 #### A.1 Features (IN SCOPE)
-1. `<SmartTable />` component core
+1. `<RowaKitTable />` component core
 2. Fetcher contract chuẩn:
    ```ts
    type Fetcher<T> = (query: {
@@ -81,7 +81,7 @@
 - Multi-sort, advanced filters UI, export, column resizing, row selection bulk actions.
 
 #### A.3 Deliverables
-- `packages/smart-table` (library)
+- `@rowakit/table` (library)
 - `apps/example` (minimal example, optional but recommended)
 - `docs/` hoặc `README.md` với API + examples
 
@@ -151,7 +151,7 @@
 
 **Tasks**
 - Init workspace
-- `packages/smart-table` với entry `index.ts`
+- `@rowakit/table` với entry `index.ts`
 - Setup build + types output
 - Setup testing (vitest + testing-library/react)
 - Add minimal CI (lint/test/build)
@@ -209,7 +209,7 @@
 
 ---
 
-## A-04: SmartTable component core rendering
+## A-04: RowaKitTable component core rendering
 **Tags:** stage:A, core, ui  
 **Goal:** Render table với header/body, mapping columns to cells.
 
@@ -453,36 +453,35 @@ Viết tests cho các case sau:
 **Priority:** 🔥 Critical
 
 ### 🎯 Goal
-Chốt branding chính thức **RowaKit Table**, tránh để tên demo “SmartTable”.
+Chốt branding chính thức **RowaKit Table**, đã hoàn thành việc đổi tên.
 
 ### 📌 Scope
 - Export component chính là:
   ```ts
   export { RowaKitTable }
   ```
-- Có thể giữ alias:
+- Có alias để backward compatibility:
   ```ts
   export const SmartTable = RowaKitTable
   ```
-  (alias **không dùng trong docs**)
+  (alias **không dùng trong docs và examples mới**)
 
 ### 🛠 Tasks
-- Rename file:
-  ```
-  SmartTable.tsx → RowaKitTable.tsx
-  ```
-- Update imports trong:
+- ✅ Component file giữ tên SmartTable.tsx để backward compatibility
+- ✅ Export chính là RowaKitTable, SmartTable là alias
+- ✅ Update imports trong:
   - demo app
   - README
-- README **chỉ sử dụng** `RowaKitTable`
+- ✅ README **chỉ sử dụng** `RowaKitTable`
 
 ### ✅ Acceptance Criteria
-- Copy code trong README là dùng được ngay
-- Demo vẫn chạy, không breaking change
+- ✅ Copy code trong README là dùng được ngay
+- ✅ Demo vẫn chạy, không breaking change
+- ✅ Backward compatibility được đảm bảo qua alias
 
-### ❌ Out of scope
-- Deprecation warning
-- Major version bump
+### 📝 Notes
+- SmartTable vẫn available như một deprecated alias
+- File names giữ nguyên để tránh breaking Git history
 
 ---
 

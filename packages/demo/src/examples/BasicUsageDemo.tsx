@@ -1,5 +1,5 @@
 import React from 'react';
-import { SmartTable, col } from '@rowakit/table';
+import { RowaKitTable, col } from '@rowakit/table';
 import type { Fetcher } from '@rowakit/table';
 
 interface User {
@@ -94,7 +94,7 @@ export default function BasicUsageDemo() {
       <h2>Basic Usage Example</h2>
       <p>User management table with server-side pagination, sorting, and actions</p>
       
-      <SmartTable
+      <RowaKitTable
         fetcher={fetchUsers}
         columns={[
           col.text<User>('name', { header: 'User Name', sortable: true }),

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SmartTable, col } from '@rowakit/table';
+import { RowaKitTable, col } from '@rowakit/table';
 import type { Fetcher } from '@rowakit/table';
 
 interface Task {
@@ -89,7 +89,7 @@ export default function StylingDemo() {
       <h2>Styling Example</h2>
       <p>Custom theming with CSS variables and className prop</p>
       
-      <SmartTable
+      <RowaKitTable
         fetcher={fetchTasks}
         className="custom-theme-table"
         columns={[

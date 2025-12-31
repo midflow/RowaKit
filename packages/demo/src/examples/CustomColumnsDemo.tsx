@@ -1,5 +1,5 @@
 import React from 'react';
-import { SmartTable, col } from '@rowakit/table';
+import { RowaKitTable, col } from '@rowakit/table';
 import type { Fetcher } from '@rowakit/table';
 
 interface Employee {
@@ -60,7 +60,7 @@ export default function CustomColumnsDemo() {
       <h2>Custom Columns Example</h2>
       <p>Advanced rendering with col.custom() - avatars, formatted values, and computed columns</p>
       
-      <SmartTable
+      <RowaKitTable
         fetcher={fetchEmployees}
         columns={[
           col.custom<Employee>({

@@ -1,5 +1,5 @@
 /**
- * Basic Usage Example - SmartTable with Server-Side Data
+ * Basic Usage Example - RowaKitTable with Server-Side Data
  * 
  * This example demonstrates:
  * - Setting up a fetcher function for server-side data
@@ -11,7 +11,7 @@
 /* eslint-disable no-console */
 
 import React from 'react';
-import { SmartTable, col } from '@rowakit/table';
+import { RowaKitTable, col } from '@rowakit/table';
 import type { Fetcher } from '@rowakit/table';
 
 // 1. Define your data type
@@ -70,7 +70,7 @@ export function UsersTable() {
   return (
     <div>
       <h1>Users Management</h1>
-      <SmartTable
+      <RowaKitTable
         fetcher={fetchUsers}
         columns={[
           col.text<User>('name', {

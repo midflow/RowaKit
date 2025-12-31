@@ -131,10 +131,10 @@ We use **Vitest** and **React Testing Library**.
 ```tsx
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
-import { SmartTable } from './SmartTable';
+import { RowaKitTable } from './SmartTable';
 import { col } from '../column-helpers';
 
-describe('SmartTable', () => {
+describe('RowaKitTable', () => {
   it('renders table with data', async () => {
     const fetcher = vi.fn(async () => ({
       items: [{ id: '1', name: 'Test' }],
@@ -142,7 +142,7 @@ describe('SmartTable', () => {
     }));
 
     render(
-      <SmartTable
+      <RowaKitTable
         fetcher={fetcher}
         columns={[col.text('name')]}
         rowKey="id"
@@ -198,7 +198,7 @@ function getUser(id: any): any {
 
 ```tsx
 // Good
-export function SmartTable<T>(props: SmartTableProps<T>) {
+export function RowaKitTable<T>(props: RowaKitTableProps<T>) {
   const [state, setState] = useState<DataState<T>>({ status: 'loading' });
   // ...
 }
@@ -211,7 +211,7 @@ export default function Table(props: any) {
 
 ### Naming Conventions
 
-- **Components**: PascalCase (`SmartTable.tsx`)
+- **Components**: PascalCase (`RowaKitTable.tsx`)
 - **Hooks**: camelCase with `use` prefix (`useDataFetching.ts`)
 - **Types/Interfaces**: PascalCase (`ColumnDef`, `FetcherQuery`)
 - **Functions**: camelCase (`formatDate`, `buildQuery`)
@@ -251,7 +251,7 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/) specific
 ```
 feat(table): add className prop for custom styling
 
-Add optional className prop to SmartTable component to allow
+Add optional className prop to RowaKitTable component to allow
 per-instance customization while preserving base styles.
 
 Closes #42
@@ -338,7 +338,7 @@ See [SMART_TABLE_ROADMAP_ISSUES.md](../../docs/SMART_TABLE_ROADMAP_ISSUES.md) fo
 - ✅ A-01: Monorepo scaffold
 - ✅ A-02: Core types
 - ✅ A-03: Column helpers
-- ✅ A-04: SmartTable rendering
+- ✅ A-04: RowaKitTable rendering
 - ✅ A-05: Data fetching state machine
 - ✅ A-06: Pagination UI
 - ✅ A-07: Single-column sorting

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SmartTable, col } from '@rowakit/table';
+import { RowaKitTable, col } from '@rowakit/table';
 import type { Fetcher } from '@rowakit/table';
 
 interface Product {
@@ -64,7 +64,7 @@ export default function MockServerDemo() {
       <h2>Mock Server Example</h2>
       <p>Testing without backend - simulated server-side pagination and sorting</p>
       
-      <SmartTable
+      <RowaKitTable
         fetcher={fetchProducts}
         columns={[
           col.text<Product>('name', { header: 'Product Name', sortable: true }),

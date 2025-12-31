@@ -11,7 +11,7 @@
 /* eslint-disable no-console */
 
 import React from 'react';
-import { SmartTable, col } from '@rowakit/table';
+import { RowaKitTable, col } from '@rowakit/table';
 import type { Fetcher } from '@rowakit/table';
 
 interface Employee {
@@ -73,7 +73,7 @@ export function EmployeesTableWithCustomColumns() {
     <div>
       <h1>Employee Directory</h1>
       
-      <SmartTable
+      <RowaKitTable
         fetcher={fetchEmployees}
         columns={[
           // Custom column: Full name with avatar

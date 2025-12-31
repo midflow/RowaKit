@@ -10,7 +10,7 @@
 /* eslint-disable no-console */
 
 import React from 'react';
-import { SmartTable, col } from '@rowakit/table';
+import { RowaKitTable, col } from '@rowakit/table';
 import type { Fetcher, FetcherQuery } from '@rowakit/table';
 
 interface Product {
@@ -87,7 +87,7 @@ export function ProductsTableWithMockServer() {
         This example uses a mock server with simulated delays and sorting.
       </p>
       
-      <SmartTable
+      <RowaKitTable
         fetcher={fetchProducts}
         columns={[
           col.text<Product>('name', {
