@@ -159,30 +159,44 @@ function actions<T>(actions: ActionDef<T>[]): ActionsColumnDef<T> {
  *
  * @example
  * ```ts
- * col.custom('avatar', (row) => (
- *   <img src={row.avatar} alt={row.name} />
- * ))
+ * col.custom({
+ *   id: 'avatar',
+ *   header: 'User',
+ *   render: (row) => <img src={row.avatar} alt={row.name} />
+ * })
  *
- * col.custom('price', (row) => (
- *   <Money amount={row.price} currency={row.currency} />
- * ))
+ * col.custom({
+ *   id: 'price',
+ *   field: 'price',
+ *   render: (row) => <Money amount={row.price} currency={row.currency} />
+ * })
  *
- * col.custom('status', (row) => (
- *   <Badge color={row.status === 'active' ? 'green' : 'gray'}>
- *     {row.status}
- *   </Badge>
- * ))
+ * col.custom({
+ *   id: 'status',
+ *   render: (row) => (
+ *     <Badge color={row.status === 'active' ? 'green' : 'gray'}>
+ *       {row.status}
+ *     </Badge>
+ *   )
+ * })
  * ```
  */
-function custom<T>(
-  field: keyof T & string,
-  render: (row: T) => ReactNode
-): CustomColumnDef<T> {
+function custom<T>(options: {
+  /** Unique column identifier */
+  id: string;
+  /** Optional custom header label */
+  header?: string;
+  /** Optional field name for sorting/filtering */
+  field?: keyof T & string;
+  /** Render function for cell content */
+  render: (row: T) => ReactNode;
+}): CustomColumnDef<T> {
   return {
-    id: field,
+    id: options.id,
     kind: 'custom',
-    field,
-    render,
+    header: options.header,
+    field: options.field,
+    render: options.render,
   };
 }
 
@@ -206,7 +220,7 @@ function custom<T>(
  *   col.actions([
  *     { id: 'edit', label: 'Edit', onClick: (row) => {} }
  *   ]),
- *   col.custom('badge', (row) => <Badge>{row.status}</Badge>)
+ *   col.custom({ id: 'badge', render: (row) => <Badge>{row.status}</Badge> })
  * ];
  * ```
  */

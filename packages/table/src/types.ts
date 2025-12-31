@@ -145,7 +145,7 @@ export interface ActionsColumnDef<T> extends BaseColumnDef<T> {
  */
 export interface CustomColumnDef<T> extends BaseColumnDef<T> {
   kind: 'custom';
-  field: keyof T & string;
+  field?: keyof T & string;
   render: (row: T) => ReactNode;
 }
 
