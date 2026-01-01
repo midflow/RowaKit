@@ -3,7 +3,6 @@ name: "PR Readiness Checklist"
 about: "Use this template to verify a pull request is ready for review and merge."
 title: "PR: <short description>"
 labels: ["pr-checklist"]
-assignees: []
 body:
   - type: markdown
     attributes:
