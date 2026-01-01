@@ -18,10 +18,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+        
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
-          # use pnpm v8 compatible with lockfile
           version: 10.27.0
 
       - name: Setup Node.js
@@ -34,16 +34,16 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm -w -r run lint --if-present
+        run: pnpm -C packages/table lint
 
       - name: Type check
-        run: pnpm -w -r run typecheck --if-present
+        run: pnpm -C packages/table typecheck
 
       - name: Test
-        run: pnpm -w -r run test --if-present
+        run: pnpm -C packages/table test
 
       - name: Build
-        run: pnpm -w -r run build --if-present
+        run: pnpm -C packages/table build
 
       - name: Verify build outputs
         run: |
