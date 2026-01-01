@@ -1,0 +1,31 @@
+---
+name: "PR Readiness Checklist"
+about: "Use this template to verify a pull request is ready for review and merge."
+title: "PR: <short description>"
+labels: ["pr-checklist"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please complete this checklist before requesting review. Fill/check items that apply.
+
+  - type: checkboxes
+    attributes:
+      label: "PR Readiness"
+      options:
+        - label: "I used the Pull Request template and filled required fields"
+        - label: "This change fits within the project's scope lock (see DECISIONS_SCOPE_LOCK.md)"
+        - label: "Related issue(s) linked (e.g., Closes #123) or explanation provided"
+        - label: "All tests pass locally (`pnpm -w -r test --if-present`)"
+        - label: "Lint and typecheck pass locally (`pnpm -w -r lint typecheck --if-present`)"
+        - label: "Documentation updated if API/behavior changed"
+        - label: "CHANGELOG updated if this is a user-visible change"
+        - label: "Build verified (`pnpm -w -r build --if-present`) and artifacts present"
+        - label: "No credentials or secrets are included in this PR"
+
+  - type: markdown
+    attributes:
+      value: |
+        After creating the PR, wait for CI to finish and address any review comments. If you need assistance, mention maintainers in the thread.
+
+---

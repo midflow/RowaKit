@@ -27,9 +27,9 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests",
-    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "test": "vitest run --passWithNoTests --config vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts",
     "lint": "eslint src --ext .ts,.tsx"
   },
   "peerDependencies": {

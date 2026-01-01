@@ -33,3 +33,6 @@ pnpm-debug.log*
 
 # Misc
 *.local
+
+#test files
+test-*.txt

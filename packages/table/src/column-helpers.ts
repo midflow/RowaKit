@@ -181,6 +181,10 @@ function actions<T>(actions: ActionDef<T>[]): ActionsColumnDef<T> {
  * })
  * ```
  */
+function custom<T>(
+  field: keyof T & string,
+  render: (row: T) => ReactNode
+): CustomColumnDef<T>;
 function custom<T>(options: {
   /** Unique column identifier */
   id: string;
@@ -190,13 +194,37 @@ function custom<T>(options: {
   field?: keyof T & string;
   /** Render function for cell content */
   render: (row: T) => ReactNode;
-}): CustomColumnDef<T> {
+}): CustomColumnDef<T>;
+function custom<T>(
+  arg1:
+    | (keyof T & string)
+    | {
+        id: string;
+        header?: string;
+        field?: keyof T & string;
+        render: (row: T) => ReactNode;
+      },
+  arg2?: (row: T) => ReactNode
+): CustomColumnDef<T> {
+  if (typeof arg1 === 'string') {
+    if (typeof arg2 !== 'function') {
+      throw new Error('col.custom(field, render): render must be a function');
+    }
+
+    return {
+      id: arg1,
+      kind: 'custom',
+      field: arg1,
+      render: arg2,
+    };
+  }
+
   return {
-    id: options.id,
+    id: arg1.id,
     kind: 'custom',
-    header: options.header,
-    field: options.field,
-    render: options.render,
+    header: arg1.header,
+    field: arg1.field,
+    render: arg1.render,
   };
 }
 

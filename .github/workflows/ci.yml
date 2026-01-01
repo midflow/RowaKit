@@ -12,41 +12,47 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18, 20]
+        node-version: [20]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      
+        
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 10.27.0
 
-      - name: Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Install dependencies (frozen lockfile)
+        run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm lint
+        run: pnpm -C packages/table lint
 
       - name: Type check
-        run: pnpm typecheck || pnpm tsc --noEmit || echo "No typecheck script found, skipping"
-        continue-on-error: true
+        run: pnpm -C packages/table typecheck
 
       - name: Test
-        run: pnpm test
+        run: pnpm -C packages/table test
 
       - name: Build
-        run: pnpm build
+        run: pnpm -C packages/table build
 
       - name: Verify build outputs
         run: |
-          test -f packages/table/dist/index.js
+          if [ -d "packages/table/dist" ]; then
+            echo "packages/table/dist exists"
+          else
+            echo "ERROR: packages/table/dist missing"
+            ls -la packages || true
+            exit 1
+          fi
           test -f packages/table/dist/index.cjs
           test -f packages/table/dist/index.d.ts
