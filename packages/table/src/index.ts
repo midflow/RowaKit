@@ -12,6 +12,8 @@ export type {
   Fetcher,
   FetcherQuery,
   FetcherResult,
+  FilterValue,
+  Filters,
   // Column types
   ColumnDef,
   ColumnKind,
@@ -19,8 +21,11 @@ export type {
   TextColumnDef,
   DateColumnDef,
   BooleanColumnDef,
+  BadgeColumnDef,
+  NumberColumnDef,
   ActionsColumnDef,
   CustomColumnDef,
+  BadgeTone,
   // Action types
   ActionDef,
 } from './types';

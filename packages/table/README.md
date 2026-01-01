@@ -11,7 +11,9 @@ RowaKit Table is a React table component designed for real-world internal applic
 ✅ **Minimal API** - Few props, convention over configuration  
 ✅ **Escape hatch** - `col.custom()` for any rendering need  
 ✅ **Action buttons** - Built-in support for row actions with confirmation  
-✅ **5 column types** - Text, Date, Boolean, Actions, Custom  
+✅ **7 column types** - Text, Date, Boolean, Badge, Number, Actions, Custom  
+✅ **Column modifiers** - Width, align, truncate support (v0.2.0+)  
+✅ **Server-side filters** - Type-specific filter UI with auto-generated inputs (v0.2.0+)  
 ✅ **State management** - Automatic loading, error, and empty states  
 ✅ **Smart fetching** - Retry on error, stale request handling
 
@@ -235,6 +237,86 @@ col.boolean('enabled', { format: (val) => val ? '✓' : '✗' })
 
 **Default format:** `'Yes'` / `'No'`
 
+#### `col.badge(field, options?)` (v0.2.0+)
+
+Badge column with visual tone mapping for status/enum values.
+
+```typescript
+col.badge('status', {
+  header: 'Status',
+  map: {
+    active: { label: 'Active', tone: 'success' },
+    pending: { label: 'Pending', tone: 'warning' },
+    inactive: { label: 'Inactive', tone: 'neutral' },
+    error: { label: 'Error', tone: 'danger' }
+  }
+})
+
+col.badge('priority', {
+  header: 'Priority',
+  sortable: true,
+  map: {
+    high: { label: 'High', tone: 'danger' },
+    medium: { label: 'Medium', tone: 'warning' },
+    low: { label: 'Low', tone: 'success' }
+  }
+})
+```
+
+**Options:**
+- `header?: string` - Custom header label
+- `sortable?: boolean` - Enable sorting
+- `map?: Record<string, { label: string; tone: BadgeTone }>` - Map values to badge labels and visual tones
+- `width?: number` - Column width in pixels
+- `align?: 'left' | 'center' | 'right'` - Text alignment
+- `truncate?: boolean` - Truncate with ellipsis
+
+**Badge Tones:**
+- `'neutral'` - Gray (default)
+- `'success'` - Green
+- `'warning'` - Yellow/Orange
+- `'danger'` - Red
+
+#### `col.number(field, options?)` (v0.2.0+)
+
+Number column with formatting support (currency, percentages, decimals).
+
+```typescript
+// Basic number
+col.number('quantity')
+
+// Currency formatting with Intl.NumberFormat
+col.number('price', {
+  header: 'Price',
+  sortable: true,
+  format: { style: 'currency', currency: 'USD' }
+})
+
+// Percentage
+col.number('discount', {
+  header: 'Discount',
+  format: { style: 'percent', minimumFractionDigits: 1 }
+})
+
+// Custom formatter
+col.number('score', {
+  header: 'Score',
+  format: (value) => `${value.toFixed(1)} pts`
+})
+```
+
+**Options:**
+- `header?: string` - Custom header label
+- `sortable?: boolean` - Enable sorting
+- `format?: Intl.NumberFormatOptions | ((value: number) => string)` - Formatting
+  - `Intl.NumberFormatOptions`: e.g., `{ style: 'currency', currency: 'USD' }`
+  - Function: Custom formatter like `(value) => value.toFixed(2)`
+- `width?: number` - Column width in pixels
+- `align?: 'left' | 'center' | 'right'` - Text alignment (defaults to 'right')
+- `truncate?: boolean` - Truncate with ellipsis
+
+**Default format:** Plain number with right alignment
+
 #### `col.actions(actions)`
 
 Actions column with buttons for row operations.
@@ -293,6 +375,41 @@ col.custom('summary', (row) => {
   return `${status} - ${lastSeen}`;
 })
 ```
+
+### Column Modifiers (v0.2.0+)
+
+All column types (text, date, boolean, badge, number) support these optional modifiers:
+
+```typescript
+// Width: Set fixed column width in pixels
+col.text('name', { width: 200 })
+
+// Align: Control text alignment
+col.text('status', { align: 'center' })
+col.number('price', { align: 'right' }) // numbers default to 'right'
+
+// Truncate: Enable text truncation with ellipsis
+col.text('description', { truncate: true, width: 300 })
+
+// Combine multiple modifiers
+col.badge('status', {
+  header: 'Status',
+  width: 120,
+  align: 'center',
+  truncate: true,
+  map: { active: 'success', inactive: 'neutral' }
+})
+```
+
+**Modifiers:**
+- `width?: number` - Column width in pixels
+- `align?: 'left' | 'center' | 'right'` - Text alignment
+- `truncate?: boolean` - Truncate long text with ellipsis (requires `width`)
+
+**Notes:**
+- Number columns default to `align: 'right'`
+- Other columns default to `align: 'left'`
+- Truncate works best with a fixed `width`
 
 ### Pagination
 
@@ -411,6 +528,8 @@ const fetchUsers: Fetcher<User> = async ({ page, pageSize, sort }) => {
 - ✅ Text columns with `sortable: true`
 - ✅ Date columns with `sortable: true`
 - ✅ Boolean columns with `sortable: true`
+- ✅ Badge columns with `sortable: true` (v0.2.0+)
+- ✅ Number columns with `sortable: true` (v0.2.0+)
 - ❌ Actions columns (never sortable)
 - ❌ Custom columns (not sortable by default)
 
@@ -420,6 +539,120 @@ const fetchUsers: Fetcher<User> = async ({ page, pageSize, sort }) => {
 - Maintained when changing page size (but resets to page 1)
 - Cleared when clicking a sorted column three times
 - Replaced when clicking a different sortable column
+
+### Filters (v0.2.0+)
+
+Server-side filtering with type-specific filter inputs rendered in a header row.
+
+**Features:**
+- **Auto-Generated UI** - Filter inputs based on column type
+- **Server-Side Only** - All filtering happens in your backend
+- **Multiple Operators** - contains, equals, in, range
+- **Clear Filters** - Individual and bulk filter clearing
+- **Page Reset** - Resets to page 1 when filters change
+
+**Enable Filters:**
+
+```typescript
+<RowaKitTable
+  fetcher={fetchUsers}
+  columns={columns}
+  rowKey="id"
+  enableFilters={true}  // Add this prop
+/>
+```
+
+**Filter Types by Column:**
+
+```typescript
+// Text column: Text input with "contains" operator
+col.text('name', { header: 'Name' })
+// → User types "john" → filters: { name: { op: 'contains', value: 'john' } }
+
+// Number column: Text input with "equals" operator
+col.number('age', { header: 'Age' })
+// → User types "25" → filters: { age: { op: 'equals', value: '25' } }
+
+// Badge column: Select dropdown with "equals" operator
+col.badge('status', {
+  header: 'Status',
+  map: { active: 'success', inactive: 'neutral', pending: 'warning' }
+})
+// → User selects "active" → filters: { status: { op: 'equals', value: 'active' } }
+
+// Boolean column: Select dropdown (All/True/False) with "equals" operator
+col.boolean('isVerified', { header: 'Verified' })
+// → User selects "True" → filters: { isVerified: { op: 'equals', value: true } }
+
+// Date column: Two date inputs with "range" operator
+col.date('createdAt', { header: 'Created' })
+// → User enters from/to dates → filters: { createdAt: { op: 'range', value: { from: '2024-01-01', to: '2024-12-31' } } }
+```
+
+**Fetcher Integration:**
+
+```typescript
+const fetchUsers: Fetcher<User> = async ({ page, pageSize, sort, filters }) => {
+  // filters is undefined when no filters are active
+  // filters = { fieldName: FilterValue, ... } when filtering
+  
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(pageSize),
+  });
+  
+  if (sort) {
+    params.append('sortBy', sort.field);
+    params.append('sortOrder', sort.direction);
+  }
+  
+  if (filters) {
+    // Example: Convert filters to query params
+    for (const [field, filter] of Object.entries(filters)) {
+      if (filter.op === 'contains') {
+        params.append(`${field}_contains`, filter.value);
+      } else if (filter.op === 'equals') {
+        params.append(field, String(filter.value));
+      } else if (filter.op === 'range') {
+        if (filter.value.from) params.append(`${field}_from`, filter.value.from);
+        if (filter.value.to) params.append(`${field}_to`, filter.value.to);
+      }
+    }
+  }
+  
+  const response = await fetch(`/api/users?${params}`);
+  return response.json();
+};
+```
+
+**Filter Value Types:**
+
+```typescript
+type FilterValue =
+  | { op: 'contains'; value: string }           // Text search
+  | { op: 'equals'; value: string | number | boolean | null }  // Exact match
+  | { op: 'in'; value: Array<string | number> } // Multiple values (future)
+  | { op: 'range'; value: { from?: string; to?: string } };    // Date range
+
+type Filters = Record<string, FilterValue>;
+```
+
+**Important Rules:**
+
+1. **Undefined when empty**: `query.filters` is `undefined` when no filters are active (not `{}`)
+2. **Page resets**: Changing any filter resets page to 1
+3. **No client filtering**: All filtering must be handled by your backend
+4. **Actions/Custom columns**: Not filterable (no filter input rendered)
+
+**Clear Filters:**
+
+A "Clear all filters" button appears automatically when filters are active:
+
+```typescript
+// User applies filters
+// → "Clear all filters" button appears above table
+// → Click button → all filters cleared → page resets to 1
+```
 
 ### Actions
 

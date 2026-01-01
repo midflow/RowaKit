@@ -10,7 +10,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
-import type { Fetcher, ColumnDef, FetcherQuery, ActionDef } from '../types';
+import type { Fetcher, ColumnDef, FetcherQuery, ActionDef, FilterValue } from '../types';
 
 // ============================================================================
 // COMPONENT PROPS
@@ -34,6 +34,9 @@ export interface SmartTableProps<T> {
 
   /** Optional CSS class name for the table container */
   className?: string;
+
+  /** Enable filters (default: false) */
+  enableFilters?: boolean;
 }
 
 // ============================================================================
@@ -126,6 +129,38 @@ function renderCell<T>(
       }
       // Default boolean formatting
       return value ? 'Yes' : 'No';
+    }
+
+    case 'badge': {
+      const value = row[column.field];
+      const valueStr = String(value ?? '');
+      
+      // Look up mapping
+      const mapped = column.map?.[valueStr];
+      const label = mapped?.label ?? valueStr;
+      const tone = mapped?.tone ?? 'neutral';
+      
+      return (
+        <span className={`rowakit-badge rowakit-badge-${tone}`}>
+          {label}
+        </span>
+      );
+    }
+
+    case 'number': {
+      const value = row[column.field];
+      const numValue = Number(value ?? 0);
+      
+      if (column.format) {
+        if (typeof column.format === 'function') {
+          return column.format(numValue, row);
+        }
+        // Intl.NumberFormatOptions
+        return new Intl.NumberFormat(undefined, column.format).format(numValue);
+      }
+      
+      // Default number formatting
+      return numValue.toLocaleString();
     }
 
     case 'actions': {
@@ -246,6 +281,7 @@ export function RowaKitTable<T>({
   pageSizeOptions = [10, 20, 50],
   rowKey,
   className = '',
+  enableFilters = false,
 }: SmartTableProps<T>) {
   // State management
   const [dataState, setDataState] = useState<DataState<T>>({
@@ -259,11 +295,39 @@ export function RowaKitTable<T>({
     pageSize: defaultPageSize,
   });
 
+  // Filter state (field -> FilterValue)
+  const [filters, setFilters] = useState<Record<string, FilterValue | undefined>>({});
+
   // Confirmation state for actions that require confirmation
   const [confirmState, setConfirmState] = useState<ConfirmState<T> | null>(null);
 
   // Request tracking to ignore stale responses
   const requestIdRef = useRef(0);
+
+  // Sync filters to query (and reset page to 1 when filters change)
+  useEffect(() => {
+    if (!enableFilters) return;
+
+    // Build filters object, excluding undefined values
+    const activeFilters: Record<string, FilterValue> = {};
+    let hasFilters = false;
+    
+    for (const [field, value] of Object.entries(filters)) {
+      if (value !== undefined) {
+        activeFilters[field] = value;
+        hasFilters = true;
+      }
+    }
+
+    // Per spec: filters must be undefined when empty (not {})
+    const filtersToSend = hasFilters ? activeFilters : undefined;
+
+    setQuery((prev) => ({
+      ...prev,
+      filters: filtersToSend,
+      page: 1, // Reset page to 1 when filters change
+    }));
+  }, [filters, enableFilters]);
 
   // Fetch data effect
   useEffect(() => {
@@ -358,6 +422,26 @@ export function RowaKitTable<T>({
     return query.sort.direction === 'asc' ? ' ↑' : ' ↓';
   };
 
+  // Filter handlers
+  const handleFilterChange = (field: string, value: FilterValue | undefined) => {
+    setFilters((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleClearFilter = (field: string) => {
+    setFilters((prev) => {
+      const newFilters = { ...prev };
+      delete newFilters[field];
+      return newFilters;
+    });
+  };
+
+  const handleClearAllFilters = () => {
+    setFilters({});
+  };
+
   const isLoading = dataState.state === 'loading';
   const isError = dataState.state === 'error';
   const isEmpty = dataState.state === 'empty';
@@ -365,8 +449,21 @@ export function RowaKitTable<T>({
   const canGoPrevious = query.page > 1 && !isLoading;
   const canGoNext = query.page < totalPages && !isLoading;
 
+  const hasActiveFilters = enableFilters && Object.values(filters).some(v => v !== undefined);
+
   return (
     <div className={`rowakit-table${className ? ` ${className}` : ''}`}>
+      {hasActiveFilters && (
+        <div className="rowakit-table-filter-controls">
+          <button
+            onClick={handleClearAllFilters}
+            className="rowakit-button rowakit-button-secondary"
+            type="button"
+          >
+            Clear all filters
+          </button>
+        </div>
+      )}
       <table>
         <thead>
           <tr>
@@ -394,12 +491,168 @@ export function RowaKitTable<T>({
                       ? query.sort.direction === 'asc' ? 'ascending' : 'descending'
                       : undefined
                   }
+                  style={{
+                    width: column.width ? `${column.width}px` : undefined,
+                    textAlign: column.align,
+                  }}
+                  className={column.truncate ? 'rowakit-cell-truncate' : undefined}
                 >
                   {getHeaderLabel(column)}{isSortable && getSortIndicator(String(field))}
                 </th>
               );
             })}
           </tr>
+          {enableFilters && (
+            <tr className="rowakit-table-filter-row">
+              {columns.map((column) => {
+                const field = column.kind === 'actions' || column.kind === 'custom' ? '' : String(column.field);
+                const canFilter = field && column.kind !== 'actions';
+                
+                if (!canFilter) {
+                  return <th key={column.id}></th>;
+                }
+
+                const filterValue = filters[field];
+
+                // Badge column: select with options
+                if (column.kind === 'badge') {
+                  const options = column.map ? Object.keys(column.map) : [];
+                  return (
+                    <th key={column.id}>
+                      <select
+                        className="rowakit-filter-select"
+                        value={filterValue?.op === 'equals' ? String(filterValue.value ?? '') : ''}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value === '') {
+                            handleClearFilter(field);
+                          } else {
+                            handleFilterChange(field, { op: 'equals', value });
+                          }
+                        }}
+                      >
+                        <option value="">All</option>
+                        {options.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    </th>
+                  );
+                }
+
+                // Boolean column: select with True/False/All
+                if (column.kind === 'boolean') {
+                  return (
+                    <th key={column.id}>
+                      <select
+                        className="rowakit-filter-select"
+                        value={
+                          filterValue?.op === 'equals' && typeof filterValue.value === 'boolean'
+                            ? String(filterValue.value)
+                            : ''
+                        }
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value === '') {
+                            handleClearFilter(field);
+                          } else {
+                            handleFilterChange(field, { op: 'equals', value: value === 'true' });
+                          }
+                        }}
+                      >
+                        <option value="">All</option>
+                        <option value="true">True</option>
+                        <option value="false">False</option>
+                      </select>
+                    </th>
+                  );
+                }
+
+                // Date column: from/to inputs
+                if (column.kind === 'date') {
+                  const fromValue = filterValue?.op === 'range' ? filterValue.value.from ?? '' : '';
+                  const toValue = filterValue?.op === 'range' ? filterValue.value.to ?? '' : '';
+                  
+                  return (
+                    <th key={column.id}>
+                      <div className="rowakit-filter-date-range">
+                        <input
+                          type="date"
+                          className="rowakit-filter-input"
+                          placeholder="From"
+                          value={fromValue}
+                          onChange={(e) => {
+                            const from = e.target.value || undefined;
+                            const to = toValue || undefined;
+                            if (!from && !to) {
+                              handleClearFilter(field);
+                            } else {
+                              handleFilterChange(field, { op: 'range', value: { from, to } });
+                            }
+                          }}
+                        />
+                        <input
+                          type="date"
+                          className="rowakit-filter-input"
+                          placeholder="To"
+                          value={toValue}
+                          onChange={(e) => {
+                            const to = e.target.value || undefined;
+                            const from = fromValue || undefined;
+                            if (!from && !to) {
+                              handleClearFilter(field);
+                            } else {
+                              handleFilterChange(field, { op: 'range', value: { from, to } });
+                            }
+                          }}
+                        />
+                      </div>
+                    </th>
+                  );
+                }
+
+                // Text/Number column: text or number input
+                const isNumberColumn = column.kind === 'number';
+                return (
+                  <th key={column.id}>
+                    <input
+                      type={isNumberColumn ? 'number' : 'text'}
+                      className="rowakit-filter-input"
+                      placeholder={`Filter ${getHeaderLabel(column)}...`}
+                      value={
+                        filterValue?.op === 'contains'
+                          ? filterValue.value
+                          : filterValue?.op === 'equals' && typeof filterValue.value === 'string'
+                          ? filterValue.value
+                          : filterValue?.op === 'equals' && typeof filterValue.value === 'number'
+                          ? String(filterValue.value)
+                          : ''
+                      }
+                      onChange={(e) => {
+                        const rawValue = e.target.value;
+                        if (rawValue === '') {
+                          handleClearFilter(field);
+                        } else if (isNumberColumn) {
+                          const numValue = Number(rawValue);
+                          if (!isNaN(numValue)) {
+                            handleFilterChange(field, { op: 'equals', value: numValue } as FilterValue);
+                          } else {
+                            // Invalid numeric input: clear the filter to avoid confusing UX
+                            handleClearFilter(field);
+                          }
+                        } else {
+                          // Text: use "contains"
+                          handleFilterChange(field, { op: 'contains', value: rawValue } as FilterValue);
+                        }
+                      }}
+                    />
+                  </th>
+                );
+              })}
+            </tr>
+          )}
         </thead>
         <tbody>
           {isLoading && (
@@ -441,11 +694,25 @@ export function RowaKitTable<T>({
               const key = getRowKey(row, rowKey);
               return (
                 <tr key={key}>
-                  {columns.map((column) => (
-                    <td key={column.id}>
-                      {renderCell(column, row, isLoading, setConfirmState)}
-                    </td>
-                  ))}
+                  {columns.map((column) => {
+                    const cellClass = [
+                      column.kind === 'number' ? 'rowakit-cell-number' : '',
+                      column.truncate ? 'rowakit-cell-truncate' : '',
+                    ].filter(Boolean).join(' ') || undefined;
+                    
+                    return (
+                      <td 
+                        key={column.id}
+                        className={cellClass}
+                        style={{
+                          width: column.width ? `${column.width}px` : undefined,
+                          textAlign: column.align || (column.kind === 'number' ? 'right' : undefined),
+                        }}
+                      >
+                        {renderCell(column, row, isLoading, setConfirmState)}
+                      </td>
+                    );
+                  })}
                 </tr>
               );
             })}

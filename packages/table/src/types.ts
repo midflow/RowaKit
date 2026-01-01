@@ -16,6 +16,21 @@ import type { ReactNode } from 'react';
 // ============================================================================
 
 /**
+ * Filter value shape for server-side filtering.
+ */
+export type FilterValue =
+  | { op: 'contains'; value: string }
+  | { op: 'equals'; value: string | number | boolean | null }
+  | { op: 'in'; value: Array<string | number> }
+  | { op: 'range'; value: { from?: string; to?: string } };
+
+/**
+ * Filters map: field name → filter value.
+ * Undefined values represent cleared filters.
+ */
+export type Filters = Record<string, FilterValue | undefined>;
+
+/**
  * Query parameters passed to the fetcher function.
  *
  * All pagination, sorting, and filtering state is passed through this query.
@@ -35,8 +50,8 @@ export interface FetcherQuery {
     direction: 'asc' | 'desc';
   };
 
-  /** Optional filters (key-value pairs) */
-  filters?: Record<string, unknown>;
+  /** Optional filters (omitted when empty) */
+  filters?: Filters;
 }
 
 /**
@@ -80,7 +95,12 @@ export type Fetcher<T> = (query: FetcherQuery) => Promise<FetcherResult<T>>;
  * These represent the built-in column types that can be created
  * via the `col.*` helper factory.
  */
-export type ColumnKind = 'text' | 'date' | 'boolean' | 'actions' | 'custom';
+export type ColumnKind = 'text' | 'date' | 'boolean' | 'actions' | 'custom' | 'badge' | 'number';
+
+/**
+ * Badge tone options for status/enum columns.
+ */
+export type BadgeTone = 'neutral' | 'success' | 'warning' | 'danger';
 
 /**
  * Base column definition properties shared across all column types.
@@ -100,6 +120,15 @@ export interface BaseColumnDef<T> {
 
   /** Optional field name to extract from row data (for sortable columns) */
   field?: keyof T & string;
+
+  /** Column width in pixels */
+  width?: number;
+
+  /** Text alignment */
+  align?: 'left' | 'center' | 'right';
+
+  /** Enable text truncation with ellipsis */
+  truncate?: boolean;
 }
 
 /**
@@ -130,6 +159,24 @@ export interface BooleanColumnDef<T> extends BaseColumnDef<T> {
 }
 
 /**
+ * Badge column definition for status/enum fields.
+ */
+export interface BadgeColumnDef<T> extends BaseColumnDef<T> {
+  kind: 'badge';
+  field: keyof T & string;
+  map?: Record<string, { label: string; tone: BadgeTone }>;
+}
+
+/**
+ * Number column definition.
+ */
+export interface NumberColumnDef<T> extends BaseColumnDef<T> {
+  kind: 'number';
+  field: keyof T & string;
+  format?: Intl.NumberFormatOptions | ((value: number, row: T) => string);
+}
+
+/**
  * Actions column definition.
  */
 export interface ActionsColumnDef<T> extends BaseColumnDef<T> {
@@ -156,6 +203,8 @@ export type ColumnDef<T> =
   | TextColumnDef<T>
   | DateColumnDef<T>
   | BooleanColumnDef<T>
+  | BadgeColumnDef<T>
+  | NumberColumnDef<T>
   | ActionsColumnDef<T>
   | CustomColumnDef<T>;
 

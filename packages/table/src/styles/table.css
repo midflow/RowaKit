@@ -250,6 +250,61 @@
 }
 
 /* ============================================================================
+ * BADGE
+ * ============================================================================ */
+
+.rowakit-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--rowakit-spacing-xs) var(--rowakit-spacing-sm);
+  border-radius: var(--rowakit-border-radius);
+  font-size: var(--rowakit-font-size-xs);
+  font-weight: var(--rowakit-font-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.rowakit-badge-neutral {
+  background-color: var(--rowakit-color-gray-100);
+  color: var(--rowakit-color-gray-700);
+}
+
+.rowakit-badge-success {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.rowakit-badge-warning {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.rowakit-badge-danger {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* ============================================================================
+ * NUMBER COLUMNS
+ * ============================================================================ */
+
+.rowakit-table tbody td.rowakit-cell-number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================================
+ * CELL MODIFIERS
+ * ============================================================================ */
+
+.rowakit-cell-truncate {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================================================
  * MODAL
  * ============================================================================ */
 
@@ -316,4 +371,53 @@
     max-width: 100%;
     margin: var(--rowakit-spacing-lg);
   }
+}
+
+/* ============================================================================
+ * FILTERS
+ * ============================================================================ */
+
+.rowakit-table-filter-controls {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--rowakit-spacing-md) 0;
+  gap: var(--rowakit-spacing-sm);
+}
+
+.rowakit-table-filter-row th {
+  padding: var(--rowakit-spacing-sm) var(--rowakit-table-cell-padding);
+  background-color: var(--rowakit-color-gray-50);
+  border-bottom: var(--rowakit-border-width) solid var(--rowakit-table-header-border-color);
+}
+
+.rowakit-filter-input,
+.rowakit-filter-select {
+  width: 100%;
+  padding: var(--rowakit-spacing-xs) var(--rowakit-spacing-sm);
+  border: var(--rowakit-border-width) solid var(--rowakit-color-gray-300);
+  border-radius: var(--rowakit-border-radius);
+  font-size: var(--rowakit-font-size-sm);
+  background-color: var(--rowakit-table-bg);
+  transition: border-color 0.15s ease;
+}
+
+.rowakit-filter-input:focus,
+.rowakit-filter-select:focus {
+  outline: 2px solid var(--rowakit-color-primary-500);
+  outline-offset: 1px;
+  border-color: var(--rowakit-color-primary-500);
+}
+
+.rowakit-filter-input::placeholder {
+  color: var(--rowakit-color-gray-400);
+}
+
+.rowakit-filter-date-range {
+  display: flex;
+  gap: var(--rowakit-spacing-xs);
+}
+
+.rowakit-filter-date-range input {
+  flex: 1;
+  min-width: 0;
 }
