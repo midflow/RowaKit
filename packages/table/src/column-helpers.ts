@@ -13,9 +13,12 @@ import type {
   TextColumnDef,
   DateColumnDef,
   BooleanColumnDef,
+  BadgeColumnDef,
+  NumberColumnDef,
   ActionsColumnDef,
   CustomColumnDef,
   ActionDef,
+  BadgeTone,
 } from './types';
 
 // ============================================================================
@@ -29,6 +32,12 @@ interface TextOptions {
   sortable?: boolean;
   /** Optional formatter function */
   format?: (value: unknown) => string;
+  /** Column width in pixels */
+  width?: number;
+  /** Text alignment */
+  align?: 'left' | 'center' | 'right';
+  /** Enable text truncation with ellipsis */
+  truncate?: boolean;
 }
 
 interface DateOptions {
@@ -38,6 +47,12 @@ interface DateOptions {
   sortable?: boolean;
   /** Optional date formatter function */
   format?: (value: Date | string | number) => string;
+  /** Column width in pixels */
+  width?: number;
+  /** Text alignment */
+  align?: 'left' | 'center' | 'right';
+  /** Enable text truncation with ellipsis */
+  truncate?: boolean;
 }
 
 interface BooleanOptions {
@@ -47,6 +62,42 @@ interface BooleanOptions {
   sortable?: boolean;
   /** Optional boolean formatter function */
   format?: (value: boolean) => string;
+  /** Column width in pixels */
+  width?: number;
+  /** Text alignment */
+  align?: 'left' | 'center' | 'right';
+  /** Enable text truncation with ellipsis */
+  truncate?: boolean;
+}
+
+interface BadgeOptions {
+  /** Optional custom header label */
+  header?: string;
+  /** Enable sorting for this column */
+  sortable?: boolean;
+  /** Value-to-badge mapping */
+  map?: Record<string, { label: string; tone: BadgeTone }>;
+  /** Column width in pixels */
+  width?: number;
+  /** Text alignment */
+  align?: 'left' | 'center' | 'right';
+  /** Enable text truncation with ellipsis */
+  truncate?: boolean;
+}
+
+interface NumberOptions<T = unknown> {
+  /** Optional custom header label */
+  header?: string;
+  /** Enable sorting for this column */
+  sortable?: boolean;
+  /** Formatting options: Intl.NumberFormatOptions or custom formatter */
+  format?: Intl.NumberFormatOptions | ((value: number, row: T) => string);
+  /** Column width in pixels */
+  width?: number;
+  /** Text alignment */
+  align?: 'left' | 'center' | 'right';
+  /** Enable text truncation with ellipsis */
+  truncate?: boolean;
 }
 
 // ============================================================================
@@ -74,6 +125,9 @@ function text<T>(
     header: options?.header,
     sortable: options?.sortable ?? false,
     format: options?.format,
+    width: options?.width,
+    align: options?.align,
+    truncate: options?.truncate,
   };
 }
 
@@ -100,6 +154,9 @@ function date<T>(
     header: options?.header,
     sortable: options?.sortable ?? false,
     format: options?.format,
+    width: options?.width,
+    align: options?.align,
+    truncate: options?.truncate,
   };
 }
 
@@ -126,6 +183,72 @@ function boolean<T>(
     header: options?.header,
     sortable: options?.sortable ?? false,
     format: options?.format,
+    width: options?.width,
+    align: options?.align,
+    truncate: options?.truncate,
+  };
+}
+
+/**
+ * Create a badge column definition for status/enum fields.
+ *
+ * @example
+ * ```ts
+ * col.badge('status')
+ * col.badge('status', {
+ *   map: {
+ *     active: { label: 'Active', tone: 'success' },
+ *     paused: { label: 'Paused', tone: 'warning' },
+ *     disabled: { label: 'Disabled', tone: 'danger' }
+ *   }
+ * })
+ * ```
+ */
+function badge<T>(
+  field: keyof T & string,
+  options?: BadgeOptions
+): BadgeColumnDef<T> {
+  return {
+    id: field,
+    kind: 'badge',
+    field,
+    header: options?.header,
+    sortable: options?.sortable ?? false,
+    map: options?.map,
+    width: options?.width,
+    align: options?.align,
+    truncate: options?.truncate,
+  };
+}
+
+/**
+ * Create a number column definition.
+ *
+ * @example
+ * ```ts
+ * col.number('amount')
+ * col.number('price', {
+ *   format: { style: 'currency', currency: 'USD' }
+ * })
+ * col.number('count', {
+ *   format: (val, row) => `${val} items`
+ * })
+ * ```
+ */
+function number<T>(
+  field: keyof T & string,
+  options?: NumberOptions<T>
+): NumberColumnDef<T> {
+  return {
+    id: field,
+    kind: 'number',
+    field,
+    header: options?.header,
+    sortable: options?.sortable ?? false,
+    format: options?.format,
+    width: options?.width,
+    align: options?.align,
+    truncate: options?.truncate,
   };
 }
 
@@ -256,6 +379,8 @@ export const col = {
   text,
   date,
   boolean,
+  badge,
+  number,
   actions,
   custom,
 } as const;
