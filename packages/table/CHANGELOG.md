@@ -148,5 +148,5 @@ See the [README](./README.md) for full documentation.
 
 Built with ❤️ by the RowaKit team.
 
-[unreleased]: https://github.com/rowakit/table/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/rowakit/table/releases/tag/v0.1.0
+[unreleased]: https://github.com/midflow/RowaKit/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/midflow/RowaKit/releases/tag/v0.1.0

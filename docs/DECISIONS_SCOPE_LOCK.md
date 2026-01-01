@@ -173,7 +173,7 @@ This constraint is **intentional** and **permanent**.
 ## Questions?
 
 - Read the [FAQ](../packages/table/README.md#faq)
-- Open a [Discussion](https://github.com/<YOUR_USERNAME>/rowakit/discussions)
+- Open a [Discussion](https://github.com/Midflow/rowakit/discussions)
 - File an issue using the "question" template
 
 **Remember:** Constraints breed creativity. Use `col.custom()` for one-offs, and propose new column types only if there's repeated demand.

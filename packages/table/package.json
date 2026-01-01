@@ -28,7 +28,7 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "lint": "eslint src --ext .ts,.tsx"
   },
@@ -56,10 +56,17 @@
   "homepage": "https://github.com/midflow/RowaKit/tree/main/packages/table#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/midflow/RowaKit.git",
+    "url": "git+https://github.com/midflow/RowaKit.git",
     "directory": "packages/table"
   },
   "bugs": {
     "url": "https://github.com/midflow/RowaKit/issues"
+  },
+  "directories": {
+    "example": "examples"
+  },
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   }
 }

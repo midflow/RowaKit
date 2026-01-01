@@ -43,64 +43,59 @@
   - Responsive overflow (horizontal scroll)
 
 ### What's NOT in Stage A
-- Multi-column sorting
-- Advanced filters UI
-- Column resizing/pinning
-- Row selection/bulk actions
-- Virtualization
+# Roadmap
 
-**Status:** ✅ Stage A is **DONE**. Stable API, production-ready for internal apps.
+This document describes the planned evolution of RowaKit in staged, demand-driven phases. It is written for maintainers and contributors and focuses on decisions, priorities, and upgrade paths.
 
----
+## Principles
+- Server-side first: features must fit the server-side, low-client-overhead philosophy.
+- Small core + escape hatch: prioritize a minimal, well-maintained core API and enable extension via `col.custom()` and composable hooks.
+- Demand-driven: non-trivial features require demonstrated demand and a clear maintenance plan.
 
-## Stage B — v1.0 (Planned)
+## Stage A — Initial Release (v0.1.x) — Complete
+- Delivered: core table component, server-side fetcher contract, pagination, single-column sorting, text/date/boolean/actions/custom column types, responsive styling, TypeScript types, and examples.
 
-**Goal:** Make RowaKit "production-grade" for most teams.
+## Stage B — Production Improvements (v1.0 candidate) — Planned
+These are high-impact, low-to-medium complexity features that align with the project philosophy. Ship when there is clear user demand and design review.
+- Column visibility (API to hide/show columns)
+- Row selection and bulk actions (server-side friendly APIs)
+- Server-side text filters and basic filter types (text, enum, boolean, date)
+- Additional ergonomic column helpers (`col.number()`, `col.badge()`)
+- Accessibility improvements and audit
 
-**Trigger:** Wait for real-world demand (issues, discussions, user requests)
+## Stage C — Advanced / Optional (Future)
+Only considered with significant demand and a maintenance commitment.
+- Multi-column sorting (careful design for server interaction)
+- Server-triggered exports (CSV/Excel) and large-file handling
+- Column resizing or persistent column ordering (opt-in)
 
-### Planned Features (When Demand Exists)
+## Out of Scope (Permanent)
+- Virtualization (use dedicated libraries such as TanStack Virtual)
+- Grouping/pivot/analytics engines (use AG Grid or dedicated BI tools)
+- Spreadsheet-style inline editing or full spreadsheet behavior
 
-#### 1. Two New Column Types
-- **`col.badge(field, map?)`**  
-  Render status/enum as colored badges  
-  Example: `col.badge('status', { active: 'green', inactive: 'gray' })`
-  
-- **`col.number(field, opts?)`**  
-  Number formatting (align, precision, Intl)  
-  Example: `col.number('price', { format: 'currency', currency: 'USD' })`
+## Decision Process
+1. Issue filed with real-world use case and example server API.
+2. Triage: product/maintainers confirm scope fit and demand level.
+3. Design proposal: API, examples, and migration notes.
+4. Implementation in a feature branch with tests and examples.
+5. Release and documentation update (CHANGELOG, examples, migration guide).
 
-#### 2. Server-Side Filters (Basic)
-- Per-column filter definitions
-- Filter types:
-  - Text: contains, equals
-  - Enum: equals (dropdown)
-  - Boolean: true/false toggle
-  - Date: range (min/max)
-- Filter bar (optional): show applied filters + clear all
-- Server receives `filters` object in fetcher
+## Release Strategy
+- Pre-1.0 (0.x): prioritize iterative improvements; small breaking changes may occur but document them.
+- 1.0: stable public API, semver rules strictly applied.
 
-#### 3. Column Ergonomics
-- Chainable modifiers:
-  - `.sortable()` - enable sorting
-  - `.filterable()` - enable filtering
-  - `.width(px)` - set column width
-  - `.align('left'|'center'|'right')` - text alignment
-  - `.tooltip(text)` - column header tooltip
-  - `.truncate()` - ellipsis for long text
-- Example: `col.text('email').sortable().width(240).truncate()`
+## How to propose a feature
+- Open an issue describing the problem, API sketch, and at least two real-world use cases.
+- Explain why existing extension points (e.g., `col.custom()`) are insufficient.
+- Link adopters or stakeholders to demonstrate demand.
 
-#### 4. Row Key Handling
-- `rowKey` prop: field name or function
-- Auto-fallback to `id` if not specified
+## References
+- README.md — usage and quick start
+- docs/DECISIONS_SCOPE_LOCK.md — design constraints and long-term philosophy
 
-#### 5. Empty State Customization
-- Custom message
-- Action button (e.g., "Create New User")
-
-#### 6. Error Handling Improvements
-- Pass-through error messages from fetcher
-- Optional `onError` callback
+[unreleased]: https://github.com/midflow/RowaKit/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/midflow/RowaKit/releases/tag/v0.1.0
 
 #### 7. Accessibility Basics
 - Keyboard navigation for sorting

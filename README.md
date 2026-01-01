@@ -2,7 +2,7 @@
 
 **Server-side-first table components for React internal/business applications**
 
-[![CI](https://github.com/<YOUR_USERNAME>/rowakit/actions/workflows/ci.yml/badge.svg)](https://github.com/<YOUR_USERNAME>/rowakit/actions/workflows/ci.yml)
+[![CI](https://github.com/Midflow/rowakit/actions/workflows/ci.yml/badge.svg)](https://github.com/Midflow/rowakit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
@@ -188,7 +188,7 @@ If RowaKit helps your project, consider:
 
 ⭐ **Star this repo** - It helps others discover the project  
 💖 **[Sponsor on GitHub](https://github.com/sponsors/midflow)** - Sustain development  
-☕ **[Buy us a coffee](buymeacoffee.com/midflow)** - One-time support
+☕ **[Buy us a coffee](https://buymeacoffee.com/midflow)** - One-time support
 
 Every contribution, big or small, keeps this project going. Thank you! 🙏
 

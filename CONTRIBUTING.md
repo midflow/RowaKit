@@ -26,7 +26,7 @@ Please read [docs/DECISIONS_SCOPE_LOCK.md](docs/DECISIONS_SCOPE_LOCK.md) to unde
 
 ```bash
 # Clone the repo
-git clone https://github.com/<YOUR_USERNAME>/rowakit.git
+git clone https://github.com/Midflow/rowakit.git
 cd rowakit
 
 # Install dependencies (we use pnpm)
@@ -81,7 +81,7 @@ pnpm build
 
 ## Questions?
 
-- Open a [Discussion](https://github.com/<YOUR_USERNAME>/rowakit/discussions)
+- Open a [Discussion](https://github.com/Midflow/rowakit/discussions)
 - File an issue using the "question" template
 
 ## Code of Conduct

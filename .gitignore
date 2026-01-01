@@ -1,5 +1,8 @@
 # Dependencies
 node_modules/
+_internal/
+agent-prompts/
+*.prompt.md
 
 # Build outputs
 dist/
