@@ -57,6 +57,42 @@ pnpm build
 - Link related issues
 - Ensure CI passes
 
+### How to open a PR
+
+1. Fork the repository and create a descriptive branch name:
+
+```bash
+git checkout -b feat/<short-description>  # or fix/<issue-number>
+```
+
+2. Make incremental, focused commits with clear messages (one logical change per commit).
+
+3. Run the full validation locally before pushing:
+
+```bash
+pnpm install
+pnpm -w -r lint --if-present
+pnpm -w -r test --if-present
+pnpm -w -r build --if-present
+```
+
+4. Push your branch to your fork and open a Pull Request against `main` on the upstream repository.
+
+5. In the PR description:
+- Describe the problem and the proposed change.
+- Include reproduction steps or a minimal example if applicable.
+- List which tests were added/updated and any manual verification steps.
+- Reference related issues (e.g., `Closes #123`).
+
+6. Confirm the PR checklist:
+- PR template completed and scope-guard checked.
+- Tests pass and CI is green.
+- Documentation updated if the API changed.
+
+7. Address review feedback promptly and squash/rebase as requested by maintainers.
+
+8. Once approved, a maintainer will merge and create a release if appropriate.
+
 ## Code Style
 
 - Follow the existing code style
