@@ -34,16 +34,16 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm -w -r lint --if-present
+        run: pnpm -w -r run lint --if-present
 
       - name: Type check
-        run: pnpm -w -r typecheck --if-present
+        run: pnpm -w -r run typecheck --if-present
 
       - name: Test
-        run: pnpm -w -r test --if-present
+        run: pnpm -w -r run test --if-present
 
       - name: Build
-        run: pnpm -w -r build --if-present
+        run: pnpm -w -r run build --if-present
 
       - name: Verify build outputs
         run: |
