@@ -245,10 +245,10 @@ Badge column with visual tone mapping for status/enum values.
 col.badge('status', {
   header: 'Status',
   map: {
-    active: 'success',
-    pending: 'warning',
-    inactive: 'neutral',
-    error: 'danger'
+    active: { label: 'Active', tone: 'success' },
+    pending: { label: 'Pending', tone: 'warning' },
+    inactive: { label: 'Inactive', tone: 'neutral' },
+    error: { label: 'Error', tone: 'danger' }
   }
 })
 
@@ -256,9 +256,9 @@ col.badge('priority', {
   header: 'Priority',
   sortable: true,
   map: {
-    high: 'danger',
-    medium: 'warning',
-    low: 'success'
+    high: { label: 'High', tone: 'danger' },
+    medium: { label: 'Medium', tone: 'warning' },
+    low: { label: 'Low', tone: 'success' }
   }
 })
 ```
@@ -266,7 +266,7 @@ col.badge('priority', {
 **Options:**
 - `header?: string` - Custom header label
 - `sortable?: boolean` - Enable sorting
-- `map?: Record<string, BadgeTone>` - Map values to visual tones
+- `map?: Record<string, { label: string; tone: BadgeTone }>` - Map values to badge labels and visual tones
 - `width?: number` - Column width in pixels
 - `align?: 'left' | 'center' | 'right'` - Text alignment
 - `truncate?: boolean` - Truncate with ellipsis
