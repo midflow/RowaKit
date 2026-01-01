@@ -17,18 +17,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          # use pnpm v8 compatible with lockfile
+          version: 8
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          # use pnpm v8 compatible with lockfile
-          version: 8
 
       - name: Install dependencies (frozen lockfile)
         run: pnpm install --frozen-lockfile
