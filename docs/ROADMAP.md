@@ -7,9 +7,9 @@
 
 ## Current Status
 
-**Version:** 0.1.0  
-**Stage:** A (MVP) - ✅ **COMPLETE**  
-**Next:** Stage B (v1.0) - 🚧 Planned (when there's demand)
+**Version:** 0.2.1  
+**Stage:** B (Production Improvements) - ✅ **COMPLETE**  
+**Next:** Stage C (Advanced / Optional) - 💭 Demand-driven
 
 ---
 
@@ -55,13 +55,19 @@ This document describes the planned evolution of RowaKit in staged, demand-drive
 ## Stage A — Initial Release (v0.1.x) — Complete
 - Delivered: core table component, server-side fetcher contract, pagination, single-column sorting, text/date/boolean/actions/custom column types, responsive styling, TypeScript types, and examples.
 
-## Stage B — Production Improvements (v1.0 candidate) — Planned
-These are high-impact, low-to-medium complexity features that align with the project philosophy. Ship when there is clear user demand and design review.
-- Column visibility (API to hide/show columns)
-- Row selection and bulk actions (server-side friendly APIs)
-- Server-side text filters and basic filter types (text, enum, boolean, date)
-- Additional ergonomic column helpers (`col.number()`, `col.badge()`)
-- Accessibility improvements and audit
+## Stage B — Production Improvements (v0.2.1) — ✅ COMPLETE
+
+**Delivered (v0.2.1):**
+- ✅ Server-side text filters with type-specific UIs (text, number, boolean, date, badge)
+- ✅ Number column with Intl.NumberFormat support (`col.number()`)
+- ✅ Badge column with visual tone mapping (`col.badge()`)
+- ✅ Filter numeric values sent as numbers (not strings) for precise server-side matching
+- ✅ Date range filters for date columns
+- ✅ Clear filters functionality
+- ✅ Full TypeScript types for filters
+- ✅ Comprehensive filter examples in demo
+
+**Shipped:** 2026-01-02
 
 ## Stage C — Advanced / Optional (Future)
 Only considered with significant demand and a maintenance commitment.
@@ -222,7 +228,7 @@ Want to influence the roadmap?
 ## FAQ
 
 **Q: When will Stage B ship?**  
-A: When there's clear demand. File issues if you need these features.
+A: ✅ Stage B shipped in v0.2.1 (2026-01-02). It includes filters, number/badge columns, and full TypeScript support.
 
 **Q: Can I sponsor to prioritize a feature?**  
 A: Sponsorship helps sustainability, but doesn't guarantee features. Scope lock is permanent.
@@ -235,6 +241,7 @@ A: No. Read [DECISIONS_SCOPE_LOCK.md](./DECISIONS_SCOPE_LOCK.md).
 
 ---
 
-**Last Updated:** 2024-12-31  
-**Current Version:** 0.1.0  
-**Next Milestone:** Stage B (when demand exists)
+**Last Updated:** 2026-01-02  
+**Current Version:** 0.2.1  
+**Latest Release:** Stage B (v0.2.1)  
+**Next Milestone:** Stage C (demand-driven, no timeline)

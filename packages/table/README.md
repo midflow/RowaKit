@@ -646,27 +646,26 @@ type Filters = Record<string, FilterValue>;
 
 **⚠️ Number Filter Behavior:**
 
-Number filters use **exact match** semantics (`op: 'equals'`). The filter value is sent as a string, and your backend must handle the comparison:
+Number filters use **exact match** semantics (`op: 'equals'`). The filter value is sent as a **number** (not a string), enabling direct numeric comparison:
 
 ```typescript
 // If user types "15" in a number filter input
-filters: { discount: { op: 'equals', value: '15' } }
+filters: { discount: { op: 'equals', value: 15 } }
 
-// Your backend must convert and compare appropriately:
-// If your data has discount as a fraction (0.15), you must convert:
-// parseInt('15') / 100 === 0.15  OR  parseFloat('15') / 100 === 0.15
+// Your backend receives a numeric value and can compare directly:
+// if (discount === 15) { /* match */ }
 ```
 
-**Common Pattern:**
+**Handling Percentage/Fraction Data:**
 
-If your data uses decimals or percentages, ensure your backend coerces the filter value correctly:
+If your data uses decimals or percentages while displaying as whole numbers, ensure your backend coerces appropriately:
 
 ```typescript
 // Example: Number filter for percentage discount
 if (filters?.discount) {
-  const filterValue = parseFloat(filters.discount.value);
+  const filterValue = filters.discount.value;  // Already a number
   // If data is stored as fraction (0.15):
-  const compareValue = filterValue / 100;  // Convert "15" → 0.15
+  const compareValue = filterValue / 100;  // Convert 15 → 0.15
   // Filter records where discount === compareValue
 }
 ```
