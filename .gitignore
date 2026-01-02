@@ -39,3 +39,4 @@ test-*.txt
 
 #others
 packages\table\package-lock.json
+.npmrc
