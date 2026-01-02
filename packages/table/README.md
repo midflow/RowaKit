@@ -1304,7 +1304,7 @@ Full TypeScript support. Your data model drives type checking throughout.
 - ✅ A-09: Minimal styling tokens (CSS variables, responsive, className)
 - ✅ A-10: Documentation & examples (4 complete examples, CHANGELOG, CONTRIBUTING)
 
-**Stage B - Production Ready (v0.2.1)** — Production release 2026-01-02
+**Stage B - Production Ready (v0.2.2)** — Production release 2026-01-02
 - Column visibility toggle
 - Bulk actions
 - Search/text filter
@@ -1322,9 +1322,9 @@ Full TypeScript support. Your data model drives type checking throughout.
 
 See the detailed changelog for release history and migration notes:
 
-- [CHANGELOG.md](./CHANGELOG.md) — highlights and details for v0.2.1 and future releases.
+- [CHANGELOG.md](./CHANGELOG.md) — highlights and details for v0.2.2 and future releases.
 
-### v0.2.1 - Production Release (2026-01-02)
+### v0.2.2 - Hardening Release (2026-01-02)
 - ✅ **Fixed**: Number filter type coercion for accurate field matching
 - ✅ **Production Ready**: All 193 tests passing, dependencies hardened
 - ✅ **Backwards Compatible**: No breaking changes from v0.2.0

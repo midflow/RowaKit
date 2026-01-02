@@ -22,7 +22,7 @@ export default function App() {
           className={activeExample === 'stageb' ? 'active' : ''}
           onClick={() => setActiveExample('stageb')}
         >
-          Stage B (v0.2.1)
+          Stage B (v0.2.2)
         </button>
         <button
           className={activeExample === 'basic' ? 'active' : ''}

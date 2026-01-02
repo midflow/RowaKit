@@ -7,7 +7,7 @@
 
 ## Current Status
 
-**Version:** 0.2.1  
+**Version:** 0.2.2  
 **Stage:** B (Production Improvements) - ✅ **COMPLETE**  
 **Next:** Stage C (Advanced / Optional) - 💭 Demand-driven
 
@@ -55,9 +55,9 @@ This document describes the planned evolution of RowaKit in staged, demand-drive
 ## Stage A — Initial Release (v0.1.x) — Complete
 - Delivered: core table component, server-side fetcher contract, pagination, single-column sorting, text/date/boolean/actions/custom column types, responsive styling, TypeScript types, and examples.
 
-## Stage B — Production Improvements (v0.2.1) — ✅ COMPLETE
+## Stage B — Production Improvements (v0.2.2) — ✅ COMPLETE
 
-**Delivered (v0.2.1):**
+**Delivered (v0.2.2):**
 - ✅ Server-side text filters with type-specific UIs (text, number, boolean, date, badge)
 - ✅ Number column with Intl.NumberFormat support (`col.number()`)
 - ✅ Badge column with visual tone mapping (`col.badge()`)
@@ -228,7 +228,7 @@ Want to influence the roadmap?
 ## FAQ
 
 **Q: When will Stage B ship?**  
-A: ✅ Stage B shipped in v0.2.1 (2026-01-02). It includes filters, number/badge columns, and full TypeScript support.
+A: ✅ Stage B shipped in v0.2.2 (2026-01-02). It includes filters, number/badge columns, and full TypeScript support.
 
 **Q: Can I sponsor to prioritize a feature?**  
 A: Sponsorship helps sustainability, but doesn't guarantee features. Scope lock is permanent.
@@ -242,6 +242,6 @@ A: No. Read [DECISIONS_SCOPE_LOCK.md](./DECISIONS_SCOPE_LOCK.md).
 ---
 
 **Last Updated:** 2026-01-02  
-**Current Version:** 0.2.1  
-**Latest Release:** Stage B (v0.2.1)  
+**Current Version:** 0.2.2
+**Latest Release:** Stage B (v0.2.2)
 **Next Milestone:** Stage C (demand-driven, no timeline)
