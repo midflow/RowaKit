@@ -1305,7 +1305,7 @@ Full TypeScript support. Your data model drives type checking throughout.
 - ✅ A-09: Minimal styling tokens (CSS variables, responsive, className)
 - ✅ A-10: Documentation & examples (4 complete examples, CHANGELOG, CONTRIBUTING)
 
-**Stage B - Production Ready** (Next)
+**Stage B - Production Ready (v0.2.1)** — Production release 2026-01-02
 - Column visibility toggle
 - Bulk actions
 - Search/text filter

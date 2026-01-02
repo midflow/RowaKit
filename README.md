@@ -143,11 +143,13 @@ Check out the [`examples/`](./packages/table/examples/) directory for complete w
 - Loading, error, empty states
 - Action buttons with confirmation
 
-### 🚧 Stage B (v1.0) - **Planned** (when there's demand)
+### ✅ Stage B (v0.2.1) - **Production Ready**
 - `col.badge()` for status/enum
 - `col.number()` with formatting
 - Basic server-side filters
 - Column modifiers (sortable, width, align, etc.)
+  
+This repository has shipped Stage B features in `v0.2.1` (2026-01-02). See package CHANGELOGs for details.
 
 ### 💭 Stage C (v1.5+) - **Maybe** (only if strong demand)
 - Row selection + bulk actions
