@@ -28,6 +28,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.1] - 2026-01-02 (Production Release)
+### Fixed
+- Number filter type coercion: filter inputs now properly coerce to numeric type for matching
+
+For package-specific details, see `packages/table/CHANGELOG.md`.
+
+---
+
 ## [0.2.0] - 2026-01-02
 ### Added
 - Stage B features for `@rowakit/table`:

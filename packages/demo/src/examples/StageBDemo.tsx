@@ -16,8 +16,8 @@ interface Product {
 
 const mockProducts: Product[] = [
   // Note: discount is stored as a fraction (0.15 = 15%, 0.1 = 10%, etc.)
-  // When filtering by discount, the filter input will receive string values like "15" or "0.15"
-  // The equals filter does direct comparison, so data type must match
+  // When filtering discount, you can enter either "0.15" (fraction) or "15" (percentage)
+  // The filter will automatically convert percentage to fraction
   { id: 1, name: 'Laptop Pro 15"', category: 'Electronics', status: 'in_stock', price: 1299.99, quantity: 45, discount: 0.15, lastUpdated: '2024-01-15', featured: true },
   { id: 2, name: 'Wireless Mouse', category: 'Accessories', status: 'in_stock', price: 29.99, quantity: 120, discount: 0, lastUpdated: '2024-01-20', featured: false },
   { id: 3, name: 'USB-C Cable', category: 'Accessories', status: 'low_stock', price: 12.99, quantity: 8, discount: 0.1, lastUpdated: '2024-02-01', featured: false },
@@ -45,9 +45,24 @@ export default function StageBDemo() {
               .includes(filter.value.toLowerCase())
           );
         } else if (filter.op === 'equals') {
-          filtered = filtered.filter(
-            (item) => item[field as keyof Product] === filter.value
-          );
+          // Coerce filter value to match data type (handle string → number conversion)
+          filtered = filtered.filter((item) => {
+            const itemValue = item[field as keyof Product];
+            let filterValueCoerced: any = filter.value;
+            
+            if (typeof itemValue === 'number') {
+              const parsedValue = parseFloat(String(filter.value));
+              // Special case: discount is stored as fraction (0.15 = 15%)
+              // If filtering discount and value is > 1, assume user entered percentage
+              if (field === 'discount' && parsedValue > 1) {
+                filterValueCoerced = parsedValue / 100;
+              } else {
+                filterValueCoerced = parsedValue;
+              }
+            }
+            
+            return itemValue === filterValueCoerced;
+          });
         } else if (filter.op === 'range') {
           if (filter.value.from) {
             filtered = filtered.filter(
@@ -159,7 +174,7 @@ export default function StageBDemo() {
   return (
     <div>
       <div className="example-header">
-        <h2>Stage B Features Demo (v0.2.0)</h2>
+        <h2>Stage B Features Demo (v0.2.1)</h2>
         <p>
           This demo showcases all Stage B features: Badge columns, Number columns with
           formatting, Column modifiers (width, align, truncate), and Server-side filters.

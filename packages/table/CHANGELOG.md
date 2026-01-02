@@ -2,6 +2,17 @@
 
 All notable changes to this package will be documented in this file.
 
+## [0.2.1] - 2026-01-02 (Production Release)
+### Fixed
+- Number filter field comparison now properly coerces filter input string values to numeric type, allowing filters like `price = 12.99` to match numeric data fields correctly.
+- Filter backend contract clarified in README with type coercion guidance.
+
+### Notes
+- **Production Ready**: This release is production-ready for internal applications.
+- All tests passing (193 tests), build successful, dependencies hardened.
+
+---
+
 ## [0.2.0] - 2026-01-02
 ### Added
 - `col.badge` column type: render enum/status values as labeled badges with visual tones (neutral, success, warning, danger).

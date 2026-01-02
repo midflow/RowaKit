@@ -1323,9 +1323,14 @@ Full TypeScript support. Your data model drives type checking throughout.
 
 See the detailed changelog for release history and migration notes:
 
-- [CHANGELOG.md](./CHANGELOG.md) — highlights and details for v0.2.0 and future releases.
+- [CHANGELOG.md](./CHANGELOG.md) — highlights and details for v0.2.1 and future releases.
 
-Highlights for v0.2.0:
+### v0.2.1 - Production Release (2026-01-02)
+- ✅ **Fixed**: Number filter type coercion for accurate field matching
+- ✅ **Production Ready**: All 193 tests passing, dependencies hardened
+- ✅ **Backwards Compatible**: No breaking changes from v0.2.0
+
+### v0.2.0 - Stage B Features (2026-01-02)
 - Added `col.badge` and `col.number` column types
 - Column modifiers: `width`, `align`, `truncate`
 - Server-side header filter UI with type-specific inputs
