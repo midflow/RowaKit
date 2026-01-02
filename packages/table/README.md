@@ -644,6 +644,33 @@ type Filters = Record<string, FilterValue>;
 3. **No client filtering**: All filtering must be handled by your backend
 4. **Actions/Custom columns**: Not filterable (no filter input rendered)
 
+**⚠️ Number Filter Behavior:**
+
+Number filters use **exact match** semantics (`op: 'equals'`). The filter value is sent as a string, and your backend must handle the comparison:
+
+```typescript
+// If user types "15" in a number filter input
+filters: { discount: { op: 'equals', value: '15' } }
+
+// Your backend must convert and compare appropriately:
+// If your data has discount as a fraction (0.15), you must convert:
+// parseInt('15') / 100 === 0.15  OR  parseFloat('15') / 100 === 0.15
+```
+
+**Common Pattern:**
+
+If your data uses decimals or percentages, ensure your backend coerces the filter value correctly:
+
+```typescript
+// Example: Number filter for percentage discount
+if (filters?.discount) {
+  const filterValue = parseFloat(filters.discount.value);
+  // If data is stored as fraction (0.15):
+  const compareValue = filterValue / 100;  // Convert "15" → 0.15
+  // Filter records where discount === compareValue
+}
+```
+
 **Clear Filters:**
 
 A "Clear all filters" button appears automatically when filters are active:
@@ -1291,6 +1318,18 @@ Full TypeScript support. Your data model drives type checking throughout.
 - Advanced filters
 - Column resizing
 - Saved views
+
+## Changelog
+
+See the detailed changelog for release history and migration notes:
+
+- [CHANGELOG.md](./CHANGELOG.md) — highlights and details for v0.2.0 and future releases.
+
+Highlights for v0.2.0:
+- Added `col.badge` and `col.number` column types
+- Column modifiers: `width`, `align`, `truncate`
+- Server-side header filter UI with type-specific inputs
+- Fixed numeric-filter value coercion bug (filter inputs now send numbers)
 
 ## License
 

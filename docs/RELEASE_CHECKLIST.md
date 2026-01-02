@@ -4,16 +4,7 @@
 
 ---
 
-## Pre-Release Checklist
-
-### 1. Version Readiness
-- [ ] All planned features/fixes completed
-- [ ] All tests passing (`pnpm test`)
-# Release Checklist
-
-This checklist is intended for maintainers preparing a release. Follow the steps in order and verify each item before proceeding.
-
-## Pre-release verification
+## Pre-Release Verification
 - Confirm repository state: branch is up-to-date and CI is green for the release branch.
 - Confirm `packages/table/package.json` version matches intended release and `CHANGELOG.md` entry exists.
 - Run tests and build locally:

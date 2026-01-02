@@ -1,5 +1,7 @@
 # RowaKit – Stage B Issues (v0.2.0)
 
+**Released: v0.2.0 — 2026-01-02**
+
 Stage B focuses on improving real-world usability while keeping RowaKit Table small, predictable, and server-side first.
 
 ## Scope lock

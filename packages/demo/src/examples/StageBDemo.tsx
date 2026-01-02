@@ -9,12 +9,15 @@ interface Product {
   status: 'in_stock' | 'low_stock' | 'out_of_stock';
   price: number;
   quantity: number;
-  discount: number;
+  discount: number;  // Stored as fraction (0.15 = 15%)
   lastUpdated: string;
   featured: boolean;
 }
 
 const mockProducts: Product[] = [
+  // Note: discount is stored as a fraction (0.15 = 15%, 0.1 = 10%, etc.)
+  // When filtering by discount, the filter input will receive string values like "15" or "0.15"
+  // The equals filter does direct comparison, so data type must match
   { id: 1, name: 'Laptop Pro 15"', category: 'Electronics', status: 'in_stock', price: 1299.99, quantity: 45, discount: 0.15, lastUpdated: '2024-01-15', featured: true },
   { id: 2, name: 'Wireless Mouse', category: 'Accessories', status: 'in_stock', price: 29.99, quantity: 120, discount: 0, lastUpdated: '2024-01-20', featured: false },
   { id: 3, name: 'USB-C Cable', category: 'Accessories', status: 'low_stock', price: 12.99, quantity: 8, discount: 0.1, lastUpdated: '2024-02-01', featured: false },

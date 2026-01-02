@@ -36,3 +36,6 @@ pnpm-debug.log*
 
 #test files
 test-*.txt
+
+#others
+package-lock.json
