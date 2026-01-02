@@ -1,6 +1,7 @@
 {
   "name": "@rowakit/table",
   "version": "0.2.2",
+  "private": false,
   "description": "Opinionated, server-side-first table component for internal/business apps",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -64,5 +65,8 @@
   },
   "directories": {
     "example": "examples"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
