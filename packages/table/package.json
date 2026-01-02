@@ -1,6 +1,6 @@
 {
   "name": "@rowakit/table",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Opinionated, server-side-first table component for internal/business apps",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -64,9 +64,5 @@
   },
   "directories": {
     "example": "examples"
-  },
-  "dependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
   }
 }

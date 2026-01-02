@@ -202,7 +202,7 @@ MIT © [RowaKit Contributors](./LICENSE)
 
 ## Status
 
-- **Current Version**: 0.1.0 (Stage A complete)
+- **Current Version**: 0.2.0 (Stage B features added)
 - **Stability**: Beta - API is stable, but may have minor changes before 1.0
 - **Production Ready**: Yes, for internal applications
 - **Public Release**: Ready for OSS use
