@@ -174,7 +174,7 @@ export default function StageBDemo() {
   return (
     <div>
       <div className="example-header">
-        <h2>Stage B Features Demo (v0.2.1)</h2>
+        <h2>Stage B Features Demo (v0.2.2)</h2>
         <p>
           This demo showcases all Stage B features: Badge columns, Number columns with
           formatting, Column modifiers (width, align, truncate), and Server-side filters.

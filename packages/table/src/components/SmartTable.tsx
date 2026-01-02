@@ -637,7 +637,8 @@ export function RowaKitTable<T>({
                         } else if (isNumberColumn) {
                           const numValue = Number(rawValue);
                           if (!isNaN(numValue)) {
-                            handleFilterChange(field, { op: 'equals', value: rawValue } as FilterValue);
+                            // Send the parsed numeric value, not the string
+                            handleFilterChange(field, { op: 'equals', value: numValue } as FilterValue);
                           } else {
                             // Invalid numeric input: clear the filter to avoid confusing UX
                             handleClearFilter(field);

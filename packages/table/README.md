@@ -646,27 +646,26 @@ type Filters = Record<string, FilterValue>;
 
 **⚠️ Number Filter Behavior:**
 
-Number filters use **exact match** semantics (`op: 'equals'`). The filter value is sent as a string, and your backend must handle the comparison:
+Number filters use **exact match** semantics (`op: 'equals'`). The filter value is sent as a **number** (not a string), enabling direct numeric comparison:
 
 ```typescript
 // If user types "15" in a number filter input
-filters: { discount: { op: 'equals', value: '15' } }
+filters: { discount: { op: 'equals', value: 15 } }
 
-// Your backend must convert and compare appropriately:
-// If your data has discount as a fraction (0.15), you must convert:
-// parseInt('15') / 100 === 0.15  OR  parseFloat('15') / 100 === 0.15
+// Your backend receives a numeric value and can compare directly:
+// if (discount === 15) { /* match */ }
 ```
 
-**Common Pattern:**
+**Handling Percentage/Fraction Data:**
 
-If your data uses decimals or percentages, ensure your backend coerces the filter value correctly:
+If your data uses decimals or percentages while displaying as whole numbers, ensure your backend coerces appropriately:
 
 ```typescript
 // Example: Number filter for percentage discount
 if (filters?.discount) {
-  const filterValue = parseFloat(filters.discount.value);
+  const filterValue = filters.discount.value;  // Already a number
   // If data is stored as fraction (0.15):
-  const compareValue = filterValue / 100;  // Convert "15" → 0.15
+  const compareValue = filterValue / 100;  // Convert 15 → 0.15
   // Filter records where discount === compareValue
 }
 ```
@@ -1305,7 +1304,7 @@ Full TypeScript support. Your data model drives type checking throughout.
 - ✅ A-09: Minimal styling tokens (CSS variables, responsive, className)
 - ✅ A-10: Documentation & examples (4 complete examples, CHANGELOG, CONTRIBUTING)
 
-**Stage B - Production Ready** (Next)
+**Stage B - Production Ready (v0.2.2)** — Production release 2026-01-02
 - Column visibility toggle
 - Bulk actions
 - Search/text filter
@@ -1323,9 +1322,9 @@ Full TypeScript support. Your data model drives type checking throughout.
 
 See the detailed changelog for release history and migration notes:
 
-- [CHANGELOG.md](./CHANGELOG.md) — highlights and details for v0.2.1 and future releases.
+- [CHANGELOG.md](./CHANGELOG.md) — highlights and details for v0.2.2 and future releases.
 
-### v0.2.1 - Production Release (2026-01-02)
+### v0.2.2 - Hardening Release (2026-01-02)
 - ✅ **Fixed**: Number filter type coercion for accurate field matching
 - ✅ **Production Ready**: All 193 tests passing, dependencies hardened
 - ✅ **Backwards Compatible**: No breaking changes from v0.2.0
