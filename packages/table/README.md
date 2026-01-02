@@ -1331,6 +1331,24 @@ Highlights for v0.2.0:
 - Server-side header filter UI with type-specific inputs
 - Fixed numeric-filter value coercion bug (filter inputs now send numbers)
 
+## Release Notes — v0.2.0 (2026-01-02)
+
+This release introduces Stage B features and several hardening fixes to make `@rowakit/table` production-ready for internal apps.
+
+- Release: `v0.2.0`
+- Date: 2026-01-02
+- Key additions:
+  - `col.badge` — visual badge mapping for enum/status values with tone support
+  - `col.number` — number column with Intl formatting and percentage/currency helpers
+  - Column modifiers (`width`, `align`, `truncate`) supported across column types
+  - Server-side filters: auto-generated, type-specific inputs in the header row
+- Fixes & hardening:
+  - Removed direct React dependencies (now peerDependencies only)
+  - Resolved numeric filter coercion and clarified backend contract in README
+  - Deduplicated release checklist and improved demo documentation
+
+See the full changelog for migration notes and detailed descriptions: [CHANGELOG.md](./CHANGELOG.md)
+
 ## License
 
 MIT

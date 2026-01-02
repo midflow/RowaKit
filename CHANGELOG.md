@@ -28,6 +28,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.0] - 2026-01-02
+### Added
+- Stage B features for `@rowakit/table`:
+  - `col.badge` and `col.number` column types
+  - Column modifiers: `width`, `align`, `truncate`
+  - Server-side header filter UI with type-specific inputs
+  - Demo and documentation updates
+
+### Fixed
+- Numeric filter value coercion for table filters
+- Removed direct React runtime dependencies from package (moved to peerDependencies)
+
+For package-specific details, see `packages/table/CHANGELOG.md`.
+
+
 ## [0.1.0] - 2024-12-31
 
 ### Added
