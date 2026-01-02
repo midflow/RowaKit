@@ -16,7 +16,6 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - run: npm ci
-        working-directory: packages/table
 
       - run: npm publish --access public
         working-directory: packages/table
@@ -37,7 +36,6 @@ jobs:
           registry-url: https://npm.pkg.github.com/
 
       - run: npm ci
-        working-directory: packages/table
 
       - run: npm publish --access public
         working-directory: packages/table
