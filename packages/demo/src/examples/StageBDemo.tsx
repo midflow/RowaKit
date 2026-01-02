@@ -45,8 +45,11 @@ export default function StageBDemo() {
               .includes(filter.value.toLowerCase())
           );
         } else if (filter.op === 'equals') {
+          // Coerce filter value to match data type (handle string → number conversion)
+          const dataValue = item[field as keyof Product];
+          const filterValue = typeof dataValue === 'number' ? parseFloat(String(filter.value)) : filter.value;
           filtered = filtered.filter(
-            (item) => item[field as keyof Product] === filter.value
+            (item) => item[field as keyof Product] === filterValue
           );
         } else if (filter.op === 'range') {
           if (filter.value.from) {
