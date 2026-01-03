@@ -38,5 +38,6 @@ pnpm-debug.log*
 test-*.txt
 
 #others
+package-lock.json
 packages\table\package-lock.json
 .npmrc
