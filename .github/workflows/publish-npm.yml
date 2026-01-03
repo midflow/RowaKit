@@ -28,7 +28,7 @@ jobs:
       - run: rm -f ~/.npmrc .npmrc
 
       - name: Publish to npmjs using OIDC
-        run: npm publish --access public --provenance
+        run: npm publish --access public
         working-directory: packages/table
 
   github-packages:
