@@ -7,6 +7,10 @@ on:
 jobs:
   npmjs:
     runs-on: ubuntu-latest
+    permissions:
+        contents: read
+        id-token: write
+
     steps:
       - uses: actions/checkout@v4
 
@@ -21,10 +25,9 @@ jobs:
 
       - run: pnpm -C packages/table build
 
-      - run: npm publish --access public
+      - name: Publish to npmjs using OIDC
+        run: npm publish --access public
         working-directory: packages/table
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.PNPM_TK }}
 
   github-packages:
     runs-on: ubuntu-latest
