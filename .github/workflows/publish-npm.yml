@@ -28,7 +28,7 @@ jobs:
       - run: rm -f ~/.npmrc .npmrc
 
       - name: Publish to npmjs using OIDC
-        run: npm publish --access public
+        run: npm publish --access public --provenance
         working-directory: packages/table
 
   github-packages:
@@ -49,7 +49,14 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm -C packages/table build
-
+    
+      - name: Configure auth for GitHub Packages
+        run: |
+            echo "@rowakit:registry=https://npm.pkg.github.com" >> ~/.npmrc
+            echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
+        env:
+            NODE_AUTH_TOKEN: ${{ github.token }}
+      
       - run: npm publish --access public --registry=https://npm.pkg.github.com
         working-directory: packages/table
         env:
