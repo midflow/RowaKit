@@ -173,14 +173,14 @@ function renderCell<T>(
     }
 
     case 'actions': {
-      const actionsColumn = column as ActionsColumnDef<T>;
+      const columnWithActions = column as ActionsColumnDef<T>;
       // Safety check: ensure actions is an array
-      if (!Array.isArray(actionsColumn.actions)) {
+      if (!Array.isArray(columnWithActions.actions)) {
         return null;
       }
       return (
         <div className="rowakit-table-actions">
-          {actionsColumn.actions.map((action) => {
+          {columnWithActions.actions.map((action) => {
             const isDisabled =
               isLoading ||
               action.disabled === true ||
@@ -407,7 +407,7 @@ export function RowaKitTable<T>({
     }
 
     setQuery(newQuery);
-  }, []); // Only on mount
+  }, [syncToUrl, defaultPageSize, enableColumnResizing]); // Only on mount
 
   // Sync filters to query (and reset page to 1 when filters change)
   useEffect(() => {
@@ -694,33 +694,55 @@ export function RowaKitTable<T>({
     setColumnWidths({});
   };
 
+  // Helper function to apply filterTransform to filter values for number columns
+  const transformFilterValueForColumn = (
+    column: ColumnDef<T> | undefined,
+    value: FilterValue | undefined,
+  ): FilterValue | undefined => {
+    if (!value || column?.kind !== 'number') {
+      return value;
+    }
+
+    const numberColumn = column as ColumnDef<T> & {
+      filterTransform?: (input: number) => number;
+    };
+
+    if (!numberColumn.filterTransform) {
+      return value;
+    }
+
+    if (value.op === 'equals' && typeof value.value === 'number') {
+      return {
+        ...value,
+        value: numberColumn.filterTransform(value.value),
+      };
+    }
+
+    if (value.op === 'range' && typeof value.value === 'object') {
+      const { from, to } = value.value;
+      return {
+        op: 'range',
+        value: {
+          from:
+            from !== undefined && typeof from === 'number'
+              ? numberColumn.filterTransform(from)
+              : from,
+          to:
+            to !== undefined && typeof to === 'number'
+              ? numberColumn.filterTransform(to)
+              : to,
+        },
+      };
+    }
+
+    return value;
+  };
+
   // Filter handlers
   const handleFilterChange = (field: string, value: FilterValue | undefined) => {
     // Stage C: Apply filter transform if defined
     const column = columns.find(c => c.id === field);
-    let transformedValue = value;
-
-    if (value && value.op === 'equals' && column?.kind === 'number') {
-      const numberColumn = column as any;
-      if (numberColumn.filterTransform && typeof value.value === 'number') {
-        transformedValue = {
-          ...value,
-          value: numberColumn.filterTransform(value.value),
-        };
-      }
-    } else if (value && value.op === 'range' && column?.kind === 'number') {
-      const numberColumn = column as any;
-      if (numberColumn.filterTransform && typeof value.value === 'object') {
-        const { from, to } = value.value;
-        transformedValue = {
-          op: 'range',
-          value: {
-            from: from !== undefined && typeof from === 'number' ? numberColumn.filterTransform(from) : from,
-            to: to !== undefined && typeof to === 'number' ? numberColumn.filterTransform(to) : to,
-          },
-        };
-      }
-    }
+    const transformedValue = transformFilterValueForColumn(column, value);
 
     setFilters((prev) => ({
       ...prev,
@@ -755,7 +777,10 @@ export function RowaKitTable<T>({
         <div className="rowakit-saved-views-group">
           <button
             onClick={() => {
-              const name = prompt('Enter view name:');
+              // NOTE: This uses window.prompt as a simple placeholder UI for naming saved views.
+              // In production applications, replace this with a proper non-blocking modal dialog
+              // component that provides better styling, accessibility, and user experience.
+              const name = typeof window !== 'undefined' ? window.prompt('Enter view name:') : null;
               if (name) {
                 saveCurrentView(name);
               }
@@ -766,7 +791,7 @@ export function RowaKitTable<T>({
             Save View
           </button>
           {savedViews.map((view) => (
-            <div key={view.name} style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+            <div key={view.name} className="rowakit-saved-view-item">
               <button
                 onClick={() => loadSavedView(view.name)}
                 className="rowakit-saved-view-button"
@@ -776,10 +801,9 @@ export function RowaKitTable<T>({
               </button>
               <button
                 onClick={() => deleteSavedView(view.name)}
-                className="rowakit-saved-view-button"
+                className="rowakit-saved-view-button rowakit-saved-view-button-delete"
                 type="button"
                 title="Delete this view"
-                style={{ padding: '2px 6px', fontSize: '12px' }}
               >
                 ×
               </button>
@@ -844,6 +868,8 @@ export function RowaKitTable<T>({
                     textAlign: column.align,
                     position: isResizable ? 'relative' : undefined,
                   }}
+                  // Note: truncate styling is disabled when column is resizable to prevent
+                  // conflicts with the resize handle and to allow dynamic width adjustments
                   className={column.truncate && !isResizable ? 'rowakit-cell-truncate' : undefined}
                 >
                   {getHeaderLabel(column)}{isSortable && getSortIndicator(String(field))}

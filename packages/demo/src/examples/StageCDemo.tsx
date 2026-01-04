@@ -114,7 +114,7 @@ export default function StageCDemo() {
       width: 100,
       align: 'right',
       minWidth: 80,
-      formatter: (val) => `$${val.toFixed(2)}`,
+      format: (val) => `$${val.toFixed(2)}`,
     }),
     col.number('quantity', {
       label: 'Stock',
@@ -127,7 +127,7 @@ export default function StageCDemo() {
       width: 100,
       align: 'right',
       minWidth: 80,
-      formatter: (val) => `${(val * 100).toFixed(0)}%`,
+      format: (val) => `${(val * 100).toFixed(0)}%`,
       // Stage C: filterTransform to convert percentage to fraction
       filterTransform: (percentageInput) => {
         // If user enters > 1 (like 15), convert to fraction (0.15)

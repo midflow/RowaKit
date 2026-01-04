@@ -17,7 +17,7 @@ import type { ReactNode } from 'react';
 
 /**
  * Filter value shape for server-side filtering.
- * 
+ *
  * Stage C adds:
  * - Number range filters: { op: 'range', value: { from?: number; to?: number } }
  */
@@ -178,7 +178,7 @@ export interface BadgeColumnDef<T> extends BaseColumnDef<T> {
 
 /**
  * Number column definition.
- * 
+ *
  * Stage C adds:
  * - filterTransform: optional function to transform filter value before sending to fetcher
  */
