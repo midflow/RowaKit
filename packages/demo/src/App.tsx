@@ -4,11 +4,12 @@ import MockServerDemo from './examples/MockServerDemo';
 import CustomColumnsDemo from './examples/CustomColumnsDemo';
 import StylingDemo from './examples/StylingDemo';
 import StageBDemo from './examples/StageBDemo';
+import StageCDemo from './examples/StageCDemo';
 
-type ExampleType = 'basic' | 'mock' | 'custom' | 'styling' | 'stageb';
+type ExampleType = 'basic' | 'mock' | 'custom' | 'styling' | 'stageb' | 'stagec';
 
 export default function App() {
-  const [activeExample, setActiveExample] = useState<ExampleType>('stageb');
+  const [activeExample, setActiveExample] = useState<ExampleType>('stagec');
 
   return (
     <div className="demo-container">
@@ -18,6 +19,12 @@ export default function App() {
       </div>
 
       <div className="demo-nav">
+        <button
+          className={activeExample === 'stagec' ? 'active' : ''}
+          onClick={() => setActiveExample('stagec')}
+        >
+          Stage C (v0.3.0)
+        </button>
         <button
           className={activeExample === 'stageb' ? 'active' : ''}
           onClick={() => setActiveExample('stageb')}
@@ -51,6 +58,7 @@ export default function App() {
       </div>
 
       <div className="example-section">
+        {activeExample === 'stagec' && <StageCDemo />}
         {activeExample === 'stageb' && <StageBDemo />}
         {activeExample === 'basic' && <BasicUsageDemo />}
         {activeExample === 'mock' && <MockServerDemo />}

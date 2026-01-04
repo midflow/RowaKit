@@ -7,24 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [0.3.0] - 2026-01-03 (Advanced Features)
 
 ### Added
-- OSS public release preparation
-  - MIT License
-  - Contributing guidelines with scope lock enforcement
-  - Contributor Covenant v2.1 Code of Conduct
-  - Security vulnerability reporting policy
-  - GitHub issue templates (bug report, feature request, question)
-  - Pull request template with scope guard checklist
-  - GitHub Sponsors integration via FUNDING.yml
-  - Comprehensive public README with quick start
-  - DECISIONS_SCOPE_LOCK.md explaining permanent philosophy
-  - ROADMAP.md with Stage A/B/C evolution plan
-  - RELEASE_CHECKLIST.md for maintainers
+- **Stage C: Column Resizing (C-01)**
+  - Interactive drag-to-resize handles on column headers
+  - `minWidth` and `maxWidth` configuration per column
+  - In-memory state management with optional URL persistence
+  - Smooth visual feedback with opacity transitions
+
+- **Stage C: Saved Views + URL State Sync (C-02)**
+  - Automatic URL query string synchronization (page, pageSize, sort, filters, columnWidths)
+  - Named saved views with localStorage persistence (optional)
+  - Load/delete/reset UI buttons for view management
+  - Share URLs to preserve exact table configuration
+
+- **Stage C: Advanced Number Range Filters (C-03)**
+  - Number columns support min/max range filtering
+  - New `filterTransform` escape hatch for filter value adaptation (e.g., percentage → fraction)
+  - Filter structure: `{ op: 'range', value: { from?: number; to?: number } }`
+
+### New Props
+- `enableColumnResizing?: boolean` - Enable drag-to-resize column handles
+- `syncToUrl?: boolean` - Sync table state to URL query string
+- `enableSavedViews?: boolean` - Show save/load view UI buttons
+
+### New Column Properties
+- `minWidth?: number` - Minimum column width (default 80px)
+- `maxWidth?: number` - Maximum column width (optional)
+- `filterTransform?: (value: number) => number` - Transform filter values before sending to fetcher
 
 ### Changed
-- Enhanced CI workflow with typecheck step
+- Updated `FilterValue` type to support numbers in range operators
+- Enhanced number column filter UI with min/max inputs
+
+### Backward Compatibility
+- ✅ All Stage C features are opt-in (default: false)
+- ✅ No breaking changes to existing API
+- ✅ Existing code continues to work unchanged
+- ✅ All new props optional with sensible defaults
 
 ---
 

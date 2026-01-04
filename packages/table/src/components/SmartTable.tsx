@@ -10,7 +10,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
-import type { Fetcher, ColumnDef, FetcherQuery, ActionDef, FilterValue } from '../types';
+import type { Fetcher, ColumnDef, FetcherQuery, ActionDef, FilterValue, ActionsColumnDef } from '../types';
 
 // ============================================================================
 // COMPONENT PROPS
@@ -37,6 +37,15 @@ export interface SmartTableProps<T> {
 
   /** Enable filters (default: false) */
   enableFilters?: boolean;
+
+  /** Stage C: Enable column resizing (default: false) */
+  enableColumnResizing?: boolean;
+
+  /** Stage C: Sync table state to URL query string (default: false) */
+  syncToUrl?: boolean;
+
+  /** Stage C: Enable saved views feature (default: false) */
+  enableSavedViews?: boolean;
 }
 
 // ============================================================================
@@ -164,9 +173,14 @@ function renderCell<T>(
     }
 
     case 'actions': {
+      const columnWithActions = column as ActionsColumnDef<T>;
+      // Safety check: ensure actions is an array
+      if (!Array.isArray(columnWithActions.actions)) {
+        return null;
+      }
       return (
         <div className="rowakit-table-actions">
-          {column.actions.map((action) => {
+          {columnWithActions.actions.map((action) => {
             const isDisabled =
               isLoading ||
               action.disabled === true ||
@@ -282,6 +296,9 @@ export function RowaKitTable<T>({
   rowKey,
   className = '',
   enableFilters = false,
+  enableColumnResizing = false,
+  syncToUrl = false,
+  enableSavedViews = false,
 }: SmartTableProps<T>) {
   // State management
   const [dataState, setDataState] = useState<DataState<T>>({
@@ -298,11 +315,99 @@ export function RowaKitTable<T>({
   // Filter state (field -> FilterValue)
   const [filters, setFilters] = useState<Record<string, FilterValue | undefined>>({});
 
+  // Stage C: Column widths for resizing
+  const [columnWidths, setColumnWidths] = useState<Record<string, number>>({});
+
+  // Stage C: Refs for resize optimization
+  const resizeRafRef = useRef<number | null>(null);
+  const resizePendingRef = useRef<{ colId: string; width: number } | null>(null);
+  const tableRef = useRef<HTMLTableElement | null>(null);
+
+  // Stage C: Saved views
+  const [savedViews, setSavedViews] = useState<Array<{
+    name: string;
+    state: {
+      page: number;
+      pageSize: number;
+      sort?: { field: string; direction: 'asc' | 'desc' };
+      filters?: Record<string, FilterValue | undefined>;
+      columnWidths?: Record<string, number>;
+    };
+  }>>([]);
+
   // Confirmation state for actions that require confirmation
   const [confirmState, setConfirmState] = useState<ConfirmState<T> | null>(null);
 
   // Request tracking to ignore stale responses
   const requestIdRef = useRef(0);
+
+  // Stage C: Sync to URL on query changes
+  useEffect(() => {
+    if (!syncToUrl) return;
+
+    const params = new URLSearchParams();
+    params.set('page', String(query.page));
+    params.set('pageSize', String(query.pageSize));
+    
+    if (query.sort) {
+      params.set('sortField', query.sort.field);
+      params.set('sortDirection', query.sort.direction);
+    }
+    
+    if (query.filters && Object.keys(query.filters).length > 0) {
+      params.set('filters', JSON.stringify(query.filters));
+    }
+    
+    if (enableColumnResizing && Object.keys(columnWidths).length > 0) {
+      params.set('columnWidths', JSON.stringify(columnWidths));
+    }
+
+    window.history.replaceState(null, '', `?${params.toString()}`);
+  }, [query, columnWidths, syncToUrl, enableColumnResizing]);
+
+  // Stage C: Load from URL on mount
+  useEffect(() => {
+    if (!syncToUrl) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const page = parseInt(params.get('page') ?? '1', 10);
+    const pageSize = parseInt(params.get('pageSize') ?? String(defaultPageSize), 10);
+    const sortField = params.get('sortField');
+    const sortDirection = params.get('sortDirection') as 'asc' | 'desc' | null;
+    const filtersStr = params.get('filters');
+    const columnWidthsStr = params.get('columnWidths');
+
+    const newQuery: FetcherQuery = {
+      page: Math.max(1, page),
+      pageSize: Math.max(1, pageSize),
+    };
+
+    if (sortField && sortDirection) {
+      newQuery.sort = { field: sortField, direction: sortDirection };
+    }
+
+    if (filtersStr) {
+      try {
+        const parsedFilters = JSON.parse(filtersStr);
+        if (parsedFilters && typeof parsedFilters === 'object') {
+          setFilters(parsedFilters as Record<string, FilterValue | undefined>);
+          newQuery.filters = parsedFilters;
+        }
+      } catch {
+        // Ignore invalid filters
+      }
+    }
+
+    if (enableColumnResizing && columnWidthsStr) {
+      try {
+        setColumnWidths(JSON.parse(columnWidthsStr));
+      } catch {
+        // Ignore invalid column widths
+      }
+    }
+
+    setQuery(newQuery);
+  }, [syncToUrl, defaultPageSize, enableColumnResizing]); // Only on mount
 
   // Sync filters to query (and reset page to 1 when filters change)
   useEffect(() => {
@@ -422,11 +527,226 @@ export function RowaKitTable<T>({
     return query.sort.direction === 'asc' ? ' ↑' : ' ↓';
   };
 
+  // Stage C: Schedule column width update (RAF throttle)
+  const scheduleColumnWidthUpdate = (colId: string, width: number) => {
+    resizePendingRef.current = { colId, width };
+
+    if (resizeRafRef.current != null) return;
+
+    resizeRafRef.current = requestAnimationFrame(() => {
+      resizeRafRef.current = null;
+
+      const pending = resizePendingRef.current;
+      if (!pending) return;
+
+      handleColumnResize(pending.colId, pending.width);
+    });
+  };
+
+  // Stage C: Column resize handler
+  const handleColumnResize = (columnId: string, newWidth: number) => {
+    // Enforce minimum width
+    const minWidth = columns.find(c => c.id === columnId)?.minWidth ?? 80;
+    const maxWidth = columns.find(c => c.id === columnId)?.maxWidth;
+    
+    let finalWidth = Math.max(minWidth, newWidth);
+    if (maxWidth) {
+      finalWidth = Math.min(finalWidth, maxWidth);
+    }
+
+    setColumnWidths((prev) => ({
+      ...prev,
+      [columnId]: finalWidth,
+    }));
+  };
+
+  // Stage C: Column resize drag handler
+  const startColumnResize = (e: React.MouseEvent<HTMLDivElement>, columnId: string) => {
+    e.preventDefault();
+    const startX = e.clientX;
+    const th = (e.currentTarget.parentElement as HTMLTableCellElement);
+    
+    // Get the actual width of current column
+    // (either from state if resized, or from offsetWidth if auto)
+    let startWidth = columnWidths[columnId] ?? th.offsetWidth;
+
+    // If current column is too small (< 80px), use a minimum base width
+    // to ensure we always have enough space to drag comfortably
+    const MIN_DRAG_WIDTH = 80;
+    if (startWidth < MIN_DRAG_WIDTH) {
+      // Try to get a usable width from next column or use fallback
+      const nextTh = th.nextElementSibling as HTMLTableCellElement | null;
+      if (nextTh && nextTh.offsetWidth >= 50) {
+        startWidth = nextTh.offsetWidth;
+      } else {
+        // Fallback: use 100px as a comfortable base for dragging
+        startWidth = 100;
+      }
+    }
+
+    // Prevent text selection during drag
+    document.body.classList.add('rowakit-resizing');
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const delta = moveEvent.clientX - startX;
+      const newWidth = startWidth + delta;
+      // Use RAF throttle for smooth performance
+      scheduleColumnWidthUpdate(columnId, newWidth);
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      // Re-enable text selection
+      document.body.classList.remove('rowakit-resizing');
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
+
+  // Stage C: Double-click to auto-fit content
+  const handleColumnResizeDoubleClick = (columnId: string) => {
+    const tableEl = tableRef.current;
+    if (!tableEl) return;
+
+    const th = tableEl.querySelector(`th[data-col-id="${columnId}"]`) as HTMLTableCellElement | null;
+    if (!th) return;
+
+    const tds = Array.from(tableEl.querySelectorAll(`td[data-col-id="${columnId}"]`)) as HTMLTableCellElement[];
+
+    const headerW = th.scrollWidth;
+    const cellsMaxW = tds.reduce((max, td) => Math.max(max, td.scrollWidth), 0);
+
+    const padding = 24; // buffer for padding + sort icon
+    const raw = Math.max(headerW, cellsMaxW) + padding;
+
+    const minW = columns.find(c => c.id === columnId)?.minWidth ?? 80;
+    const maxW = columns.find(c => c.id === columnId)?.maxWidth ?? 600; // maxAutoFitWidth default
+
+    const finalW = Math.max(minW, Math.min(raw, maxW));
+
+    setColumnWidths(prev => ({ ...prev, [columnId]: finalW }));
+  };
+
+  // Stage C: Saved views handlers
+  const saveCurrentView = (name: string) => {
+    const viewState = {
+      page: query.page,
+      pageSize: query.pageSize,
+      sort: query.sort,
+      filters: query.filters,
+      columnWidths: enableColumnResizing ? columnWidths : undefined,
+    };
+
+    setSavedViews((prev) => {
+      const filtered = prev.filter((v) => v.name !== name);
+      return [...filtered, { name, state: viewState }];
+    });
+
+    // Store in localStorage if available
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        localStorage.setItem(`rowakit-view-${name}`, JSON.stringify(viewState));
+      } catch {
+        // Ignore storage errors
+      }
+    }
+  };
+
+  const loadSavedView = (name: string) => {
+    const view = savedViews.find((v) => v.name === name);
+    if (!view) return;
+
+    const { state } = view;
+    setQuery({
+      page: state.page,
+      pageSize: state.pageSize,
+      sort: state.sort,
+      filters: state.filters,
+    });
+
+    // Also update the filters state to keep input fields in sync
+    setFilters(state.filters ?? {});
+
+    if (state.columnWidths && enableColumnResizing) {
+      setColumnWidths(state.columnWidths);
+    }
+  };
+
+  const deleteSavedView = (name: string) => {
+    setSavedViews((prev) => prev.filter((v) => v.name !== name));
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        localStorage.removeItem(`rowakit-view-${name}`);
+      } catch {
+        // Ignore storage errors
+      }
+    }
+  };
+
+  const resetTableState = () => {
+    setQuery({
+      page: 1,
+      pageSize: defaultPageSize,
+    });
+    setFilters({});
+    setColumnWidths({});
+  };
+
+  // Helper function to apply filterTransform to filter values for number columns
+  const transformFilterValueForColumn = (
+    column: ColumnDef<T> | undefined,
+    value: FilterValue | undefined,
+  ): FilterValue | undefined => {
+    if (!value || column?.kind !== 'number') {
+      return value;
+    }
+
+    const numberColumn = column as ColumnDef<T> & {
+      filterTransform?: (input: number) => number;
+    };
+
+    if (!numberColumn.filterTransform) {
+      return value;
+    }
+
+    if (value.op === 'equals' && typeof value.value === 'number') {
+      return {
+        ...value,
+        value: numberColumn.filterTransform(value.value),
+      };
+    }
+
+    if (value.op === 'range' && typeof value.value === 'object') {
+      const { from, to } = value.value;
+      return {
+        op: 'range',
+        value: {
+          from:
+            from !== undefined && typeof from === 'number'
+              ? numberColumn.filterTransform(from)
+              : from,
+          to:
+            to !== undefined && typeof to === 'number'
+              ? numberColumn.filterTransform(to)
+              : to,
+        },
+      };
+    }
+
+    return value;
+  };
+
   // Filter handlers
   const handleFilterChange = (field: string, value: FilterValue | undefined) => {
+    // Stage C: Apply filter transform if defined
+    const column = columns.find(c => c.id === field);
+    const transformedValue = transformFilterValueForColumn(column, value);
+
     setFilters((prev) => ({
       ...prev,
-      [field]: value,
+      [field]: transformedValue,
     }));
   };
 
@@ -453,6 +773,53 @@ export function RowaKitTable<T>({
 
   return (
     <div className={`rowakit-table${className ? ` ${className}` : ''}`}>
+      {enableSavedViews && (
+        <div className="rowakit-saved-views-group">
+          <button
+            onClick={() => {
+              // NOTE: This uses window.prompt as a simple placeholder UI for naming saved views.
+              // In production applications, replace this with a proper non-blocking modal dialog
+              // component that provides better styling, accessibility, and user experience.
+              const name = typeof window !== 'undefined' ? window.prompt('Enter view name:') : null;
+              if (name) {
+                saveCurrentView(name);
+              }
+            }}
+            className="rowakit-saved-view-button"
+            type="button"
+          >
+            Save View
+          </button>
+          {savedViews.map((view) => (
+            <div key={view.name} className="rowakit-saved-view-item">
+              <button
+                onClick={() => loadSavedView(view.name)}
+                className="rowakit-saved-view-button"
+                type="button"
+              >
+                {view.name}
+              </button>
+              <button
+                onClick={() => deleteSavedView(view.name)}
+                className="rowakit-saved-view-button rowakit-saved-view-button-delete"
+                type="button"
+                title="Delete this view"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+          {(hasActiveFilters || query.page > 1 || query.sort) && (
+            <button
+              onClick={resetTableState}
+              className="rowakit-saved-view-button"
+              type="button"
+            >
+              Reset
+            </button>
+          )}
+        </div>
+      )}
       {hasActiveFilters && (
         <div className="rowakit-table-filter-controls">
           <button
@@ -464,7 +831,7 @@ export function RowaKitTable<T>({
           </button>
         </div>
       )}
-      <table>
+      <table ref={tableRef}>
         <thead>
           <tr>
             {columns.map((column) => {
@@ -474,9 +841,14 @@ export function RowaKitTable<T>({
                            column.kind === 'custom' ? column.field : 
                            column.field;
 
+              const isResizable = enableColumnResizing && column.kind !== 'actions';
+              // Use resized width first, then fall back to column.width definition
+              const actualWidth = columnWidths[column.id] ?? column.width;
+
               return (
                 <th
                   key={column.id}
+                  data-col-id={column.id}
                   onClick={isSortable ? () => handleSort(String(field)) : undefined}
                   role={isSortable ? 'button' : undefined}
                   tabIndex={isSortable ? 0 : undefined}
@@ -492,12 +864,23 @@ export function RowaKitTable<T>({
                       : undefined
                   }
                   style={{
-                    width: column.width ? `${column.width}px` : undefined,
+                    width: actualWidth ? `${actualWidth}px` : undefined,
                     textAlign: column.align,
+                    position: isResizable ? 'relative' : undefined,
                   }}
-                  className={column.truncate ? 'rowakit-cell-truncate' : undefined}
+                  // Note: truncate styling is disabled when column is resizable to prevent
+                  // conflicts with the resize handle and to allow dynamic width adjustments
+                  className={column.truncate && !isResizable ? 'rowakit-cell-truncate' : undefined}
                 >
                   {getHeaderLabel(column)}{isSortable && getSortIndicator(String(field))}
+                  {isResizable && (
+                    <div
+                      className="rowakit-column-resize-handle"
+                      onMouseDown={(e) => startColumnResize(e, column.id)}
+                      onDoubleClick={() => handleColumnResizeDoubleClick(column.id)}
+                      title="Drag to resize | Double-click to auto-fit content"
+                    />
+                  )}
                 </th>
               );
             })}
@@ -615,6 +998,57 @@ export function RowaKitTable<T>({
 
                 // Text/Number column: text or number input
                 const isNumberColumn = column.kind === 'number';
+                
+                // Stage C: Number column can use range filter
+                if (isNumberColumn) {
+                  const fromValue = filterValue?.op === 'range' ? String(filterValue.value.from ?? '') : 
+                                   filterValue?.op === 'equals' && typeof filterValue.value === 'number' ? String(filterValue.value) : '';
+                  const toValue = filterValue?.op === 'range' ? String(filterValue.value.to ?? '') : '';
+                  
+                  // If there's an equals filter, show simple input; otherwise show range
+                  const showRangeUI = !filterValue || filterValue.op === 'range';
+                  
+                  if (showRangeUI) {
+                    return (
+                      <th key={column.id}>
+                        <div className="rowakit-filter-number-range">
+                          <input
+                            type="number"
+                            className="rowakit-filter-input"
+                            placeholder="Min"
+                            value={fromValue}
+                            onChange={(e) => {
+                              const from = e.target.value ? Number(e.target.value) : undefined;
+                              const to = toValue ? Number(toValue) : undefined;
+                              if (from === undefined && to === undefined) {
+                                handleClearFilter(field);
+                              } else {
+                                handleFilterChange(field, { op: 'range', value: { from, to } } as FilterValue);
+                              }
+                            }}
+                          />
+                          <input
+                            type="number"
+                            className="rowakit-filter-input"
+                            placeholder="Max"
+                            value={toValue}
+                            onChange={(e) => {
+                              const to = e.target.value ? Number(e.target.value) : undefined;
+                              const from = fromValue ? Number(fromValue) : undefined;
+                              if (from === undefined && to === undefined) {
+                                handleClearFilter(field);
+                              } else {
+                                handleFilterChange(field, { op: 'range', value: { from, to } } as FilterValue);
+                              }
+                            }}
+                          />
+                        </div>
+                      </th>
+                    );
+                  }
+                }
+
+                // Regular text/number input
                 return (
                   <th key={column.id}>
                     <input
@@ -701,12 +1135,16 @@ export function RowaKitTable<T>({
                       column.truncate ? 'rowakit-cell-truncate' : '',
                     ].filter(Boolean).join(' ') || undefined;
                     
+                    // Only apply width if user has manually resized this column
+                    const actualWidth = columnWidths[column.id];
+                    
                     return (
                       <td 
                         key={column.id}
+                        data-col-id={column.id}
                         className={cellClass}
                         style={{
-                          width: column.width ? `${column.width}px` : undefined,
+                          width: actualWidth ? `${actualWidth}px` : undefined,
                           textAlign: column.align || (column.kind === 'number' ? 'right' : undefined),
                         }}
                       >

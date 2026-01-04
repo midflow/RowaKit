@@ -7,9 +7,9 @@
 
 ## Current Status
 
-**Version:** 0.2.2  
-**Stage:** B (Production Improvements) - ✅ **COMPLETE**  
-**Next:** Stage C (Advanced / Optional) - 💭 Demand-driven
+**Version:** 0.3.0  
+**Stage:** C (Advanced / Optional) - ✅ **COMPLETE**  
+**Next:** Demand-driven enhancements
 
 ---
 
@@ -20,134 +20,104 @@
 ### Shipped Features
 - ✅ Server-side pagination (next/prev, page size selector)
 - ✅ Single-column sorting (asc/desc/none)
-- ✅ 5 column types:
-  - `col.text()` - text display
-  - `col.date()` - date formatting
-  - `col.boolean()` - Yes/No rendering
-  - `col.actions()` - row actions with confirmation
-  - `col.custom()` - escape hatch for custom rendering
-- ✅ Automatic states:
-  - Loading (skeleton/spinner)
-  - Error (with retry button)
-  - Empty (customizable message)
-- ✅ Action buttons:
-  - Confirmation dialogs (for delete, etc.)
-  - Disabled state during loading
-- ✅ Fetcher contract:
-  - `{ page, pageSize, sort?, filters? }` → `{ items, total }`
-- ✅ TypeScript:
-  - Full type safety with generics
-  - Excellent IntelliSense
-- ✅ Basic styling:
-  - CSS variables for theming
-  - Responsive overflow (horizontal scroll)
-
-### What's NOT in Stage A
-# Roadmap
-
-This document describes the planned evolution of RowaKit in staged, demand-driven phases. It is written for maintainers and contributors and focuses on decisions, priorities, and upgrade paths.
-
-## Principles
-- Server-side first: features must fit the server-side, low-client-overhead philosophy.
-- Small core + escape hatch: prioritize a minimal, well-maintained core API and enable extension via `col.custom()` and composable hooks.
-- Demand-driven: non-trivial features require demonstrated demand and a clear maintenance plan.
-
-## Stage A — Initial Release (v0.1.x) — Complete
-- Delivered: core table component, server-side fetcher contract, pagination, single-column sorting, text/date/boolean/actions/custom column types, responsive styling, TypeScript types, and examples.
-
-## Stage B — Production Improvements (v0.2.2) — ✅ COMPLETE
-
-**Delivered (v0.2.2):**
-- ✅ Server-side text filters with type-specific UIs (text, number, boolean, date, badge)
-- ✅ Number column with Intl.NumberFormat support (`col.number()`)
-- ✅ Badge column with visual tone mapping (`col.badge()`)
-- ✅ Filter numeric values sent as numbers (not strings) for precise server-side matching
-- ✅ Date range filters for date columns
-- ✅ Clear filters functionality
-- ✅ Full TypeScript types for filters
-- ✅ Comprehensive filter examples in demo
-
-**Shipped:** 2026-01-02
-
-## Stage C — Advanced / Optional (Future)
-Only considered with significant demand and a maintenance commitment.
-- Multi-column sorting (careful design for server interaction)
-- Server-triggered exports (CSV/Excel) and large-file handling
-- Column resizing or persistent column ordering (opt-in)
-
-## Out of Scope (Permanent)
-- Virtualization (use dedicated libraries such as TanStack Virtual)
-- Grouping/pivot/analytics engines (use AG Grid or dedicated BI tools)
-- Spreadsheet-style inline editing or full spreadsheet behavior
-
-## Decision Process
-1. Issue filed with real-world use case and example server API.
-2. Triage: product/maintainers confirm scope fit and demand level.
-3. Design proposal: API, examples, and migration notes.
-4. Implementation in a feature branch with tests and examples.
-5. Release and documentation update (CHANGELOG, examples, migration guide).
-
-## Release Strategy
-- Pre-1.0 (0.x): prioritize iterative improvements; small breaking changes may occur but document them.
-- 1.0: stable public API, semver rules strictly applied.
-
-## How to propose a feature
-- Open an issue describing the problem, API sketch, and at least two real-world use cases.
-- Explain why existing extension points (e.g., `col.custom()`) are insufficient.
-- Link adopters or stakeholders to demonstrate demand.
-
-## References
-- README.md — usage and quick start
-- docs/DECISIONS_SCOPE_LOCK.md — design constraints and long-term philosophy
-
-[unreleased]: https://github.com/midflow/RowaKit/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/midflow/RowaKit/releases/tag/v0.1.0
-
-#### 7. Accessibility Basics
-- Keyboard navigation for sorting
-- Aria labels for actions and pagination
-
-### Non-Goals (Still Out of Scope)
-- ❌ Column grouping/pinning
-- ❌ Virtualization
-- ❌ Multi-sort
-- ❌ Client-side filtering
-- ❌ Drag-drop
-
-**Status:** 🚧 **Waiting for demand.** File issues/discussions if you need these features.
+- ✅ 5 column types (text, date, boolean, actions, custom)
+- ✅ Automatic states (loading, error, empty)
+- ✅ Action buttons with confirmation dialogs
+- ✅ Fetcher contract: `{ page, pageSize, sort?, filters? }` → `{ items, total }`
+- ✅ Full TypeScript support with generics
+- ✅ Basic styling with CSS variables
 
 ---
 
-## Stage C — v1.5+ (Maybe)
+## Stage B — Production Improvements (v0.2.x) ✅ COMPLETE
 
-**Goal:** Add-ons based on strong, repeated user demand.
+**Delivered:**
+- ✅ Server-side text filters with type-specific UIs (text, number, boolean, date, badge)
+- ✅ `col.number()` with Intl.NumberFormat support
+- ✅ `col.badge()` with visual tone mapping
+- ✅ Number values sent as numeric type (not strings)
+- ✅ Date range filters for date columns
+- ✅ Clear filters functionality with "Clear all" button
+- ✅ Column modifiers: `width`, `align`, `truncate`
+- ✅ Full TypeScript types for all filters
 
-**Trigger:** Only implement if multiple users request AND it aligns with scope.
+**Shipped:** 2026-01-02
 
-### Candidate Features (No Commitment)
+---
 
-#### Row Selection + Bulk Actions
-- Checkbox column
-- Select all/none
-- Bulk action toolbar
-- **Risk:** API explosion. Needs careful design.
+## Stage C — Advanced / Optional (v0.3.0) ✅ COMPLETE
 
-#### Server-Triggered CSV Export
-- Export button calls `exporter(query)` function
-- Server handles large datasets
-- Client downloads result
+**Delivered:**
 
-#### URL State Persistence
-- Sync table state (page, sort, filters) to URL query params
-- Shareable links
-- Browser back/forward support
+### C-01: Column Resizing (MVP)
+- ✅ Interactive drag-to-resize handles on column headers
+- ✅ Min/max width constraints (configurable per column)
+- ✅ In-memory state management
+- ✅ Optional URL persistence via C-02 features
+- ✅ Smooth visual feedback with hover transitions
 
-#### Column Visibility Toggles
-- Show/hide columns
-- Persist to localStorage (optional)
+### C-02: Saved Views + URL State Sync
+- ✅ Automatic URL query string sync (page, pageSize, sort, filters, columnWidths)
+- ✅ Share URLs to preserve exact table state
+- ✅ Named saved views with localStorage persistence
+- ✅ Load/delete/reset buttons for view management
+- ✅ Automatic state restoration on page load
 
-### Still Out of Scope (Forever)
-- ❌ Virtualization → use TanStack Virtual
+### C-03: Advanced Number Range Filters + FilterTransform
+- ✅ Number columns support min/max range filtering
+- ✅ Optional `filterTransform` for filter value adaptation
+- ✅ Example: User enters 15% (percentage), backend receives 0.15 (fraction)
+- ✅ Backward compatible with existing equals operator
+
+**Shipped:** 2026-01-03
+
+---
+
+## Out of Scope (Permanent)
+
+- ❌ Virtualization (use TanStack Virtual, react-window)
+- ❌ Grouping/pivot/aggregations (use AG Grid or Cube.js)
+- ❌ Spreadsheet-style inline editing (use Handsontable)
+- ❌ Client-side data processing engines (use TanStack Table)
+- ❌ Advanced column features (pinning, drag-drop reordering - use AG Grid)
+
+---
+
+## Philosophy
+
+**Server-side first:** All data operations (pagination, sorting, filtering) are handled by the backend. The table is a thin presentation layer.
+
+**Small core + escape hatch:** Minimal API with `col.custom()` for flexibility when built-in columns don't fit.
+
+**Opinionated:** Convention over configuration. Designed for internal/business apps, not generic use.
+
+**Not a data grid:** This is a table component, not a full-featured spreadsheet engine.
+
+---
+
+## How to Propose a Feature
+
+1. **File an issue** with a real-world use case
+2. **Show demand** - Include at least two examples or stakeholders
+3. **Explain constraints** - Why existing escape hatches (`col.custom()`) aren't sufficient
+4. **Design API** - Provide code examples
+5. **Discuss** - Let maintainers assess scope fit and maintenance burden
+
+---
+
+## Release Strategy
+
+- **Pre-1.0 (0.x):** Prioritize improvements; small breaking changes documented with migration guides
+- **1.0+:** Strict semver; breaking changes only in major versions
+
+---
+
+## References
+
+- [README.md](../README.md) — Usage and quick start
+- [packages/table/README.md](../packages/table/README.md) — Detailed documentation
+- [DECISIONS_SCOPE_LOCK.md](./DECISIONS_SCOPE_LOCK.md) — Design constraints
+- [CHANGELOG.md](../CHANGELOG.md) — Version history
 - ❌ Grouping/pivot → use AG Grid
 - ❌ Spreadsheet editing → use Handsontable
 - ❌ Client-side data engines → use TanStack Table
