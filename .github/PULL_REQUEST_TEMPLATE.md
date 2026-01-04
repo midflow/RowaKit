@@ -1,68 +1,52 @@
-## Stage C PR – v0.3.0
+# Stage D PR Template (v0.4.0)
 
-> ⚠️ This template is **only** for Stage C work.
-> Scope is strictly locked. Please read carefully before submitting.
+## PRD ID
 
----
+- [ ] PRD-01
+- [ ] PRD-02
+- [ ] PRD-03
+- [ ] PRD-04
+- [ ] PRD-05
+- [ ] PRD-06
+- [ ] PRD-07
+- [ ] PRD-08 (optional)
 
-### 📌 Related Issue
-- Issue ID: C-0X
-- Link:
+## What changed
 
----
+(Concise description)
 
-### 🎯 What does this PR do?
-Describe clearly **what problem is solved** and **which Stage C issue** it implements.
+## Why
 
----
+(What problem does this solve? Link to issue/notes)
 
-### 🚨 Scope check (MUST pass)
-- [ ] This PR only implements **Stage C** features
-- [ ] No datagrid features (virtualization, grouping, selection, pivoting)
-- [ ] No query builder UI
-- [ ] No client-side data filtering
-- [ ] No breaking changes to v0.2.x APIs
+## Scope lock check
 
----
+- [ ] I read `STAGE_D_SCOPE_LOCK.md` and stayed in scope
+- [ ] No new runtime dependencies added
+- [ ] No unrelated refactors
+- [ ] No breaking API changes (or documented if unavoidable)
 
-### 🧩 Stage C Area (check all that apply)
-- [ ] C-01 Column resizing (MVP)
-- [ ] C-02 Saved views (URL sync / presets)
-- [ ] C-03 Advanced filters (number range / transform)
-- [ ] Documentation updates
+## Acceptance criteria
 
----
+(Paste the acceptance criteria from `ROWAKIT_STAGE_D_ISSUES.md` for this PRD)
 
-### 🔍 Behavior checklist
-- [ ] Server-side first behavior preserved
-- [ ] Filter changes reset page to 1
-- [ ] Sorting still works correctly
-- [ ] Column resizing does not break layout
-- [ ] Saved views restore exact table state
+## Implementation notes
 
----
+- (Key decisions)
+- (Edge cases)
 
-### 🧪 Tests
-- [ ] Existing tests pass
-- [ ] New behavior is covered by tests (if applicable)
-- [ ] No snapshot tests added
+## Tests
 
----
+- [ ] Added/updated tests
+- [ ] Verified: resize does not sort (if relevant)
+- [ ] Verified: touch/pointer path works (if relevant)
+- [ ] Verified: saved views persist after reload (if relevant)
 
-### 📚 Documentation
-- [ ] Root README updated (if needed)
-- [ ] Root CHANGELOG updated
-- [ ] Package README updated (if exists)
-- [ ] Package CHANGELOG updated
-- [ ] docs/ROADMAP.md updated
+## Docs
 
----
+- [ ] Updated docs where behavior changed
+- [ ] ROADMAP/README links verified (if relevant)
 
-### 🔁 Backward compatibility
-- [ ] All v0.2.x usage still works without changes
-- [ ] No API removed or renamed
+## Screenshots / GIFs (optional)
 
----
-
-### 🧾 Notes for reviewer
-Add anything that needs special attention during review.
+(If UI changes)

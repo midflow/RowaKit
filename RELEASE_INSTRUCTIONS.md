@@ -14,22 +14,15 @@ git commit -m "feat(stage-c): Column resizing, saved views, and URL sync (v0.3.0
 BREAKING CHANGE: None. All Stage C features are opt-in.
 
 Features:
-- C-01: Column resizing with RAF throttle, auto-fit, improved hitbox
-- C-02: Saved views with localStorage persistence  
-- C-02: URL state sync for page, filters, sort, columnWidths
-- C-03: Number range filters with optional filterTransform
 
 Improvements:
-- Use requestAnimationFrame throttle for smooth resize
-- Double-click to auto-fit column to content width
-- Improve resize handle: 12px hitbox, 1px visible line
-- Prevent text selection during drag
-- Fix truncated header clipping resize handle
-- Add data-col-id attributes for content measurement
-- Simplified drag logic with 100px fallback
 
 Based on code review: docs/_internal/review.md"
-```
+This file was moved to the `docs` folder to keep repository root clean.
+
+Please see: `docs/RELEASE_INSTRUCTIONS.md`
+
+If you need the full release documents restored at root, tell me and I will move them back.
 
 ## Step 2: Create Git Tag
 

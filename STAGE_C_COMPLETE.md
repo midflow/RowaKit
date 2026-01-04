@@ -1,43 +1,8 @@
-# Summary: Stage C v0.3.0 Implementation Complete
+This file was moved to the `docs` folder to keep repository root clean.
 
-## What Was Done
+Please see: `docs/STAGE_C_COMPLETE.md`
 
-All Stage C advanced features have been successfully implemented, tested, and optimized based on professional code review. The implementation is production-ready and includes comprehensive performance optimizations.
-
-## Features Completed
-
-### ✅ C-01: Column Resizing (MVP)
-**Status:** Complete with advanced UX improvements
-
-**Core Features:**
-- Drag-to-resize with smooth RAF-throttled performance
-- Auto-width by default (columns size to header text)
-- Double-click to auto-fit content width
-- Min/max constraints (default min: 80px)
-- Support for maxWidth per column (default: 600px on auto-fit)
-
-**UX Improvements:**
-- 12px hitbox (vs original 4px) for easier dragging
-- Text selection prevention during drag
-- Fallback 100px base for very small columns
-- Fixed issue with truncated headers clipping handle
-- RAF throttling for 60fps smooth resize
-
-**Code Quality:**
-- Proper refs for RAF management (`resizeRafRef`, `resizePendingRef`)
-- `tableRef` for accurate DOM measurement
-- `data-col-id` attributes on all th/td elements
-- Type-safe configuration
-
-### ✅ C-02: Saved Views
-**Status:** Complete with filter state sync fix
-
-**Features:**
-- Save current table state as named views
-- localStorage persistence
-- Load/delete views with UI buttons
-- Auto-save functionality
-- **Fixed:** Saved views now correctly update filter inputs
+If you need the full release documents restored at root, tell me and I will move them back.
 
 ### ✅ C-02: URL State Sync  
 **Status:** Complete and working

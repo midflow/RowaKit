@@ -1,14 +1,8 @@
-# 🚀 RowaKit Table v0.3.0 - Ready for Release
+This file was moved to the `docs` folder to keep repository root clean.
 
-## Status: ✅ COMPLETE & READY
+Please see: `docs/RELEASE_SUMMARY.md`
 
-```
-┌─────────────────────────────────────────────────────┐
-│  RowaKit Table v0.3.0 - Stage C Complete            │
-│  Release Date: January 4, 2026                      │
-│  Status: ✅ Production Ready                        │
-└─────────────────────────────────────────────────────┘
-```
+If you need the full release documents restored at root, tell me and I will move them back.
 
 ## 📊 Release Checklist
 

@@ -1,51 +1,6 @@
 # 📑 RowaKit v0.3.0 Release Package - File Index
 
-## 📍 Start Here
-
-1. **[RELEASE_SUMMARY.md](./RELEASE_SUMMARY.md)** ← START HERE
-   - Visual overview of release
-   - What's new summary
-   - Quick checklist
-   - 5 min read
-
-## 📋 Essential Documents
-
-### For Quick Release
-2. **[QUICK_RELEASE.md](./QUICK_RELEASE.md)**
-   - TL;DR git commands
-   - 3-step process
-   - GitHub Release template
-   - 2 min read
-
-### For Detailed Instructions
-3. **[RELEASE_INSTRUCTIONS.md](./RELEASE_INSTRUCTIONS.md)**
-   - Step-by-step guide
-   - All commands explained
-   - NPM publishing
-   - 10 min read
-
-### For Complete Details
-4. **[RELEASE_v0.3.0.md](./RELEASE_v0.3.0.md)**
-   - Full release notes
-   - Feature descriptions
-   - Migration guide
-   - Performance metrics
-   - 15 min read
-
-## 🔍 Reference Documents
-
-### Implementation Summary
-5. **[STAGE_C_COMPLETE.md](./STAGE_C_COMPLETE.md)**
-   - What was implemented
-   - Technical improvements
-   - Bug fixes
-   - Files modified
-
-### Verification Checklist
-6. **[RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md)**
-   - Pre-release checklist
-   - Release steps checklist
-   - File checklist
+For detailed release information, please refer to [docs/README_RELEASE.md](docs/README_RELEASE.md).
    - Sign-off section
 
 ## 🎯 Reading Paths

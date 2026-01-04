@@ -1,53 +1,8 @@
-# 📋 Release v0.3.0 - Complete Checklist
+This file was moved to the `docs` folder to keep repository root clean.
 
-## Pre-Release Checklist ✅
+Please see: `docs/RELEASE_CHECKLIST.md`
 
-### Code Quality
-- [x] All Stage C features implemented
-- [x] 193/193 tests passing
-- [x] Code review feedback applied
-- [x] Performance optimized (RAF throttle)
-- [x] No TypeScript errors
-- [x] No console warnings/errors
-- [x] Demo builds successfully
-- [x] Demo runs without errors
-
-### Features
-- [x] C-01: Column Resizing (drag, double-click, constraints)
-- [x] C-02: Saved Views (save/load/delete)
-- [x] C-02: URL State Sync (page, sort, filters, columnWidths)
-- [x] C-03: Number Range Filters (min/max, transform)
-- [x] All column types support features
-- [x] Backward compatible
-- [x] Zero breaking changes
-
-### Bug Fixes
-- [x] Filter inputs update when loading saved views
-- [x] Small columns can be dragged (100px fallback)
-- [x] Truncated headers no longer clip resize handle
-- [x] Text selection prevented during drag
-- [x] Auto-fit respects min/max constraints
-- [x] Range filters work correctly
-
-### Documentation
-- [x] README.md updated (Advanced Features section)
-- [x] CHANGELOG.md updated (v0.3.0 entry)
-- [x] Package.json version bumped (0.3.0)
-- [x] Code comments added (RAF, auto-fit logic)
-- [x] Demo code complete and working
-- [x] Usage examples provided
-- [x] API documentation current
-
-### Testing
-- [x] Drag resize works on all columns
-- [x] Double-click auto-fit works
-- [x] Min/max constraints enforced
-- [x] URL sync works after page reload
-- [x] Saved views persist in localStorage
-- [x] Saved views restore correctly
-- [x] Filter inputs update on load
-- [x] Range filters send correct values
-- [x] Transform converts values properly
+If you need the full release documents restored at root, tell me and I will move them back.
 - [x] Demo accessible at http://localhost:3000
 
 ### Files Modified

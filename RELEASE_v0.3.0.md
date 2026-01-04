@@ -1,12 +1,8 @@
-# Release v0.3.0 - Stage C Complete
+This file was moved to the `docs` folder to keep repository root clean.
 
-**Date:** January 4, 2026  
-**Version:** 0.3.0  
-**Status:** Ready for Production
+Please see: `docs/RELEASE_v0.3.0.md`
 
-## Overview
-
-Stage C (Advanced Features) is now complete with 3 major features implemented, tested, and production-ready. All improvements include UX polish based on professional review and best practices.
+If you need the full release documents restored at root, tell me and I will move them back.
 
 ## Features Implemented
 
