@@ -143,18 +143,24 @@ Check out the [`examples/`](./packages/table/examples/) directory for complete w
 - Loading, error, empty states
 - Action buttons with confirmation
 
-### ✅ Stage B (v0.2.2) - **Production Ready**
+### ✅ Stage B (v0.2.0-0.2.2) - **Production Ready**
 - `col.badge()` for status/enum
 - `col.number()` with formatting
 - Basic server-side filters
 - Column modifiers (sortable, width, align, etc.)
   
-This repository has shipped Stage B features in `v0.2.2` (2026-01-02). See package CHANGELOGs for details.
+This repository has shipped Stage B features in `v0.2.2` (2026-01-02).
 
-### 💭 Stage C (v1.5+) - **Maybe** (only if strong demand)
+### ✅ Stage C (v0.3.0) - **Advanced Features - Shipped**
+- Column resizing with drag handles (minWidth/maxWidth)
+- URL state sync + saved views with localStorage
+- Advanced number range filters with filterTransform
+
+See [ROADMAP.md](./docs/ROADMAP.md) for complete Stage C details.
+
+### 💭 Stage D - **Demand-Driven** (Future)
 - Row selection + bulk actions
 - Export CSV (server-triggered)
-- URL state persistence
 
 See [ROADMAP.md](./docs/ROADMAP.md) for details.
 
@@ -204,8 +210,8 @@ MIT © [RowaKit Contributors](./LICENSE)
 
 ## Status
 
-- **Current Version**: 0.2.2 (Production Release)
-- **Stability**: Beta - API is stable, minor bug fixes in patch versions
+- **Current Version**: 0.3.0 (Advanced Features)
+- **Stability**: Stable - API locked, bug fixes in patch versions
 - **Production Ready**: Yes, fully tested for internal applications
 - **Public Release**: Ready for OSS use
 

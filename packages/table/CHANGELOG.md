@@ -2,6 +2,47 @@
 
 All notable changes to this package will be documented in this file.
 
+## [0.3.0] - 2026-01-03 (Advanced Features)
+### Added
+- **Column Resizing (C-01)**
+  - Interactive drag-to-resize handles on column headers
+  - `minWidth` and `maxWidth` configuration per column
+  - In-memory state management with optional URL persistence
+  - Smooth visual feedback with opacity transitions
+
+- **Saved Views + URL State Sync (C-02)**
+  - Automatic URL query string synchronization (page, pageSize, sort, filters, columnWidths)
+  - Named saved views with localStorage persistence (optional)
+  - Load/delete/reset UI buttons for view management
+  - Share URLs to preserve exact table configuration
+
+- **Advanced Number Range Filters (C-03)**
+  - Number columns support min/max range filtering
+  - New `filterTransform` escape hatch for filter value adaptation
+  - Filter structure: `{ op: 'range', value: { from?: number; to?: number } }`
+
+### New Props
+- `enableColumnResizing?: boolean` - Enable drag-to-resize column handles
+- `syncToUrl?: boolean` - Sync table state to URL query string
+- `enableSavedViews?: boolean` - Show save/load view UI buttons
+
+### New Column Properties
+- `minWidth?: number` - Minimum column width (default 80px)
+- `maxWidth?: number` - Maximum column width (optional)
+- `filterTransform?: (value: number) => number` - Transform filter values before sending to fetcher
+
+### Backward Compatibility
+- ✅ All Stage C features are opt-in (default: false)
+- ✅ No breaking changes to existing API
+- ✅ Existing code continues to work unchanged
+
+### Tests & Verification
+- All 193 tests passing
+- Build successful: ESM (30.84KB), CJS (31.69KB), Types (15.91KB)
+- Demo updated with StageCDemo.tsx examples
+
+---
+
 ## [0.2.1] - 2026-01-02 (Production Release)
 ### Fixed
 - Number filter field comparison now properly coerces filter input string values to numeric type, allowing filters like `price = 12.99` to match numeric data fields correctly.

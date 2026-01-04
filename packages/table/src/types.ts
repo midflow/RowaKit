@@ -17,12 +17,15 @@ import type { ReactNode } from 'react';
 
 /**
  * Filter value shape for server-side filtering.
+ * 
+ * Stage C adds:
+ * - Number range filters: { op: 'range', value: { from?: number; to?: number } }
  */
 export type FilterValue =
   | { op: 'contains'; value: string }
   | { op: 'equals'; value: string | number | boolean | null }
   | { op: 'in'; value: Array<string | number> }
-  | { op: 'range'; value: { from?: string; to?: string } };
+  | { op: 'range'; value: { from?: string | number; to?: string | number } };
 
 /**
  * Filters map: field name → filter value.
@@ -121,8 +124,14 @@ export interface BaseColumnDef<T> {
   /** Optional field name to extract from row data (for sortable columns) */
   field?: keyof T & string;
 
-  /** Column width in pixels */
+  /** Column width in pixels (Stage C: can be resized by user) */
   width?: number;
+
+  /** Minimum width for resizing (Stage C, default: 80px) */
+  minWidth?: number;
+
+  /** Maximum width for resizing (Stage C, optional) */
+  maxWidth?: number;
 
   /** Text alignment */
   align?: 'left' | 'center' | 'right';
@@ -169,11 +178,15 @@ export interface BadgeColumnDef<T> extends BaseColumnDef<T> {
 
 /**
  * Number column definition.
+ * 
+ * Stage C adds:
+ * - filterTransform: optional function to transform filter value before sending to fetcher
  */
 export interface NumberColumnDef<T> extends BaseColumnDef<T> {
   kind: 'number';
   field: keyof T & string;
   format?: Intl.NumberFormatOptions | ((value: number, row: T) => string);
+  filterTransform?: (value: number) => number;
 }
 
 /**

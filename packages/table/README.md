@@ -12,8 +12,12 @@ RowaKit Table is a React table component designed for real-world internal applic
 ✅ **Escape hatch** - `col.custom()` for any rendering need  
 ✅ **Action buttons** - Built-in support for row actions with confirmation  
 ✅ **7 column types** - Text, Date, Boolean, Badge, Number, Actions, Custom  
-✅ **Column modifiers** - Width, align, truncate support (v0.2.0+)  
+✅ **Column modifiers** - Width, align, truncate, minWidth, maxWidth (v0.2.0+)  
 ✅ **Server-side filters** - Type-specific filter UI with auto-generated inputs (v0.2.0+)  
+✅ **Column resizing** - Drag-to-resize handles with constraints (v0.3.0+)  
+✅ **Saved views** - Save/load table state with localStorage persistence (v0.3.0+)  
+✅ **URL state sync** - Share URLs with exact table configuration (v0.3.0+)  
+✅ **Number range filters** - Min/max filtering for numeric columns (v0.3.0+)  
 ✅ **State management** - Automatic loading, error, and empty states  
 ✅ **Smart fetching** - Retry on error, stale request handling
 
@@ -852,6 +856,165 @@ col.actions([
 - Keyboard accessible (Tab to focus, Enter/Space to activate)
 - Actions column is never sortable
 
+---
+
+## Advanced Features (v0.3.0+)
+
+### Column Resizing (C-01)
+
+Enable users to resize columns by dragging the right edge of column headers.
+
+**Basic Usage:**
+
+```typescript
+<RowaKitTable
+  fetcher={fetchData}
+  columns={[
+    col.text('name', { 
+      minWidth: 100,   // Minimum width (default: 80)
+      maxWidth: 400    // Maximum width (optional)
+    }),
+    col.number('price', { 
+      minWidth: 80 
+    })
+  ]}
+  enableColumnResizing={true}  // Enable resize feature
+/>
+```
+
+**Features:**
+- **Auto-width by default** - Columns automatically size based on header text
+- **Drag to resize** - Drag the blue handle on the right edge of column headers
+- **Double-click to auto-fit** - Double-click the resize handle to auto-fit content width (measures visible header + cells)
+- **Min/max constraints** - Enforced in real-time during drag
+- **Smooth performance** - RAF throttling prevents lag during resize
+- **Large hitbox** - 12px wide invisible zone (1px visible line) makes dragging easy
+- **State persistence** - Widths stored in-memory (or persisted via URL sync/saved views)
+
+**Interaction:**
+- **Hover** - Resize handle appears as a blue vertical line
+- **Drag** - Click and drag to resize column width
+- **Double-click** - Auto-fits to content (max 600px by default)
+- Text selection is disabled during drag for smooth UX
+
+### Saved Views + URL State Sync (C-02)
+
+Save and restore table configurations, and share URLs with exact table state.
+
+**Basic Usage:**
+
+```typescript
+<RowaKitTable
+  fetcher={fetchData}
+  columns={columns}
+  syncToUrl={true}        // Sync to URL query string
+  enableSavedViews={true} // Show save/load view buttons
+/>
+```
+
+**Features:**
+
+1. **URL Sync** - Automatically saves table state to URL query parameters:
+   ```
+   ?page=2&pageSize=20&sortField=name&sortDirection=asc&filters=...&columnWidths=...
+   ```
+   - Share URLs to preserve exact table configuration
+   - State automatically restored on page load
+   - Works with browser back/forward buttons
+
+2. **Saved Views** - Save current table state as named presets:
+   ```
+   [Save View] button → Name your view → State saved to localStorage
+   [My View] button → Click to restore saved state
+   × button → Delete saved view
+   [Reset] button → Clear all state
+   ```
+
+**Synced State:**
+- Page number and size
+- Sort field and direction
+- All active filters
+- Column widths (if resizing enabled)
+
+**Example:**
+
+```typescript
+// User filters to "active users" and resizes columns
+// They click "Save View" and name it "Active"
+// Later, they apply different filters
+// They click "Active" button to instantly restore previous state
+
+// Or they copy the URL and send it to a colleague
+// The colleague sees the exact same filters and layout
+```
+
+### Advanced Number Range Filters (C-03)
+
+Number columns support min/max range filtering with optional value transformation.
+
+**Basic Range Filter:**
+
+```typescript
+col.number('price', {
+  label: 'Price',
+  width: 100
+})
+
+// UI shows two inputs: [Min] [Max]
+// User enters: min=100, max=500
+// Backend receives: { op: 'range', value: { from: 100, to: 500 } }
+```
+
+**With Filter Transform:**
+
+```typescript
+col.number('discount', {
+  label: 'Discount %',
+  // Transform percentage input to fraction for backend
+  filterTransform: (percentageInput) => {
+    // User enters "15" (15%)
+    // Backend receives "0.15" (fraction)
+    if (percentageInput > 1) {
+      return percentageInput / 100;
+    }
+    return percentageInput;
+  }
+})
+```
+
+**Features:**
+- Min and max inputs can be filled independently
+- Example: "at least 50" (min only), "up to 100" (max only), or "50-100" (both)
+- Optional `filterTransform` to adapt filter values before sending to server
+- Useful for unit conversion, percentage ↔ decimal, etc.
+
+**Handling Range Filters in Fetcher:**
+
+```typescript
+const fetchProducts: Fetcher<Product> = async (query) => {
+  let filtered = [...allProducts];
+
+  if (query.filters) {
+    for (const [field, filter] of Object.entries(query.filters)) {
+      if (filter?.op === 'range') {
+        const { from, to } = filter.value as { from?: number; to?: number };
+        filtered = filtered.filter(item => {
+          const val = item[field as keyof Product];
+          if (from !== undefined && val < from) return false;
+          if (to !== undefined && val > to) return false;
+          return true;
+        });
+      }
+    }
+  }
+
+  return {
+    items: filtered.slice(0, query.pageSize),
+    total: filtered.length
+  };
+};
+```
+
 ## Examples
 
 ### Basic Table
@@ -1292,7 +1455,7 @@ Full TypeScript support. Your data model drives type checking throughout.
 
 ## Roadmap
 
-**Stage A - MVP 0.1** ✅ Complete (2024-12-31)
+**Stage A - MVP (v0.1)** ✅ Complete (2024-12-31)
 - ✅ A-01: Repo scaffold
 - ✅ A-02: Core types (Fetcher, ColumnDef, ActionDef)
 - ✅ A-03: Column helpers (col.*)
@@ -1304,19 +1467,25 @@ Full TypeScript support. Your data model drives type checking throughout.
 - ✅ A-09: Minimal styling tokens (CSS variables, responsive, className)
 - ✅ A-10: Documentation & examples (4 complete examples, CHANGELOG, CONTRIBUTING)
 
-**Stage B - Production Ready (v0.2.2)** — Production release 2026-01-02
-- Column visibility toggle
-- Bulk actions
-- Search/text filter
-- Export (CSV, Excel)
-- Dense/comfortable view modes
-- Additional column types (badge, number)
+**Stage B - Production Ready (v0.2.0-0.2.2)** ✅ Complete (2026-01-02)
+- ✅ Badge column type with visual tones (neutral, success, warning, danger)
+- ✅ Number column type with Intl formatting (currency, percentages, decimals)
+- ✅ Server-side header filter UI (type-specific inputs)
+- ✅ Column modifiers (width, align, truncate)
+- ✅ Fixed numeric filter value coercion
+- ✅ Production hardening and comprehensive documentation
 
-**Stage C - Advanced (Demand-Driven)** (Future)
+**Stage C - Advanced Features (v0.3.0)** ✅ Complete (2026-01-03)
+- ✅ C-01: Column resizing with drag handles (minWidth/maxWidth constraints)
+- ✅ C-02: Saved views with localStorage persistence
+- ✅ C-02: URL state sync (page, pageSize, sort, filters, columnWidths)
+- ✅ C-03: Number range filters with optional filterTransform
+
+**Stage D - Future** (Demand-Driven)
 - Multi-column sorting
-- Advanced filters
-- Column resizing
-- Saved views
+- Row selection + bulk actions
+- Export CSV (server-triggered)
+- Column visibility toggle
 
 ## Changelog
 
