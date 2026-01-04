@@ -818,8 +818,8 @@ export function RowaKitTable<T>({
                            column.field;
 
               const isResizable = enableColumnResizing && column.kind !== 'actions';
-              // Only use explicit width if user has resized the column
-              const actualWidth = columnWidths[column.id];
+              // Use resized width first, then fall back to column.width definition
+              const actualWidth = columnWidths[column.id] ?? column.width;
 
               return (
                 <th
