@@ -28,6 +28,11 @@
   background-color: var(--rowakit-table-bg);
 }
 
+/* PRD-03: Fixed layout mode for resizable columns */
+.rowakit-table.rowakit-layout-fixed table {
+  table-layout: fixed;
+}
+
 /* ============================================================================
  * TABLE HEADER
  * ============================================================================ */
@@ -298,7 +303,6 @@
  * ============================================================================ */
 
 .rowakit-cell-truncate {
-  max-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -440,6 +444,7 @@
   top: 0;
   bottom: 0;
   width: 12px;
+  z-index: 2;
   cursor: col-resize;
   background: transparent;
   opacity: 0;
@@ -518,4 +523,54 @@
 .rowakit-saved-view-button-delete {
   padding: 2px 6px;
   font-size: 12px;
+}
+
+/* PRD-04: Save view form styles */
+.rowakit-save-view-form {
+  display: flex;
+  gap: var(--rowakit-spacing-xs);
+  align-items: flex-start;
+  padding: var(--rowakit-spacing-xs);
+  background-color: var(--rowakit-color-gray-50);
+  border: 1px solid var(--rowakit-color-gray-200);
+  border-radius: var(--rowakit-border-radius);
+  flex-wrap: wrap;
+}
+
+.rowakit-save-view-input {
+  padding: var(--rowakit-spacing-xs) var(--rowakit-spacing-sm);
+  font-size: var(--rowakit-font-size-xs);
+  border: 1px solid var(--rowakit-color-gray-300);
+  border-radius: var(--rowakit-border-radius);
+  min-width: 150px;
+}
+
+.rowakit-save-view-input:focus {
+  outline: 2px solid var(--rowakit-color-primary-500);
+  outline-offset: -1px;
+  border-color: var(--rowakit-color-primary-500);
+}
+
+.rowakit-save-view-error {
+  color: var(--rowakit-color-error-500);
+  font-size: var(--rowakit-font-size-xs);
+  padding: 0 var(--rowakit-spacing-xs);
+  flex: 0 0 100%;
+}
+
+.rowakit-save-view-confirm {
+  display: flex;
+  gap: var(--rowakit-spacing-xs);
+  align-items: center;
+  padding: var(--rowakit-spacing-sm);
+  background-color: var(--rowakit-color-yellow-50);
+  border: 1px solid var(--rowakit-color-yellow-200);
+  border-radius: var(--rowakit-border-radius);
+  flex: 0 0 100%;
+}
+
+.rowakit-save-view-confirm p {
+  font-size: var(--rowakit-font-size-xs);
+  margin: 0;
+  flex: 1;
 }

@@ -7,8 +7,8 @@
 
 ## Current Status
 
-**Version:** 0.3.0  
-**Stage:** C (Advanced / Optional) - ✅ **COMPLETE**  
+**Version:** 0.4.0  
+**Stage:** D (Polish + Correctness) - ✅ **COMPLETE**  
 **Next:** Demand-driven enhancements
 
 ---
@@ -45,7 +45,7 @@
 
 ---
 
-## Stage C — Advanced / Optional (v0.3.0) ✅ COMPLETE
+## Stage C — Advanced / Optional (v0.4.0) ✅ COMPLETE
 
 **Delivered:**
 
@@ -70,6 +70,48 @@
 - ✅ Backward compatible with existing equals operator
 
 **Shipped:** 2026-01-03
+
+---
+
+## Stage D — Polish + Correctness (v0.4.0) ✅ COMPLETE
+
+**Goal:** Harden Stage C features (resizing, URL sync, saved views) with correctness, UX polish, and resilience.
+
+### D-01: Prevent Accidental Sort While Resizing
+- ✅ Stop event propagation on resize handle (prevent bubbling to sort handler)
+- ✅ Add sort suppression window (150ms grace period after resize ends)
+- ✅ Apply `.resizing` CSS class to active column header
+- ✅ Resize and double-click never trigger sort
+
+### D-02: Pointer Events Resizing (Mouse + Touch + Pen)
+- ✅ Migrate from MouseEvent to PointerEvent
+- ✅ Use pointer capture for reliable drag-to-end tracking
+- ✅ Primary button gating for mouse pointers
+- ✅ Proper cleanup on `pointercancel` (avoids stuck resizing state)
+- ✅ Works with touch devices and stylus/pen input
+
+### D-03: Column Width Model Hardening + Fixed Layout
+- ✅ Apply widths to both `<th>` and `<td>` (stable alignment)
+- ✅ Use `table-layout: fixed` for resizable columns (scoped via `.rowakit-layout-fixed` class)
+- ✅ Re-enable `.rowakit-cell-truncate` for body cells when `column.truncate: true`
+- ✅ RAF-throttled resize updates with change guards
+- ✅ Double-click auto-fit with `scrollWidth` calculation
+
+### D-04: Saved Views Persistence (localStorage)
+- ✅ Add storage index (`rowakit-views-index`) tracking saved view names and timestamps
+- ✅ Hydrate on mount: read index, or scan localStorage for `rowakit-view-*` keys if missing
+- ✅ Replace blocking `window.prompt()` with inline form + optional overwrite confirmation
+- ✅ Safe parsing with try/catch; skip corrupted views
+- ✅ Views persist across browser reload
+
+### D-05: URL Sync Hardening (Validate + Throttle)
+- ✅ Pure parse helpers: `parseUrlState()`, `serializeUrlState()`
+- ✅ Validation: page ≥ 1, pageSize in options, sortDirection asc|desc, filters/columnWidths objects
+- ✅ Debounce columnWidths writes during resize (150-250ms)
+- ✅ Invalid URL values clamped to safe defaults
+- ✅ Backward compatible with old URLs
+
+**Shipped:** 2026-01-05
 
 ---
 
@@ -169,10 +211,10 @@ Want to influence the roadmap?
 
 1. **Star the repo** ⭐ - Shows interest
 2. **File issues** - Describe your use case
-3. **Join discussions** - Share experiences
-4. **Contribute** - Submit PRs for approved features
-
-**Note:** We prioritize features with:
+3. **Join discussions** - S5  
+**Current Version:** 0.4.0
+**Latest Release:** Stage D (v0.4.0)
+**Next Milestone:** Stage Etures with:
 - Clear, real-world use cases (not hypothetical)
 - Repeated requests from different users
 - Low complexity, high ROI

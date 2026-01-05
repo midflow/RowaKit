@@ -14,10 +14,10 @@ RowaKit Table is a React table component designed for real-world internal applic
 ✅ **7 column types** - Text, Date, Boolean, Badge, Number, Actions, Custom  
 ✅ **Column modifiers** - Width, align, truncate, minWidth, maxWidth (v0.2.0+)  
 ✅ **Server-side filters** - Type-specific filter UI with auto-generated inputs (v0.2.0+)  
-✅ **Column resizing** - Drag-to-resize handles with constraints (v0.3.0+)  
-✅ **Saved views** - Save/load table state with localStorage persistence (v0.3.0+)  
-✅ **URL state sync** - Share URLs with exact table configuration (v0.3.0+)  
-✅ **Number range filters** - Min/max filtering for numeric columns (v0.3.0+)  
+✅ **Column resizing** - Drag-to-resize handles with constraints (v0.4.0+)  
+✅ **Saved views** - Save/load table state with localStorage persistence (v0.4.0+)  
+✅ **URL state sync** - Share URLs with exact table configuration (v0.4.0+)  
+✅ **Number range filters** - Min/max filtering for numeric columns (v0.4.0+)  
 ✅ **State management** - Automatic loading, error, and empty states  
 ✅ **Smart fetching** - Retry on error, stale request handling
 
@@ -858,7 +858,7 @@ col.actions([
 
 ---
 
-## Advanced Features (v0.3.0+)
+## Advanced Features (v0.4.0+)
 
 ### Column Resizing (C-01)
 
@@ -1475,17 +1475,20 @@ Full TypeScript support. Your data model drives type checking throughout.
 - ✅ Fixed numeric filter value coercion
 - ✅ Production hardening and comprehensive documentation
 
-**Stage C - Advanced Features (v0.3.0)** ✅ Complete (2026-01-03)
+**Stage C - Advanced Features (v0.4.0)** ✅ Complete (2026-01-03)
 - ✅ C-01: Column resizing with drag handles (minWidth/maxWidth constraints)
 - ✅ C-02: Saved views with localStorage persistence
 - ✅ C-02: URL state sync (page, pageSize, sort, filters, columnWidths)
 - ✅ C-03: Number range filters with optional filterTransform
 
-**Stage D - Future** (Demand-Driven)
-- Multi-column sorting
-- Row selection + bulk actions
-- Export CSV (server-triggered)
-- Column visibility toggle
+**Stage D - Polish + Correctness (v0.4.0)** ✅ Complete (2026-01-05)
+- ✅ D-01: Prevent accidental sort while resizing (stopPropagation, suppression window)
+- ✅ D-02: Pointer Events resizing (mouse, touch, pen) with pointer capture and cleanup
+- ✅ D-03: Column width model hardening (apply widths to th+td, fixed layout, truncation)
+- ✅ D-04: Saved views persistence (index, hydration, corruption-safe)
+- ✅ D-05: URL sync hardening (validation, debounce, backward compatible)
+
+See [ROADMAP.md](./docs/ROADMAP.md) and `docs/ROWAKIT_STAGE_D_ISSUES_v3.md` for implementation details and rationale.
 
 ## Changelog
 

@@ -1,6 +1,5 @@
-import React from 'react';
 import { RowaKitTable, col } from '@rowakit/table';
-import type { Fetcher } from '@rowakit/table';
+import type { Fetcher, FetcherQuery, FilterValue } from '@rowakit/table';
 
 interface Product {
   id: number;
@@ -29,7 +28,8 @@ const mockProducts: Product[] = [
 ];
 
 export default function StageBDemo() {
-  const fetchProducts: Fetcher<Product> = async ({ page, pageSize, sort, filters }) => {
+  const fetchProducts: Fetcher<Product> = async (query: FetcherQuery) => {
+    const { page, pageSize, sort, filters } = query;
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -37,7 +37,9 @@ export default function StageBDemo() {
 
     // Apply filters
     if (filters) {
-      for (const [field, filter] of Object.entries(filters)) {
+      for (const [field, filterValue] of Object.entries(filters)) {
+        if (!filterValue) continue;
+        const filter = filterValue as FilterValue;
         if (filter.op === 'contains') {
           filtered = filtered.filter((item) =>
             String(item[field as keyof Product])
@@ -111,6 +113,7 @@ export default function StageBDemo() {
     col.text<Product>('category', {
       header: 'Category',
       sortable: true,
+      width: 150,
     }),
     col.badge<Product>('status', {
       header: 'Stock Status',
@@ -144,7 +147,8 @@ export default function StageBDemo() {
     col.date<Product>('lastUpdated', {
       header: 'Last Updated',
       sortable: true,
-      format: (date) => new Date(date).toLocaleDateString('en-US', {
+      width: 130,
+      format: (date: string | number | Date) => new Date(date).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
@@ -160,13 +164,13 @@ export default function StageBDemo() {
       {
         id: 'edit',
         label: 'Edit',
-        onClick: (product) => alert(`Edit: ${product.name}`),
+        onClick: (product: Product) => alert(`Edit: ${product.name}`),
       },
       {
         id: 'delete',
         label: 'Delete',
         confirm: true,
-        onClick: (product) => alert(`Delete: ${product.name}`),
+        onClick: (product: Product) => alert(`Delete: ${product.name}`),
       },
     ]),
   ];
@@ -210,6 +214,7 @@ export default function StageBDemo() {
         defaultPageSize={5}
         pageSizeOptions={[5, 10, 20]}
         enableFilters={true}
+        enableColumnResizing={true}
       />
 
       <div className="example-footer">

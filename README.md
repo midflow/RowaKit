@@ -33,6 +33,18 @@ npm install @rowakit/table
 pnpm add @rowakit/table
 ```
 
+## Try it (Live Demo)
+
+▶ **Open Live Playground (CodeSandbox)**  
+https://codesandbox.io/p/github/midflow/rowakit/main
+
+- Runs the real RowaKit demo app (`packages/demo`)
+- No setup required
+- Server-side pagination, sorting, resizing, saved views
+- Editable source code in the browser
+
+> The playground auto-starts and mirrors the actual repository setup.
+
 ---
 
 ## Quick Start (2 minutes)
@@ -99,17 +111,23 @@ function UsersTable() {
 - 🎨 **Customizable** - CSS variables for theming, `col.custom()` for advanced rendering
 - ⚡ **Smart fetching** - Automatic retry, stale request handling
 - ✅ **Built-in states** - Loading, error, empty states out of the box
+- 🖱️ **Resizable columns** - Drag-to-resize headers with min/max constraints
+- 📌 **Saved views** - Named views persist to localStorage
+- 🔗 **URL sync** - Share table state via query string (page, sort, filters, column widths)
 
-### Actions
-- Row-level actions with confirmation dialogs
-- Automatic loading state during async operations
-- Custom icons and labels
+### Resizing
+- Pointer-based drag (mouse, touch, pen support)
+- Double-click auto-fit to content
+- Never triggers accidental sort while resizing
+- Stable column alignment with `table-layout: fixed`
+- Optional max-width per column
 
-### Developer Experience
-- Minimal API surface (few props)
-- Convention over configuration
-- Comprehensive TypeScript types
-- Clear error messages
+### Saved Views + URL State
+- Automatic persistence to browser localStorage
+- Share links preserve exact table state (page, sort, filters, column widths)
+- Load/delete/overwrite management
+- Corrupted data safely skipped
+- Survives reload and browser restart
 
 ---
 
@@ -151,16 +169,25 @@ Check out the [`examples/`](./packages/table/examples/) directory for complete w
   
 This repository has shipped Stage B features in `v0.2.2` (2026-01-02).
 
-### ✅ Stage C (v0.3.0) - **Advanced Features - Shipped**
+### ✅ Stage C (v0.4.0) - **Advanced Features - Shipped**
 - Column resizing with drag handles (minWidth/maxWidth)
 - URL state sync + saved views with localStorage
 - Advanced number range filters with filterTransform
 
 See [ROADMAP.md](./docs/ROADMAP.md) for complete Stage C details.
 
-### 💭 Stage D - **Demand-Driven** (Future)
+### ✅ Stage D (v0.4.0) - **Polish + Correctness - Shipped**
+- **Column resizing hardening**: Pointer Events (mouse/touch/pen), no accidental sort, double-click auto-fit
+- **Saved views persistence**: localStorage hydration on mount, corruption-safe
+- **URL sync resilience**: Validation, safe parsing, throttled updates, backward compatible
+- **Fixed layout mode**: Stable column alignment, proper truncation
+
+See [ROADMAP.md](./docs/ROADMAP.md) for complete Stage D details.
+
+### 💭 Stage E - **Demand-Driven** (Future)
 - Row selection + bulk actions
 - Export CSV (server-triggered)
+- Multi-column sorting
 
 See [ROADMAP.md](./docs/ROADMAP.md) for details.
 
@@ -210,7 +237,7 @@ MIT © [RowaKit Contributors](./LICENSE)
 
 ## Status
 
-- **Current Version**: 0.3.0 (Advanced Features)
+- **Current Version**: 0.4.0 (Polish + Correctness)
 - **Stability**: Stable - API locked, bug fixes in patch versions
 - **Production Ready**: Yes, fully tested for internal applications
 - **Public Release**: Ready for OSS use

@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "start": {
+      "name": "Start demo",
+      "command": "pnpm install && pnpm demo",
+      "runAtStart": true,
+      "preview": {
+        "port": 5173
+      }
+    }
+  }
+}
