@@ -1,0 +1,141 @@
+/* Code Panel Styles */
+
+.code-panel {
+  display: flex;
+  flex-direction: column;
+  background-color: #282c34;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+  font-family: 'Courier New', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.code-filename {
+  padding: 0.75rem 1rem;
+  background-color: #1e2227;
+  color: #999;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border-bottom: 1px solid #3d4147;
+  letter-spacing: 0.5px;
+}
+
+.code-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: #21252b;
+  border-bottom: 1px solid #3d4147;
+  gap: 1rem;
+}
+
+.code-language {
+  font-size: 0.75rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.code-pre {
+  margin: 0;
+  padding: 1rem;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 600px;
+  background-color: #282c34;
+}
+
+.code-pre code {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #abb2bf;
+}
+
+/* Prism syntax highlighting overrides */
+.code-pre ::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.code-pre ::-webkit-scrollbar-track {
+  background: #21252b;
+}
+
+.code-pre ::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+.code-pre ::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+/* Prism tokens */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #5c6370;
+}
+
+.token.punctuation {
+  color: #abb2bf;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #d19a66;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #98c379;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #56b6c2;
+}
+
+.token.keyword {
+  color: #c678dd;
+}
+
+.token.function,
+.token.class-name {
+  color: #61afef;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #e06c75;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .code-pre {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    max-height: 400px;
+  }
+
+  .code-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

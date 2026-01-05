@@ -1,52 +1,29 @@
-# Stage D PR Template (v0.4.0)
+# PR Template — Stage D & Demo Showcase
 
-## PRD ID
+## Summary
+What does this PR change? Why is it needed?
 
-- [ ] PRD-01
-- [ ] PRD-02
-- [ ] PRD-03
-- [ ] PRD-04
-- [ ] PRD-05
-- [ ] PRD-06
-- [ ] PRD-07
-- [ ] PRD-08 (optional)
+## Scope
+- [ ] Stage D (polish / correctness)
+- [ ] Demo Showcase
 
-## What changed
+## Changes
+- …
 
-(Concise description)
+## Acceptance Criteria
+- [ ] Matches linked issue requirements
+- [ ] No breaking API changes
+- [ ] Demo preview, code, and notes are consistent
+- [ ] Works locally
+- [ ] Works on CodeSandbox
 
-## Why
-
-(What problem does this solve? Link to issue/notes)
-
-## Scope lock check
-
-- [ ] I read `STAGE_D_SCOPE_LOCK.md` and stayed in scope
-- [ ] No new runtime dependencies added
-- [ ] No unrelated refactors
-- [ ] No breaking API changes (or documented if unavoidable)
-
-## Acceptance criteria
-
-(Paste the acceptance criteria from `ROWAKIT_STAGE_D_ISSUES.md` for this PRD)
-
-## Implementation notes
-
-- (Key decisions)
-- (Edge cases)
+## Screenshots / Recordings
+(UI changes if applicable)
 
 ## Tests
-
 - [ ] Added/updated tests
-- [ ] Verified: resize does not sort (if relevant)
-- [ ] Verified: touch/pointer path works (if relevant)
-- [ ] Verified: saved views persist after reload (if relevant)
+- [ ] CI passes
 
-## Docs
-
-- [ ] Updated docs where behavior changed
-- [ ] ROADMAP/README links verified (if relevant)
-
-## Screenshots / GIFs (optional)
-
-(If UI changes)
+## Notes for Reviewer
+- Out of scope items:
+- Follow-ups:

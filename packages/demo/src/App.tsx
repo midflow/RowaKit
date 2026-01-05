@@ -1,69 +1,56 @@
-import React, { useState } from 'react';
-import BasicUsageDemo from './examples/BasicUsageDemo';
-import MockServerDemo from './examples/MockServerDemo';
-import CustomColumnsDemo from './examples/CustomColumnsDemo';
-import StylingDemo from './examples/StylingDemo';
-import StageBDemo from './examples/StageBDemo';
-import StageCDemo from './examples/StageCDemo';
+import { useState, useEffect } from 'react';
+import { AppShell } from './app/AppShell';
+import { DemoPage } from './components/DemoPage';
+import { getFirstDemo, getDemoBySlug, type DemoConfig } from './app/demoRegistry';
 
-type ExampleType = 'basic' | 'mock' | 'custom' | 'styling' | 'stageb' | 'stagec';
-
+/**
+ * Main App Component
+ * Handles routing via URL hash and integrates AppShell + DemoPage
+ */
 export default function App() {
-  const [activeExample, setActiveExample] = useState<ExampleType>('stagec');
+  // Initialize from URL hash, defaulting to first demo
+  const [currentDemo, setCurrentDemo] = useState<DemoConfig>(() => {
+    const hash = window.location.hash.slice(1) || 'basic-usage';
+    const demo = getDemoBySlug(hash);
+    return demo || getFirstDemo();
+  });
+
+  /**
+   * Sync with URL on hash changes
+   */
+  useEffect(() => {
+    const handleRouteChange = () => {
+      const hash = window.location.hash.slice(1);
+      
+      if (hash) {
+        const demo = getDemoBySlug(hash);
+        if (demo) {
+          setCurrentDemo(demo);
+        }
+      }
+    };
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleRouteChange);
+
+    return () => {
+      window.removeEventListener('hashchange', handleRouteChange);
+    };
+  }, []);
+
+  /**
+   * Handle demo selection and update URL
+   */
+  const handleDemoSelect = (demo: DemoConfig) => {
+    // Only update the hash - the hashchange listener will update state
+    window.location.hash = demo.slug;
+  };
 
   return (
-    <div className="demo-container">
-      <div className="demo-header">
-        <h1>RowaKit Table - Examples</h1>
-        <p>Interactive demonstrations of RowaKit Table features</p>
-      </div>
-
-      <div className="demo-nav">
-        <button
-          className={activeExample === 'stagec' ? 'active' : ''}
-          onClick={() => setActiveExample('stagec')}
-        >
-          Stage C (v0.3.0)
-        </button>
-        <button
-          className={activeExample === 'stageb' ? 'active' : ''}
-          onClick={() => setActiveExample('stageb')}
-        >
-          Stage B (v0.2.2)
-        </button>
-        <button
-          className={activeExample === 'basic' ? 'active' : ''}
-          onClick={() => setActiveExample('basic')}
-        >
-          Basic Usage
-        </button>
-        <button
-          className={activeExample === 'mock' ? 'active' : ''}
-          onClick={() => setActiveExample('mock')}
-        >
-          Mock Server
-        </button>
-        <button
-          className={activeExample === 'custom' ? 'active' : ''}
-          onClick={() => setActiveExample('custom')}
-        >
-          Custom Columns
-        </button>
-        <button
-          className={activeExample === 'styling' ? 'active' : ''}
-          onClick={() => setActiveExample('styling')}
-        >
-          Styling
-        </button>
-      </div>
-
-      <div className="example-section">
-        {activeExample === 'stagec' && <StageCDemo />}
-        {activeExample === 'stageb' && <StageBDemo />}
-        {activeExample === 'basic' && <BasicUsageDemo />}
-        {activeExample === 'mock' && <MockServerDemo />}
-        {activeExample === 'custom' && <CustomColumnsDemo />}
-        {activeExample === 'styling' && <StylingDemo />}
+    <div className="app">
+      <AppShell currentDemo={currentDemo} onDemoSelect={handleDemoSelect} />
+      <div className="app-main">
+        <DemoPage demo={currentDemo} />
       </div>
     </div>
   );

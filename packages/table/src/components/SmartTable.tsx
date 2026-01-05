@@ -658,7 +658,9 @@ export function RowaKitTable<T>({
 
     // Query/sort/filter changes: write immediately
     const urlStr = serializeUrlState(query, filters, columnWidths, defaultPageSize, enableColumnResizing);
-    window.history.replaceState(null, '', `?${urlStr}`);
+    const qs = urlStr ? `?${urlStr}` : '';
+    // Preserve hash (often used by hash routers like this demo gallery)
+    window.history.replaceState(null, '', `${window.location.pathname}${qs}${window.location.hash}`);
   }, [query, filters, syncToUrl, enableColumnResizing, defaultPageSize]);
 
   // PRD-05: Debounce columnWidths updates (150ms) while resizing
@@ -676,7 +678,9 @@ export function RowaKitTable<T>({
     // Schedule debounced URL update for columnWidths
     urlSyncDebounceRef.current = setTimeout(() => {
       const urlStr = serializeUrlState(query, filters, columnWidths, defaultPageSize, enableColumnResizing);
-      window.history.replaceState(null, '', `?${urlStr}`);
+      const qs = urlStr ? `?${urlStr}` : '';
+      // Preserve hash (often used by hash routers like this demo gallery)
+      window.history.replaceState(null, '', `${window.location.pathname}${qs}${window.location.hash}`);
       urlSyncDebounceRef.current = null;
     }, 150);
 
