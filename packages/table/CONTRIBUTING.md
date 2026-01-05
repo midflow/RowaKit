@@ -330,11 +330,11 @@ Technical approach and key decisions
 
 ## Roadmap and Issues
 
-### Current Stage: A (MVP 0.1)
+### Current Stage: D (Polish + Correctness, v0.4.0)
 
-See [SMART_TABLE_ROADMAP_ISSUES.md](../../docs/SMART_TABLE_ROADMAP_ISSUES.md) for detailed roadmap.
+See [docs/ROADMAP.md](../../docs/ROADMAP.md) and [docs/ROWAKIT_STAGE_D_ISSUES_v3.md](../../docs/ROWAKIT_STAGE_D_ISSUES_v3.md) for detailed roadmap and Stage D issues.
 
-**Completed (Stage A):**
+**Completed (Stage D):**
 - ✅ A-01: Monorepo scaffold
 - ✅ A-02: Core types
 - ✅ A-03: Column helpers
@@ -346,11 +346,10 @@ See [SMART_TABLE_ROADMAP_ISSUES.md](../../docs/SMART_TABLE_ROADMAP_ISSUES.md) fo
 - ✅ A-09: Minimal styling tokens
 - ✅ A-10: Documentation & examples
 
-**Next (Stage B - v1.0):**
-- Column visibility toggle
-- Bulk actions
-- Search/filter UI
-- Export functionality
+**Next (Demand-driven / Stage E):**
+- Row selection + bulk actions
+- Export CSV (server-triggered)
+- Multi-column sorting
 
 ### Finding Issues
 

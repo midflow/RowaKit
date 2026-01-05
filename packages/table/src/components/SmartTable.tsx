@@ -98,9 +98,280 @@ function getHeaderLabel<T>(column: ColumnDef<T>): string {
   return column.header ?? column.id;
 }
 
+// ============================================================================
+// PRD-04: SAVED VIEWS STORAGE HELPERS
+// ============================================================================
+
+interface SavedViewsIndex {
+  name: string;
+  updatedAt: number;
+}
+
 /**
- * Render cell content based on column kind.
+ * Validate saved view name.
+ * Rules: trim, 1–40 chars, reject control chars and `/\?%*:|"<>`
  */
+function validateViewName(name: string): { valid: boolean; error?: string } {
+  const trimmed = name.trim();
+  
+  if (trimmed.length === 0) {
+    return { valid: false, error: 'Name cannot be empty' };
+  }
+  
+  if (trimmed.length > 40) {
+    return { valid: false, error: 'Name cannot exceed 40 characters' };
+  }
+  
+  // Reject control chars and special chars
+  const invalidChars = /[/\\?%*:|"<>\x00-\x1f\x7f]/;
+  if (invalidChars.test(trimmed)) {
+    return { valid: false, error: 'Name contains invalid characters' };
+  }
+  
+  return { valid: true };
+}
+
+/**
+ * Get saved views index from storage.
+ * If missing, scan localStorage for rowakit-view-* keys and rebuild index.
+ */
+function getSavedViewsIndex(): SavedViewsIndex[] {
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return [];
+  }
+
+  try {
+    const indexStr = localStorage.getItem('rowakit-views-index');
+    if (indexStr) {
+      const index = JSON.parse(indexStr) as SavedViewsIndex[];
+      if (Array.isArray(index)) {
+        return index;
+      }
+    }
+  } catch {
+    // Ignore parse errors
+  }
+
+  // Rebuild index from existing keys
+  const rebuilt: SavedViewsIndex[] = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith('rowakit-view-')) {
+        const name = key.substring('rowakit-view-'.length);
+        rebuilt.push({
+          name,
+          updatedAt: Date.now(),
+        });
+      }
+    }
+  } catch {
+    // Ignore iteration errors
+  }
+
+  return rebuilt;
+}
+
+/**
+ * Save views index to storage.
+ */
+function setSavedViewsIndex(index: SavedViewsIndex[]): void {
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return;
+  }
+
+  try {
+    localStorage.setItem('rowakit-views-index', JSON.stringify(index));
+  } catch {
+    // Ignore storage errors
+  }
+}
+
+/**
+ * Load all saved views from storage.
+ * Parses index and reads each view, skipping corrupt entries.
+ */
+function loadSavedViewsFromStorage(): Array<{
+  name: string;
+  state: {
+    page: number;
+    pageSize: number;
+    sort?: { field: string; direction: 'asc' | 'desc' };
+    filters?: Record<string, FilterValue | undefined>;
+    columnWidths?: Record<string, number>;
+  };
+}> {
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return [];
+  }
+
+  const index = getSavedViewsIndex();
+  const views = [];
+
+  for (const entry of index) {
+    try {
+      const viewStr = localStorage.getItem(`rowakit-view-${entry.name}`);
+      if (viewStr) {
+        const state = JSON.parse(viewStr);
+        views.push({
+          name: entry.name,
+          state,
+        });
+      }
+    } catch {
+      // Skip corrupt entries
+    }
+  }
+
+  return views;
+}
+
+// ============================================================================
+// PRD-05: URL STATE PARSING & SERIALIZATION
+// ============================================================================
+
+/**
+ * Parse URL search parameters into table state.
+ * Validates all values according to PRD-05 rules:
+ * - page >= 1
+ * - pageSize from options or defaultPageSize
+ * - sortDirection only asc|desc
+ * - filters must be object
+ * - columnWidths must be object of numbers
+ */
+function parseUrlState(
+  params: URLSearchParams,
+  defaultPageSize: number,
+  pageSizeOptions?: number[]
+): {
+  page: number;
+  pageSize: number;
+  sort?: { field: string; direction: 'asc' | 'desc' };
+  filters?: Record<string, FilterValue | undefined>;
+  columnWidths?: Record<string, number>;
+} {
+  // Parse page (default 1, must be >= 1)
+  const pageStr = params.get('page');
+  let page = 1;
+  if (pageStr) {
+    const parsed = parseInt(pageStr, 10);
+    page = !isNaN(parsed) && parsed >= 1 ? parsed : 1;
+  }
+
+  // Parse pageSize (must be valid or use default)
+  const pageSizeStr = params.get('pageSize');
+  let pageSize = defaultPageSize;
+  if (pageSizeStr) {
+    const parsed = parseInt(pageSizeStr, 10);
+    if (!isNaN(parsed) && parsed >= 1) {
+      // If pageSizeOptions provided, validate against it; otherwise accept
+      if (pageSizeOptions && pageSizeOptions.length > 0) {
+        pageSize = pageSizeOptions.includes(parsed) ? parsed : defaultPageSize;
+      } else {
+        pageSize = parsed;
+      }
+    }
+  }
+
+  const result: {
+    page: number;
+    pageSize: number;
+    sort?: { field: string; direction: 'asc' | 'desc' };
+    filters?: Record<string, FilterValue | undefined>;
+    columnWidths?: Record<string, number>;
+  } = { page, pageSize };
+
+  // Parse sort (only if both field and valid direction present)
+  const sortField = params.get('sortField');
+  const sortDir = params.get('sortDirection');
+  if (sortField && (sortDir === 'asc' || sortDir === 'desc')) {
+    result.sort = { field: sortField, direction: sortDir };
+  }
+
+  // Parse filters (must be valid JSON object)
+  const filtersStr = params.get('filters');
+  if (filtersStr) {
+    try {
+      const parsed = JSON.parse(filtersStr);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        result.filters = parsed;
+      }
+    } catch {
+      // Ignore invalid filters
+    }
+  }
+
+  // Parse columnWidths (must be valid JSON object with number values)
+  const widthsStr = params.get('columnWidths');
+  if (widthsStr) {
+    try {
+      const parsed = JSON.parse(widthsStr);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        // Validate all values are numbers
+        const widths: Record<string, number> = {};
+        for (const [key, value] of Object.entries(parsed)) {
+          if (typeof value === 'number' && value > 0) {
+            widths[key] = value;
+          }
+        }
+        if (Object.keys(widths).length > 0) {
+          result.columnWidths = widths;
+        }
+      }
+    } catch {
+      // Ignore invalid column widths
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Serialize table state to URL search parameters.
+ * Omits empty/default values to keep URLs short.
+ * PRD-05: Only includes columnWidths if enableColumnResizing is true.
+ */
+function serializeUrlState(
+  query: FetcherQuery,
+  filters: Record<string, FilterValue | undefined>,
+  columnWidths: Record<string, number>,
+  defaultPageSize: number,
+  enableColumnResizing: boolean
+): string {
+  const params = new URLSearchParams();
+
+  // Always include page (even if 1, for clarity)
+  params.set('page', String(query.page));
+  
+  // Only include pageSize if different from default
+  if (query.pageSize !== defaultPageSize) {
+    params.set('pageSize', String(query.pageSize));
+  }
+
+  // Include sort if present
+  if (query.sort) {
+    params.set('sortField', query.sort.field);
+    params.set('sortDirection', query.sort.direction);
+  }
+
+  // Include filters if non-empty
+  if (filters && Object.keys(filters).length > 0) {
+    const nonEmptyFilters = Object.fromEntries(
+      Object.entries(filters).filter(([, v]) => v !== undefined)
+    );
+    if (Object.keys(nonEmptyFilters).length > 0) {
+      params.set('filters', JSON.stringify(nonEmptyFilters));
+    }
+  }
+
+  // Include columnWidths only if resizing enabled and widths exist
+  if (enableColumnResizing && Object.keys(columnWidths).length > 0) {
+    params.set('columnWidths', JSON.stringify(columnWidths));
+  }
+
+  return params.toString();
+}
+
 function renderCell<T>(
   column: ColumnDef<T>,
   row: T,
@@ -323,6 +594,16 @@ export function RowaKitTable<T>({
   const resizePendingRef = useRef<{ colId: string; width: number } | null>(null);
   const tableRef = useRef<HTMLTableElement | null>(null);
 
+  // PRD-01: Prevent accidental sort during resize
+  const isResizingRef = useRef(false);
+  const lastResizeEndTsRef = useRef(0);
+  const resizingColIdRef = useRef<string | null>(null);
+  const didHydrateUrlRef = useRef(false);
+  const didSkipInitialUrlSyncRef = useRef(false);
+
+  // PRD-05: URL sync debounce ref (for columnWidths)
+  const urlSyncDebounceRef = useRef<NodeJS.Timeout | null>(null);
+
   // Stage C: Saved views
   const [savedViews, setSavedViews] = useState<Array<{
     name: string;
@@ -335,79 +616,129 @@ export function RowaKitTable<T>({
     };
   }>>([]);
 
+  // PRD-04: Save view form state
+  const [showSaveViewForm, setShowSaveViewForm] = useState(false);
+  const [saveViewInput, setSaveViewInput] = useState('');
+  const [saveViewError, setSaveViewError] = useState<string>('');
+  const [overwriteConfirmName, setOverwriteConfirmName] = useState<string | null>(null);
+
+  // PRD-04: Hydrate saved views on mount
+  useEffect(() => {
+    if (!enableSavedViews) return;
+
+    const views = loadSavedViewsFromStorage();
+    setSavedViews(views);
+  }, [enableSavedViews]);
+
   // Confirmation state for actions that require confirmation
   const [confirmState, setConfirmState] = useState<ConfirmState<T> | null>(null);
 
   // Request tracking to ignore stale responses
   const requestIdRef = useRef(0);
 
-  // Stage C: Sync to URL on query changes
+  // Stage C: Sync to URL on query changes (PRD-05: Validated and debounced)
   useEffect(() => {
-    if (!syncToUrl) return;
-
-    const params = new URLSearchParams();
-    params.set('page', String(query.page));
-    params.set('pageSize', String(query.pageSize));
-    
-    if (query.sort) {
-      params.set('sortField', query.sort.field);
-      params.set('sortDirection', query.sort.direction);
-    }
-    
-    if (query.filters && Object.keys(query.filters).length > 0) {
-      params.set('filters', JSON.stringify(query.filters));
-    }
-    
-    if (enableColumnResizing && Object.keys(columnWidths).length > 0) {
-      params.set('columnWidths', JSON.stringify(columnWidths));
+    if (!syncToUrl) {
+      didSkipInitialUrlSyncRef.current = false;
+      return;
     }
 
-    window.history.replaceState(null, '', `?${params.toString()}`);
-  }, [query, columnWidths, syncToUrl, enableColumnResizing]);
+    // IMPORTANT: On mount, do not overwrite the incoming URL before
+    // `parseUrlState` has a chance to read it.
+    if (!didSkipInitialUrlSyncRef.current) {
+      didSkipInitialUrlSyncRef.current = true;
+      return;
+    }
 
-  // Stage C: Load from URL on mount
+    // Clear any pending debounce
+    if (urlSyncDebounceRef.current) {
+      clearTimeout(urlSyncDebounceRef.current);
+      urlSyncDebounceRef.current = null;
+    }
+
+    // Query/sort/filter changes: write immediately
+    const urlStr = serializeUrlState(query, filters, columnWidths, defaultPageSize, enableColumnResizing);
+    window.history.replaceState(null, '', `?${urlStr}`);
+  }, [query, filters, syncToUrl, enableColumnResizing, defaultPageSize]);
+
+  // PRD-05: Debounce columnWidths updates (150ms) while resizing
   useEffect(() => {
-    if (!syncToUrl) return;
+    if (!syncToUrl || !enableColumnResizing) return;
+
+    // Skip initial mount so we don't clobber URL before parsing.
+    if (!didSkipInitialUrlSyncRef.current) return;
+
+    // Clear any pending debounce
+    if (urlSyncDebounceRef.current) {
+      clearTimeout(urlSyncDebounceRef.current);
+    }
+
+    // Schedule debounced URL update for columnWidths
+    urlSyncDebounceRef.current = setTimeout(() => {
+      const urlStr = serializeUrlState(query, filters, columnWidths, defaultPageSize, enableColumnResizing);
+      window.history.replaceState(null, '', `?${urlStr}`);
+      urlSyncDebounceRef.current = null;
+    }, 150);
+
+    // Cleanup on unmount
+    return () => {
+      if (urlSyncDebounceRef.current) {
+        clearTimeout(urlSyncDebounceRef.current);
+        urlSyncDebounceRef.current = null;
+      }
+    };
+  }, [columnWidths, syncToUrl, enableColumnResizing, query, filters, defaultPageSize]);
+
+  // Stage C: Load from URL on mount (PRD-05: Validated parsing)
+  useEffect(() => {
+    if (!syncToUrl) {
+      // If URL sync is disabled, allow future re-hydration if re-enabled.
+      didHydrateUrlRef.current = false;
+      return;
+    }
+    if (didHydrateUrlRef.current) return;
+    didHydrateUrlRef.current = true;
 
     const params = new URLSearchParams(window.location.search);
-    const page = parseInt(params.get('page') ?? '1', 10);
-    const pageSize = parseInt(params.get('pageSize') ?? String(defaultPageSize), 10);
-    const sortField = params.get('sortField');
-    const sortDirection = params.get('sortDirection') as 'asc' | 'desc' | null;
-    const filtersStr = params.get('filters');
-    const columnWidthsStr = params.get('columnWidths');
+    const parsed = parseUrlState(params, defaultPageSize, pageSizeOptions);
 
-    const newQuery: FetcherQuery = {
-      page: Math.max(1, page),
-      pageSize: Math.max(1, pageSize),
-    };
+    setQuery({
+      page: parsed.page,
+      pageSize: parsed.pageSize,
+      sort: parsed.sort,
+      filters: parsed.filters,
+    });
 
-    if (sortField && sortDirection) {
-      newQuery.sort = { field: sortField, direction: sortDirection };
+    if (parsed.filters) {
+      setFilters(parsed.filters);
     }
 
-    if (filtersStr) {
-      try {
-        const parsedFilters = JSON.parse(filtersStr);
-        if (parsedFilters && typeof parsedFilters === 'object') {
-          setFilters(parsedFilters as Record<string, FilterValue | undefined>);
-          newQuery.filters = parsedFilters;
+    if (parsed.columnWidths && enableColumnResizing) {
+      // Clamp URL widths by per-column min/max so a stale/malicious URL can't
+      // make a column unusably tiny (e.g. "Product Name" showing only "P").
+      const clamped: Record<string, number> = {};
+      for (const [colId, rawWidth] of Object.entries(parsed.columnWidths)) {
+        const widthNum = typeof rawWidth === 'number' ? rawWidth : Number(rawWidth);
+        if (!Number.isFinite(widthNum)) continue;
+
+        const colDef = columns.find((c) => c.id === colId);
+        if (!colDef) continue;
+
+        const minW = colDef.minWidth ?? 80;
+        const maxW = colDef.maxWidth;
+
+        let finalW = Math.max(minW, widthNum);
+        if (maxW != null) {
+          finalW = Math.min(finalW, maxW);
         }
-      } catch {
-        // Ignore invalid filters
+        clamped[colId] = finalW;
       }
-    }
 
-    if (enableColumnResizing && columnWidthsStr) {
-      try {
-        setColumnWidths(JSON.parse(columnWidthsStr));
-      } catch {
-        // Ignore invalid column widths
-      }
+      setColumnWidths(clamped);
     }
-
-    setQuery(newQuery);
-  }, [syncToUrl, defaultPageSize, enableColumnResizing]); // Only on mount
+    // If URL doesn't provide widths, keep `columnWidths` empty and allow
+    // defaults from `column.width` to apply.
+  }, [syncToUrl, defaultPageSize, enableColumnResizing, pageSizeOptions, columns]);
 
   // Sync filters to query (and reset page to 1 when filters change)
   useEffect(() => {
@@ -553,6 +884,11 @@ export function RowaKitTable<T>({
     if (maxWidth) {
       finalWidth = Math.min(finalWidth, maxWidth);
     }
+    
+    // PRD-03: Guard against unchanged widths to avoid extra renders
+    if (columnWidths[columnId] === finalWidth) {
+      return;
+    }
 
     setColumnWidths((prev) => ({
       ...prev,
@@ -561,10 +897,65 @@ export function RowaKitTable<T>({
   };
 
   // Stage C: Column resize drag handler
-  const startColumnResize = (e: React.MouseEvent<HTMLDivElement>, columnId: string) => {
+  // PRD-02: Now uses Pointer Events for mouse + touch + pen support
+  const autoFitColumnWidth = (columnId: string) => {
+    const tableEl = tableRef.current;
+    if (!tableEl) return;
+
+    const th = tableEl.querySelector(`th[data-col-id="${columnId}"]`) as HTMLTableCellElement | null;
+    if (!th) return;
+
+    const tds = Array.from(
+      tableEl.querySelectorAll(`td[data-col-id="${columnId}"]`),
+    ) as HTMLTableCellElement[];
+
+    const headerW = th.scrollWidth;
+    const cellsMaxW = tds.reduce((max, td) => Math.max(max, td.scrollWidth), 0);
+
+    const padding = 24; // buffer for padding + sort icon
+    const raw = Math.max(headerW, cellsMaxW) + padding;
+
+    const colDef = columns.find((c) => c.id === columnId);
+    const minW = colDef?.minWidth ?? 80;
+    const maxW = colDef?.maxWidth ?? 600;
+
+    const finalW = Math.max(minW, Math.min(raw, maxW));
+    setColumnWidths((prev) => ({ ...prev, [columnId]: finalW }));
+  };
+
+  const startColumnResize = (e: React.PointerEvent<HTMLDivElement>, columnId: string) => {
     e.preventDefault();
+    e.stopPropagation(); // PRD-01: Prevent sort bubbling
+
+    // Double-click auto-fit: handle via pointerdown.detail to avoid relying on
+    // onDoubleClick sequencing in presence of pointer capture.
+    if (e.detail === 2) {
+      autoFitColumnWidth(columnId);
+      return;
+    }
+
+    // PRD-02: Button gating for mouse pointer (require primary button)
+    if (e.pointerType === 'mouse' && e.buttons !== 1) {
+      return;
+    }
+
+    // Save currentTarget reference before event becomes stale
+    const target = e.currentTarget;
+    const pointerId = e.pointerId;
+
+    // PRD-02: Acquire pointer capture on the handle element
+    try {
+      target.setPointerCapture(pointerId);
+    } catch {
+      // setPointerCapture may not be available in test environment
+    }
+
+    // PRD-01: Mark as resizing
+    isResizingRef.current = true;
+    resizingColIdRef.current = columnId;
+    
     const startX = e.clientX;
-    const th = (e.currentTarget.parentElement as HTMLTableCellElement);
+    const th = (target.parentElement as HTMLTableCellElement);
     
     // Get the actual width of current column
     // (either from state if resized, or from offsetWidth if auto)
@@ -587,46 +978,55 @@ export function RowaKitTable<T>({
     // Prevent text selection during drag
     document.body.classList.add('rowakit-resizing');
 
-    const handleMouseMove = (moveEvent: MouseEvent) => {
+    // PRD-02: Use pointer events instead of mouse events
+    const handlePointerMove = (moveEvent: PointerEvent) => {
       const delta = moveEvent.clientX - startX;
       const newWidth = startWidth + delta;
       // Use RAF throttle for smooth performance
       scheduleColumnWidthUpdate(columnId, newWidth);
     };
 
-    const handleMouseUp = () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+    const cleanupResize = () => {
+      target.removeEventListener('pointermove', handlePointerMove);
+      target.removeEventListener('pointerup', handlePointerUp);
+      target.removeEventListener('pointercancel', handlePointerCancel);
+      
       // Re-enable text selection
       document.body.classList.remove('rowakit-resizing');
+      
+      // PRD-01: Mark resize as complete and set suppression window
+      isResizingRef.current = false;
+      resizingColIdRef.current = null;
+      lastResizeEndTsRef.current = Date.now();
+
+      // PRD-02: Release pointer capture
+      try {
+        target.releasePointerCapture(pointerId);
+      } catch {
+        // Already released or pointer no longer active
+      }
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    const handlePointerUp = () => {
+      cleanupResize();
+    };
+
+    const handlePointerCancel = () => {
+      cleanupResize();
+    };
+
+    target.addEventListener('pointermove', handlePointerMove);
+    target.addEventListener('pointerup', handlePointerUp);
+    target.addEventListener('pointercancel', handlePointerCancel);
   };
 
   // Stage C: Double-click to auto-fit content
-  const handleColumnResizeDoubleClick = (columnId: string) => {
-    const tableEl = tableRef.current;
-    if (!tableEl) return;
+  // PRD-02: Updated signature to match PointerEvent handler pattern
+  const handleColumnResizeDoubleClick = (e: React.MouseEvent<HTMLDivElement>, columnId: string) => {
+    e.preventDefault();
+    e.stopPropagation(); // PRD-01: Prevent sort bubbling from double-click
 
-    const th = tableEl.querySelector(`th[data-col-id="${columnId}"]`) as HTMLTableCellElement | null;
-    if (!th) return;
-
-    const tds = Array.from(tableEl.querySelectorAll(`td[data-col-id="${columnId}"]`)) as HTMLTableCellElement[];
-
-    const headerW = th.scrollWidth;
-    const cellsMaxW = tds.reduce((max, td) => Math.max(max, td.scrollWidth), 0);
-
-    const padding = 24; // buffer for padding + sort icon
-    const raw = Math.max(headerW, cellsMaxW) + padding;
-
-    const minW = columns.find(c => c.id === columnId)?.minWidth ?? 80;
-    const maxW = columns.find(c => c.id === columnId)?.maxWidth ?? 600; // maxAutoFitWidth default
-
-    const finalW = Math.max(minW, Math.min(raw, maxW));
-
-    setColumnWidths(prev => ({ ...prev, [columnId]: finalW }));
+    autoFitColumnWidth(columnId);
   };
 
   // Stage C: Saved views handlers
@@ -644,10 +1044,17 @@ export function RowaKitTable<T>({
       return [...filtered, { name, state: viewState }];
     });
 
-    // Store in localStorage if available
+    // PRD-04: Update storage with index
     if (typeof window !== 'undefined' && window.localStorage) {
       try {
+        // Save the view
         localStorage.setItem(`rowakit-view-${name}`, JSON.stringify(viewState));
+        
+        // Update index
+        const index = getSavedViewsIndex();
+        const filtered = index.filter((v) => v.name !== name);
+        filtered.push({ name, updatedAt: Date.now() });
+        setSavedViewsIndex(filtered);
       } catch {
         // Ignore storage errors
       }
@@ -676,9 +1083,16 @@ export function RowaKitTable<T>({
 
   const deleteSavedView = (name: string) => {
     setSavedViews((prev) => prev.filter((v) => v.name !== name));
+    
+    // PRD-04: Remove from storage and index
     if (typeof window !== 'undefined' && window.localStorage) {
       try {
         localStorage.removeItem(`rowakit-view-${name}`);
+        
+        // Update index
+        const index = getSavedViewsIndex();
+        const filtered = index.filter((v) => v.name !== name);
+        setSavedViewsIndex(filtered);
       } catch {
         // Ignore storage errors
       }
@@ -771,25 +1185,131 @@ export function RowaKitTable<T>({
 
   const hasActiveFilters = enableFilters && Object.values(filters).some(v => v !== undefined);
 
+  // PRD-03: Apply fixed layout class when resizing is enabled
+  const containerClass = [
+    'rowakit-table',
+    enableColumnResizing ? 'rowakit-layout-fixed' : '',
+    className
+  ].filter(Boolean).join(' ');
+
   return (
-    <div className={`rowakit-table${className ? ` ${className}` : ''}`}>
+    <div className={containerClass}>
       {enableSavedViews && (
         <div className="rowakit-saved-views-group">
-          <button
-            onClick={() => {
-              // NOTE: This uses window.prompt as a simple placeholder UI for naming saved views.
-              // In production applications, replace this with a proper non-blocking modal dialog
-              // component that provides better styling, accessibility, and user experience.
-              const name = typeof window !== 'undefined' ? window.prompt('Enter view name:') : null;
-              if (name) {
-                saveCurrentView(name);
-              }
-            }}
-            className="rowakit-saved-view-button"
-            type="button"
-          >
-            Save View
-          </button>
+          {!showSaveViewForm ? (
+            <button
+              onClick={() => {
+                setShowSaveViewForm(true);
+                setSaveViewInput('');
+                setSaveViewError('');
+                setOverwriteConfirmName(null);
+              }}
+              className="rowakit-saved-view-button"
+              type="button"
+            >
+              Save View
+            </button>
+          ) : (
+            <div className="rowakit-save-view-form">
+              {overwriteConfirmName ? (
+                <div className="rowakit-save-view-confirm">
+                  <p>View "{overwriteConfirmName}" already exists. Overwrite?</p>
+                  <button
+                    onClick={() => {
+                      saveCurrentView(overwriteConfirmName);
+                      setShowSaveViewForm(false);
+                      setSaveViewInput('');
+                      setSaveViewError('');
+                      setOverwriteConfirmName(null);
+                    }}
+                    className="rowakit-saved-view-button"
+                    type="button"
+                  >
+                    Overwrite
+                  </button>
+                  <button
+                    onClick={() => {
+                      setOverwriteConfirmName(null);
+                    }}
+                    className="rowakit-saved-view-button"
+                    type="button"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <input
+                    type="text"
+                    value={saveViewInput}
+                    onChange={(e) => {
+                      setSaveViewInput(e.target.value);
+                      setSaveViewError('');
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        // Validate and save
+                        const validation = validateViewName(saveViewInput);
+                        if (!validation.valid) {
+                          setSaveViewError(validation.error || 'Invalid name');
+                          return;
+                        }
+
+                        // Check if exists
+                        if (savedViews.some((v) => v.name === saveViewInput.trim())) {
+                          setOverwriteConfirmName(saveViewInput.trim());
+                        } else {
+                          saveCurrentView(saveViewInput.trim());
+                          setShowSaveViewForm(false);
+                          setSaveViewInput('');
+                          setSaveViewError('');
+                        }
+                      }
+                    }}
+                    placeholder="Enter view name..."
+                    className="rowakit-save-view-input"
+                  />
+                  {saveViewError && (
+                    <div className="rowakit-save-view-error">{saveViewError}</div>
+                  )}
+                  <button
+                    onClick={() => {
+                      const validation = validateViewName(saveViewInput);
+                      if (!validation.valid) {
+                        setSaveViewError(validation.error || 'Invalid name');
+                        return;
+                      }
+
+                      // Check if exists
+                      if (savedViews.some((v) => v.name === saveViewInput.trim())) {
+                        setOverwriteConfirmName(saveViewInput.trim());
+                      } else {
+                        saveCurrentView(saveViewInput.trim());
+                        setShowSaveViewForm(false);
+                        setSaveViewInput('');
+                        setSaveViewError('');
+                      }
+                    }}
+                    className="rowakit-saved-view-button"
+                    type="button"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowSaveViewForm(false);
+                      setSaveViewInput('');
+                      setSaveViewError('');
+                    }}
+                    className="rowakit-saved-view-button"
+                    type="button"
+                  >
+                    Cancel
+                  </button>
+                </>
+              )}
+            </div>
+          )}
           {savedViews.map((view) => (
             <div key={view.name} className="rowakit-saved-view-item">
               <button
@@ -849,7 +1369,12 @@ export function RowaKitTable<T>({
                 <th
                   key={column.id}
                   data-col-id={column.id}
-                  onClick={isSortable ? () => handleSort(String(field)) : undefined}
+                  onClick={isSortable ? () => {
+                    // PRD-01: Suppress sort if resizing or during suppression window
+                    if (isResizingRef.current) return;
+                    if (Date.now() - lastResizeEndTsRef.current < 150) return;
+                    handleSort(String(field));
+                  } : undefined}
                   role={isSortable ? 'button' : undefined}
                   tabIndex={isSortable ? 0 : undefined}
                   onKeyDown={isSortable ? (e) => {
@@ -864,20 +1389,22 @@ export function RowaKitTable<T>({
                       : undefined
                   }
                   style={{
-                    width: actualWidth ? `${actualWidth}px` : undefined,
+                    width: actualWidth != null ? `${actualWidth}px` : undefined,
                     textAlign: column.align,
                     position: isResizable ? 'relative' : undefined,
                   }}
-                  // Note: truncate styling is disabled when column is resizable to prevent
-                  // conflicts with the resize handle and to allow dynamic width adjustments
-                  className={column.truncate && !isResizable ? 'rowakit-cell-truncate' : undefined}
+                  // PRD-03: Re-enable truncation for resizable columns (now safe with fixed layout)
+                  className={[
+                    column.truncate ? 'rowakit-cell-truncate' : '',
+                    resizingColIdRef.current === column.id ? 'resizing' : '' // PRD-01
+                  ].filter(Boolean).join(' ') || undefined}
                 >
                   {getHeaderLabel(column)}{isSortable && getSortIndicator(String(field))}
                   {isResizable && (
                     <div
                       className="rowakit-column-resize-handle"
-                      onMouseDown={(e) => startColumnResize(e, column.id)}
-                      onDoubleClick={() => handleColumnResizeDoubleClick(column.id)}
+                      onPointerDown={(e) => startColumnResize(e, column.id)}
+                      onDoubleClick={(e) => handleColumnResizeDoubleClick(e, column.id)}
                       title="Drag to resize | Double-click to auto-fit content"
                     />
                   )}
@@ -1135,8 +1662,8 @@ export function RowaKitTable<T>({
                       column.truncate ? 'rowakit-cell-truncate' : '',
                     ].filter(Boolean).join(' ') || undefined;
                     
-                    // Only apply width if user has manually resized this column
-                    const actualWidth = columnWidths[column.id];
+                    // PRD-03: Apply width to body cells matching header width (resized or column.width)
+                    const actualWidth = columnWidths[column.id] ?? column.width;
                     
                     return (
                       <td 
@@ -1144,7 +1671,7 @@ export function RowaKitTable<T>({
                         data-col-id={column.id}
                         className={cellClass}
                         style={{
-                          width: actualWidth ? `${actualWidth}px` : undefined,
+                          width: actualWidth != null ? `${actualWidth}px` : undefined,
                           textAlign: column.align || (column.kind === 'number' ? 'right' : undefined),
                         }}
                       >

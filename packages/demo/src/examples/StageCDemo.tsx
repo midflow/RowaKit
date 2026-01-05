@@ -1,6 +1,5 @@
-import React from 'react';
 import { RowaKitTable, col } from '@rowakit/table';
-import type { Fetcher } from '@rowakit/table';
+import type { Fetcher, FetcherQuery, FilterValue } from '@rowakit/table';
 
 interface Product {
   id: number;
@@ -28,7 +27,8 @@ const mockProducts: Product[] = [
 ];
 
 export default function StageCDemo() {
-  const fetchProducts: Fetcher<Product> = async ({ page, pageSize, sort, filters }) => {
+  const fetchProducts: Fetcher<Product> = async (query: FetcherQuery) => {
+    const { page, pageSize, sort, filters } = query;
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -36,8 +36,9 @@ export default function StageCDemo() {
 
     // Apply filters
     if (filters) {
-      for (const [field, filter] of Object.entries(filters)) {
-        if (!filter) continue;
+      for (const [field, filterValue] of Object.entries(filters)) {
+        if (!filterValue) continue;
+        const filter = filterValue as FilterValue;
 
         if (filter.op === 'contains') {
           filtered = filtered.filter((item) =>
@@ -96,82 +97,63 @@ export default function StageCDemo() {
   };
 
   const columns = [
-    col.text('id', { label: '#', width: 60, align: 'center', minWidth: 50, maxWidth: 80 }),
-    col.text('name', { label: 'Product Name', width: 180, truncate: true, minWidth: 120 }),
-    col.text('category', { label: 'Category', width: 100, minWidth: 80 }),
-    col.badge('status', {
-      label: 'Status',
+    col.text<Product>('id', { header: '#', width: 60, align: 'center' }),
+    col.text<Product>('name', { header: 'Product Name', width: 180, truncate: true }),
+    col.text<Product>('category', { header: 'Category', width: 100 }),
+    col.badge<Product>('status', {
+      header: 'Status',
       width: 120,
-      minWidth: 100,
       map: {
-        in_stock: 'success',
-        low_stock: 'warning',
-        out_of_stock: 'danger',
+        in_stock: { label: 'In Stock', tone: 'success' },
+        low_stock: { label: 'Low Stock', tone: 'warning' },
+        out_of_stock: { label: 'Out of Stock', tone: 'danger' },
       },
     }),
-    col.number('price', {
-      label: 'Price',
+    col.number<Product>('price', {
+      header: 'Price',
       width: 100,
       align: 'right',
-      minWidth: 80,
-      format: (val) => `$${val.toFixed(2)}`,
+      format: (val: number) => `$${val.toFixed(2)}`,
     }),
-    col.number('quantity', {
-      label: 'Stock',
+    col.number<Product>('quantity', {
+      header: 'Stock',
       width: 80,
       align: 'center',
-      minWidth: 70,
     }),
-    col.number('discount', {
-      label: 'Discount',
+    col.number<Product>('discount', {
+      header: 'Discount',
       width: 100,
       align: 'right',
-      minWidth: 80,
-      format: (val) => `${(val * 100).toFixed(0)}%`,
-      // Stage C: filterTransform to convert percentage to fraction
-      filterTransform: (percentageInput) => {
-        // If user enters > 1 (like 15), convert to fraction (0.15)
-        if (percentageInput > 1) {
-          return percentageInput / 100;
-        }
-        return percentageInput;
-      },
+      format: (val: number) => `${(val * 100).toFixed(0)}%`,
     }),
-    col.date('lastUpdated', {
-      label: 'Last Updated',
+    col.date<Product>('lastUpdated', {
+      header: 'Last Updated',
       width: 120,
       align: 'center',
-      minWidth: 100,
     }),
-    col.boolean('featured', {
-      label: 'Featured',
+    col.boolean<Product>('featured', {
+      header: 'Featured',
       width: 80,
       align: 'center',
-      minWidth: 70,
     }),
-    col.actions('actions', {
-      label: 'Actions',
-      width: 100,
-      minWidth: 90,
-      actions: [
+    col.actions<Product>([
         {
           id: 'view',
           label: 'View',
-          onClick: (product) => alert(`View: ${product.name}`),
+          onClick: (product: Product) => alert(`View: ${product.name}`),
         },
         {
           id: 'edit',
           label: 'Edit',
-          onClick: (product) => alert(`Edit: ${product.name}`),
+          onClick: (product: Product) => alert(`Edit: ${product.name}`),
         },
         {
           id: 'delete',
           label: 'Delete',
           confirm: true,
-          onClick: (product) => alert(`Delete: ${product.name}`),
+          onClick: (product: Product) => alert(`Delete: ${product.name}`),
         },
-      ],
-    }),
+      ]),
   ];
 
   return (

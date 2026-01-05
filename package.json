@@ -12,6 +12,7 @@
     "test:watch": "pnpm -C packages/table test:watch",
     "typecheck": "pnpm -C packages/table typecheck",
     "lint": "pnpm -C packages/table lint",
+    "demo": "pnpm --filter @rowakit/demo dev",
     "format": "prettier --write \"packages/**/*.{ts,tsx,json}\"",
     "format:check": "prettier --check \"packages/**/*.{ts,tsx,json}\""
   },

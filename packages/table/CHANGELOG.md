@@ -2,6 +2,27 @@
 
 All notable changes to this package will be documented in this file.
 
+## [0.4.0] - 2026-01-05 (Polish + Correctness)
+
+### Added
+- Pointer Events-based resizing (mouse/touch/pen) with pointer capture
+- Sort suppression while resizing (no accidental sort from handle events)
+- Width applied to both `<th>` and `<td>` for stable alignment
+- Double-click auto-fit using `scrollWidth`
+- Saved views hydration and storage index (`rowakit-views-index`)
+- URL sync validation and debounced column width writes
+
+### Changed
+- Resize interactions now use Pointer Events
+- URL sync is more resilient and validates inputs
+
+### Fixed
+- Accidental sort triggered by resize interactions
+- Column width truncation caused by CSS override
+- Stuck resizing state after pointercancel
+
+---
+
 ## [0.3.0] - 2026-01-03 (Advanced Features)
 ### Added
 - **Column Resizing (C-01)**

@@ -7,6 +7,79 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.0] - 2026-01-05 (Polish + Correctness)
+
+### Added
+- **Stage D: Column Resizing Hardening (D-01, D-02)**
+  - Pointer Events support (mouse, touch, pen input)
+  - Event propagation control to prevent accidental sort while resizing
+  - Sort suppression window (150ms grace period after resize ends)
+  - Applied `.resizing` CSS class to active column header
+  - Pointer capture for reliable drag-to-end tracking
+  - Primary button gating for mouse pointers
+  - Proper cleanup on `pointercancel` (avoids stuck resizing state)
+
+- **Stage D: Column Width Model Hardening (D-03)**
+  - Width applied to both `<th>` and `<td>` (stable column alignment)
+  - `table-layout: fixed` scoped via `.rowakit-layout-fixed` class
+  - Re-enabled `.rowakit-cell-truncate` for body cells when `column.truncate: true`
+  - RAF-throttled resize updates with change guards
+  - Double-click auto-fit using `scrollWidth` calculation
+  - `data-col-id` attribute on all body cells for consistent reference
+
+- **Stage D: Saved Views Persistence (D-04)**
+  - Storage index (`rowakit-views-index`) tracks saved view names and timestamps
+  - Hydration on mount: reads index or scans localStorage for existing views
+  - Replaced blocking `window.prompt()` with inline form UI
+  - Optional overwrite confirmation for duplicate names
+  - Safe JSON parsing with try/catch error handling
+  - Views persist across browser reload and session
+
+- **Stage D: URL Sync Hardening (D-05)**
+  - Pure parse/serialize helper functions with validation
+  - Page validation (≥ 1), pageSize validation (in options list)
+  - Sort direction validation (asc|desc only)
+  - Debounced columnWidths writes during resize (150-250ms)
+  - Backward compatible with old URL formats
+  - Safe defaults for invalid values
+
+### Changed
+- Resize interactions now use Pointer Events (replaces MouseEvent)
+- Column width state respects per-column min/max bounds
+- URL sync avoids repeated writes during rapid resize events
+- Improved visual feedback during column resize with `.resizing` class
+
+### Fixed
+- Accidental sort trigger when dragging column resize handle
+- Column width alignment issues with large content
+- Sticky resizing state after canceled operations
+- Corrupted localStorage views breaking hydration
+- URL query string with invalid values
+
+### Backward Compatibility
+- ✅ All Stage D changes are fully backward compatible
+- ✅ Existing saved views automatically migrated
+- ✅ Old URLs remain compatible with safe parsing
+- ✅ No breaking changes to public API
+- ✅ Event types updated internally (no impact on consumers)
+
+### Tests
+- 239 tests passing (15 test files)
+- Added comprehensive tests for:
+  - Pointer Events and double-click resize
+  - Sort suppression during/after resize
+  - Column width persistence and URL sync
+  - Saved views persistence and hydration
+  - URL validation and safe parsing
+- All edge cases covered: corrupted data, invalid URLs, state collisions
+
+### Docs
+- Updated ROADMAP.md with Stage D features and completion
+- Updated README.md with resizing behavior and saved views information
+- Added Stage D documentation sections to feature list
+
+---
+
 ## [0.3.0] - 2026-01-03 (Advanced Features)
 
 ### Added

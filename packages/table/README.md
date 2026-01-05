@@ -1481,11 +1481,14 @@ Full TypeScript support. Your data model drives type checking throughout.
 - ✅ C-02: URL state sync (page, pageSize, sort, filters, columnWidths)
 - ✅ C-03: Number range filters with optional filterTransform
 
-**Stage D - Future** (Demand-Driven)
-- Multi-column sorting
-- Row selection + bulk actions
-- Export CSV (server-triggered)
-- Column visibility toggle
+**Stage D - Polish + Correctness (v0.4.0)** ✅ Complete (2026-01-05)
+- ✅ D-01: Prevent accidental sort while resizing (stopPropagation, suppression window)
+- ✅ D-02: Pointer Events resizing (mouse, touch, pen) with pointer capture and cleanup
+- ✅ D-03: Column width model hardening (apply widths to th+td, fixed layout, truncation)
+- ✅ D-04: Saved views persistence (index, hydration, corruption-safe)
+- ✅ D-05: URL sync hardening (validation, debounce, backward compatible)
+
+See [ROADMAP.md](./docs/ROADMAP.md) and `docs/ROWAKIT_STAGE_D_ISSUES_v3.md` for implementation details and rationale.
 
 ## Changelog
 

@@ -2,21 +2,28 @@
 
 ## Supported Versions
 
-We release patches for security vulnerabilities for the following versions:
+We release patches for security vulnerabilities for supported minor
+releases. At minimum, we actively maintain recent stable branches; please
+check this file for the latest list. As of this release, support includes:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.1.x   | :white_check_mark: |
+| 0.4.x   | :white_check_mark: |
+| 0.3.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-Instead, please report them via email to:
+Preferred reporting methods (in order):
 
-**[INSERT YOUR SECURITY EMAIL]**
+1. Use GitHub's private Security Advisories / private vulnerability report
+	feature for this repository (recommended).
+2. If GitHub private reports are not available, email the maintainers at
+	**[INSERT YOUR SECURITY EMAIL]** (replace with project security contact).
 
-You should receive a response within 48 hours. If for some reason you do not, please follow up via email to ensure we received your original message.
+You should receive an acknowledgement within 48 hours. If you do not, follow
+up using the same channel or try the alternate channel above.
 
 Please include the following information:
 
@@ -30,7 +37,8 @@ Please include the following information:
 
 ## Preferred Languages
 
-We prefer all communications to be in English.
+We prefer all communications to be in English. If you must use another
+language, include an English summary where possible.
 
 ## Policy
 
@@ -45,7 +53,9 @@ Once a security issue is reported:
 
 ## Bug Bounty
 
-We currently do not have a bug bounty program. However, we deeply appreciate security researchers who report vulnerabilities responsibly.
+We currently do not have a public bug bounty program. Responsible
+disclosure is appreciated and will be acknowledged in release notes when the
+fix is published, unless a reporter requests anonymity.
 
 ## Comments on this Policy
 

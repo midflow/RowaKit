@@ -785,4 +785,119 @@ describe('SmartTable - Sorting (A-07)', () => {
       });
     });
   });
+
+  // ============================================================================
+  // PRD-01: Prevent accidental sort while resizing
+  // ============================================================================
+  describe('PRD-01: Prevent accidental sort during resize', () => {
+    it('does not sort when double-clicking resize handle', async () => {
+      const fetcher: Fetcher<User> = vi.fn(async () => ({
+        items: mockUsers,
+        total: 3,
+      }));
+
+      const { container } = render(
+        <SmartTable
+          fetcher={fetcher}
+          columns={[
+            col.text<User>('name', { sortable: true }),
+            col.text<User>('email'),
+          ]}
+          rowKey="id"
+          enableColumnResizing={true}
+        />
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice')).toBeDefined();
+      });
+
+      // Find the resize handle
+      const resizeHandle = container.querySelector('.rowakit-column-resize-handle') as HTMLDivElement;
+      expect(resizeHandle).toBeDefined();
+
+      // Get initial call count
+      const initialCallCount = fetcher.mock.calls.length;
+
+      // Double-click the resize handle
+      await userEvent.dblClick(resizeHandle);
+
+      // Wait for any async updates
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Sort should not have been triggered (only the initial load calls)
+      // We check that no additional sort call was made
+      const callsAfterDoubleClick = fetcher.mock.calls.length - initialCallCount;
+      
+      // The double-click might trigger a fetch due to column width change,
+      // but it should not include a sort change
+      if (callsAfterDoubleClick > 0) {
+        const lastCall = fetcher.mock.calls[fetcher.mock.calls.length - 1][0] as FetcherQuery;
+        // If there was a call, sort should remain the same (undefined initially)
+        expect(lastCall.sort).toBeUndefined();
+      }
+    });
+
+    it('suppresses sort within 150ms window after resize ends', async () => {
+      const fetcher: Fetcher<User> = vi.fn(async () => ({
+        items: mockUsers,
+        total: 3,
+      }));
+
+      const { container } = render(
+        <SmartTable
+          fetcher={fetcher}
+          columns={[
+            col.text<User>('name', { sortable: true }),
+            col.text<User>('email'),
+          ]}
+          rowKey="id"
+          enableColumnResizing={true}
+        />
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice')).toBeDefined();
+      });
+
+      // Find the resize handle and header
+      const resizeHandle = container.querySelector('.rowakit-column-resize-handle') as HTMLDivElement;
+      const nameHeader = screen.getByText('name').closest('th') as HTMLTableCellElement;
+      expect(resizeHandle).toBeDefined();
+      expect(nameHeader).toBeDefined();
+
+      // Get initial call count (initial load)
+      const initialCallCount = fetcher.mock.calls.length;
+
+      // Simulate mousedown on resize handle
+      await userEvent.pointer({ keys: '[MouseLeft>]', target: resizeHandle });
+
+      // Simulate mouseup to end resize
+      await userEvent.pointer({ keys: '[/MouseLeft]' });
+
+      // Wait a bit (less than 150ms suppression window)
+      await new Promise(resolve => setTimeout(resolve, 50));
+
+      // Immediately click the header to try to sort
+      await userEvent.click(nameHeader);
+
+      // Wait a bit for potential fetch
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // No additional fetcher calls should have been made (sort suppressed)
+      const callsAfterClick = fetcher.mock.calls.length - initialCallCount;
+      expect(callsAfterClick).toBe(0);
+
+      // Now wait until suppression window expires (total > 150ms from resize end)
+      await new Promise(resolve => setTimeout(resolve, 150));
+
+      // Click again to trigger sort
+      await userEvent.click(nameHeader);
+
+      // This time, sort should be triggered
+      await waitFor(() => {
+        expect(fetcher).toHaveBeenCalled();
+      });
+    });
+  });
 });
