@@ -7,7 +7,7 @@ console.log('=== RowaKit Demo Gallery - Test Suite ===');
 console.log('\n[Test 1] Version Injection');
 const versionText = document.querySelector('.sidebar-subtitle')?.textContent;
 console.log('Version text:', versionText);
-console.log('Expected format: v0.1.0 • Progressive Demos');
+console.log('Expected format: v0.4.0 • Progressive Demos');
 console.log('No "Stage" should appear:', !versionText.includes('Stage'));
 
 // Test 2: Check all demos are listed

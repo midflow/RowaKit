@@ -3,7 +3,7 @@
 ## Summary
 
 4 issues reported by user have been investigated and fixed:
-1. ✅ Version header incorrect (v0.1.0 Progressive Demos should be injected from package.json)
+1. ✅ Version header incorrect (v0.4.0 Progressive Demos should be injected from package.json)
 2. ✅ Column Sizing demo content mismatch (meta.ts didn't match Demo.tsx)
 3. 🔍 Advanced Query Patterns routing issue (investigating - added debug logs)
 4. ✅ npx vite command doesn't work (workaround documented - use `pnpm dev`)
@@ -13,7 +13,7 @@
 ## Issue #1: Version Header Incorrect ✅ FIXED
 
 ### Problem
-Header shows "v0.1.0 - Stage D" but should show "v0.1.0 • Progressive Demos" with version injected from package.json.
+Header shows "v0.4.0 - Stage D" but should show "v0.4.0 • Progressive Demos" with version injected from package.json.
 
 ### Root Cause
 `vite.config.ts` used `__dirname` which doesn't work in ES modules.
@@ -36,7 +36,7 @@ const __dirname = path.dirname(__filename);
 Version is now properly injected from package.json at build time. Header will display:
 ```
 RowaKit Demo Gallery
-v0.1.0 • Progressive Demos
+v0.4.0 • Progressive Demos
 ```
 
 ---
@@ -179,7 +179,7 @@ Navigate to: `http://localhost:5173/`
 
 ### 3. Verify Fix #1 (Version Header)
 - Look at left sidebar header
-- Should show: `RowaKit Demo Gallery` with `v0.1.0 • Progressive Demos`
+- Should show: `RowaKit Demo Gallery` with `v0.4.0 • Progressive Demos`
 - Should NOT show: "Stage" or "Stage D"
 - Open F12 console, should see version injection logs
 

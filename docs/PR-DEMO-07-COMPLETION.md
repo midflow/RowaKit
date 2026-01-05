@@ -30,9 +30,10 @@ All requirements implemented and verified.
 ### 2. ✅ Version Reading from package.json
 
 **Implementation:**
-- Created `packages/demo/src/app/version.ts`:
+- Created `packages/demo/src/app/version.ts` which reads the table package version:
   ```typescript
-  export const APP_VERSION = import.meta.env.VITE_APP_VERSION || '0.1.0';
+  import { VERSION as TABLE_VERSION } from '@rowakit/table';
+  export const APP_VERSION = TABLE_VERSION;
   ```
 - Updated `packages/demo/vite.config.ts` to inject version:
   ```typescript
@@ -240,7 +241,7 @@ dist/assets/index-C8Vj8Ei6.js   211.85 kB │ gzip: 64.47 kB
 **Running:** `http://localhost:5173/`
 
 **Verified:**
-- ✅ Sidebar header shows: "v0.1.0 • Progressive Demos" (NO "Stage")
+- ✅ Sidebar header shows: "v0.4.0 • Progressive Demos" (NO "Stage")
 - ✅ Navigation shows correct demo titles
 - ✅ Demos grouped by category (Getting Started | Real-world | Advanced)
 - ✅ All 8 demos listed and complete

@@ -9,16 +9,16 @@ Dev server is running on: **http://localhost:5173/**
 ### Step 1: Check Version Display
 1. Open browser to http://localhost:5173/
 2. Look at **left sidebar header**
-3. **Expected**: `RowaKit Demo Gallery` with `v0.1.0 • Progressive Demos` below it
+3. **Expected**: `RowaKit Demo Gallery` with `v0.4.0 • Progressive Demos` below it
 4. **Should NOT contain**: "Stage D" or any word "Stage"
 
 ### Step 2: Check Browser Console for Debug Logs
 1. Press `F12` to open Developer Tools
 2. Click **Console** tab
 3. **Expected logs to see**:
-   - `[Version] VITE_APP_VERSION env: 0.1.0`
-   - `[Version] APP_VERSION: 0.1.0`
-   - `[AppShell] APP_VERSION: 0.1.0`
+   - `[Version] VITE_APP_VERSION env: 0.4.0`
+   - `[Version] APP_VERSION: 0.4.0`
+   - `[AppShell] APP_VERSION: 0.4.0`
    - `[AppShell] currentDemo: Basic Table`
 
 ### Step 3: Check Column Sizing Demo
@@ -92,9 +92,9 @@ Verify all 8 demos are visible:
 
 When opening http://localhost:5173/:
 ```
-[Version] VITE_APP_VERSION env: 0.1.0
-[Version] APP_VERSION: 0.1.0
-[AppShell] APP_VERSION: 0.1.0
+[Version] VITE_APP_VERSION env: 0.4.0
+[Version] APP_VERSION: 0.4.0
+[AppShell] APP_VERSION: 0.4.0
 [AppShell] currentDemo: Basic Table
 [Route] Hash:  Slug: basic-usage
 [Route] Demo found: 01-basic Basic Table
@@ -110,7 +110,7 @@ When clicking Advanced Query Patterns:
 
 ## Troubleshooting
 
-### If version shows as "undefined" or "0.1.0" not injected:
+### If version shows as "undefined" or "0.4.0" not injected:
 1. Hard refresh browser: `Ctrl+Shift+R` (or `Cmd+Shift+R` on Mac)
 2. Check vite.config.ts is using proper path resolution
 3. Check console for version injection logs

@@ -1,4 +1,4 @@
-# RowaKit – Stage C Issues (v0.3.0)
+# RowaKit – Stage C Issues (v0.4.0)
 Demand-driven advanced features for internal & business applications.
 
 Stage C focuses on **usability and productivity**, while strictly avoiding turning RowaKit into a generic datagrid.
@@ -146,4 +146,4 @@ Stage C is considered complete when:
 - CI is green
 - Documentation reflects new features
 - No datagrid-like features introduced
-- Ready to tag **v0.3.0**
+- Ready to tag **v0.4.0**

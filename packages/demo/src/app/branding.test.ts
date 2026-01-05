@@ -7,7 +7,7 @@ describe('app branding', () => {
   });
 
   it('should have a version number', () => {
-    // Version should be in format like "0.1.0"
+    // Version should be in format like "0.4.0"
     expect(APP_VERSION).toMatch(/^\d+\.\d+\.\d+$/);
   });
 

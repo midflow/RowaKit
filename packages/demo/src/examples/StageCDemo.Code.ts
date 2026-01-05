@@ -1,5 +1,5 @@
 /**
- * StageCDemo Code - v0.3.0 features
+ * StageCDemo Code - v0.4.0 features
  * Shows: column resizing, URL sync, saved views
  */
 

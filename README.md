@@ -169,7 +169,7 @@ Check out the [`examples/`](./packages/table/examples/) directory for complete w
   
 This repository has shipped Stage B features in `v0.2.2` (2026-01-02).
 
-### ✅ Stage C (v0.3.0) - **Advanced Features - Shipped**
+### ✅ Stage C (v0.4.0) - **Advanced Features - Shipped**
 - Column resizing with drag handles (minWidth/maxWidth)
 - URL state sync + saved views with localStorage
 - Advanced number range filters with filterTransform

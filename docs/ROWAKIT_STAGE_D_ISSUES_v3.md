@@ -1,6 +1,6 @@
-# RowaKit — Stage D Issues Pack (repo v0.3.0 tag) — Path-accurate & Tight
+# RowaKit — Stage D Issues Pack (repo v0.4.0 tag) — Path-accurate & Tight
 
-This pack is based on reviewing the source zip tag **v0.3.0**.
+This pack is based on reviewing the source zip tag **v0.4.0**.
 Primary implementation touchpoints are in:
 
 - `packages/table/src/components/SmartTable.tsx`
@@ -19,7 +19,7 @@ No “big new features”. Prefer small, well-tested deltas.
 
 ### Must-have regressions guards
 - Every behavior change below must have tests in `packages/table/src/components/*test.tsx` or `packages/table/src/__tests__/*`.
-- New tests must fail on v0.3.0 and pass after the PR.
+- New tests must fail on v0.4.0 and pass after the PR.
 
 ---
 

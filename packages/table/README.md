@@ -14,10 +14,10 @@ RowaKit Table is a React table component designed for real-world internal applic
 ✅ **7 column types** - Text, Date, Boolean, Badge, Number, Actions, Custom  
 ✅ **Column modifiers** - Width, align, truncate, minWidth, maxWidth (v0.2.0+)  
 ✅ **Server-side filters** - Type-specific filter UI with auto-generated inputs (v0.2.0+)  
-✅ **Column resizing** - Drag-to-resize handles with constraints (v0.3.0+)  
-✅ **Saved views** - Save/load table state with localStorage persistence (v0.3.0+)  
-✅ **URL state sync** - Share URLs with exact table configuration (v0.3.0+)  
-✅ **Number range filters** - Min/max filtering for numeric columns (v0.3.0+)  
+✅ **Column resizing** - Drag-to-resize handles with constraints (v0.4.0+)  
+✅ **Saved views** - Save/load table state with localStorage persistence (v0.4.0+)  
+✅ **URL state sync** - Share URLs with exact table configuration (v0.4.0+)  
+✅ **Number range filters** - Min/max filtering for numeric columns (v0.4.0+)  
 ✅ **State management** - Automatic loading, error, and empty states  
 ✅ **Smart fetching** - Retry on error, stale request handling
 
@@ -858,7 +858,7 @@ col.actions([
 
 ---
 
-## Advanced Features (v0.3.0+)
+## Advanced Features (v0.4.0+)
 
 ### Column Resizing (C-01)
 
@@ -1475,7 +1475,7 @@ Full TypeScript support. Your data model drives type checking throughout.
 - ✅ Fixed numeric filter value coercion
 - ✅ Production hardening and comprehensive documentation
 
-**Stage C - Advanced Features (v0.3.0)** ✅ Complete (2026-01-03)
+**Stage C - Advanced Features (v0.4.0)** ✅ Complete (2026-01-03)
 - ✅ C-01: Column resizing with drag handles (minWidth/maxWidth constraints)
 - ✅ C-02: Saved views with localStorage persistence
 - ✅ C-02: URL state sync (page, pageSize, sort, filters, columnWidths)

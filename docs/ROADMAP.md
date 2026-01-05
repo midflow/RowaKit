@@ -45,7 +45,7 @@
 
 ---
 
-## Stage C — Advanced / Optional (v0.3.0) ✅ COMPLETE
+## Stage C — Advanced / Optional (v0.4.0) ✅ COMPLETE
 
 **Delivered:**
 

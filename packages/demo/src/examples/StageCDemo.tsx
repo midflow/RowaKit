@@ -159,7 +159,7 @@ export default function StageCDemo() {
   return (
     <div>
       <div className="example-header">
-        <h2>Stage C Features Demo (v0.3.0)</h2>
+        <h2>Stage C Features Demo (v0.4.0)</h2>
         <p>
           This demo showcases all Stage C features: Column resizing, URL state sync, saved views,
           and advanced number range filters with filterTransform.

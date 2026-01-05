@@ -138,7 +138,7 @@ dist/index.d.cts     16.3 KB (CommonJS type declarations)
 ```
 
 ### Backward Compatibility
-✅ **Fully backward compatible** with v0.3.0
+✅ **Fully backward compatible** with v0.4.0
 - All Stage C features still work
 - Event system internal refactor (no impact on consumers)
 - New state management transparent to users
