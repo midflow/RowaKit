@@ -76,6 +76,7 @@ describe('SmartTable - Saved Views v1.1 (PRD-04)', () => {
         expect(index).toBeDefined();
         const parsed = JSON.parse(index!);
         expect(Array.isArray(parsed)).toBe(true);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect(parsed.some((item: any) => item.name === 'Test View')).toBe(true);
       });
     });
@@ -270,6 +271,7 @@ describe('SmartTable - Saved Views v1.1 (PRD-04)', () => {
         const indexStr = localStorage.getItem('rowakit-views-index');
         if (indexStr) {
           const indexData = JSON.parse(indexStr);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           expect(indexData.some((item: any) => item.name === 'To Delete')).toBe(false);
         }
       });

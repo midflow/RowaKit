@@ -123,6 +123,7 @@ function validateViewName(name: string): { valid: boolean; error?: string } {
   }
   
   // Reject control chars and special chars
+  // eslint-disable-next-line no-control-regex
   const invalidChars = /[/\\?%*:|"<>\x00-\x1f\x7f]/;
   if (invalidChars.test(trimmed)) {
     return { valid: false, error: 'Name contains invalid characters' };
@@ -661,7 +662,7 @@ export function RowaKitTable<T>({
     const qs = urlStr ? `?${urlStr}` : '';
     // Preserve hash (often used by hash routers like this demo gallery)
     window.history.replaceState(null, '', `${window.location.pathname}${qs}${window.location.hash}`);
-  }, [query, filters, syncToUrl, enableColumnResizing, defaultPageSize]);
+  }, [query, filters, syncToUrl, enableColumnResizing, defaultPageSize, columnWidths]);
 
   // PRD-05: Debounce columnWidths updates (150ms) while resizing
   useEffect(() => {
