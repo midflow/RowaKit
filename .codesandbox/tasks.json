@@ -2,7 +2,7 @@
   "tasks": {
     "start": {
       "name": "Start demo",
-      "command": "pnpm install && pnpm demo",
+      "command": "pnpm install && pnpm --filter @rowakit/table build && pnpm --filter @rowakit/demo dev -- --host 0.0.0.0 --port 5173 --strictPort",
       "runAtStart": true,
       "preview": {
         "port": 5173
