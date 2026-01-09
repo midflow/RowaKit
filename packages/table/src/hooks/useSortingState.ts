@@ -1,11 +1,11 @@
-import type { FetcherQuery } from '../types';
+import type { FetcherQuery, SortColumn } from '../types';
 
 export function useSortingState(
 	query: FetcherQuery,
 	setQuery: React.Dispatch<React.SetStateAction<FetcherQuery>>,
 ) {
 	const handleSort = (field: string, isMultiSort: boolean = false) => {
-		setQuery((prev) => {
+		setQuery((prev): FetcherQuery => {
 			const currentSorts = prev.sorts || [];
 			const existingSort = currentSorts.find((s) => s.field === field);
 
@@ -21,9 +21,9 @@ export function useSortingState(
 						};
 					}
 					// Remove primary sort if it was descending
+					const { sorts: _removed, ...rest } = prev;
 					return {
-						...prev,
-						sorts: undefined,
+						...rest,
 						page: 1,
 					};
 				}
@@ -38,17 +38,19 @@ export function useSortingState(
 			// Multi sort mode (Ctrl/Cmd + click)
 			if (existingSort) {
 				// Toggle direction if shift-clicking on existing sort
-				const newSorts = currentSorts.map((s) =>
-					s.field === field
-						? { ...s, direction: s.direction === 'asc' ? 'desc' : 'asc' }
-						: s,
-				);
+				const newSorts: SortColumn[] = currentSorts.map((s) => {
+					if (s.field === field) {
+						const newDirection: 'asc' | 'desc' = s.direction === 'asc' ? 'desc' : 'asc';
+						return { ...s, direction: newDirection };
+					}
+					return s;
+				});
 				return { ...prev, sorts: newSorts, page: 1 };
 			}
 
 			// Add as secondary sort with next priority
 			const nextPriority = currentSorts.length;
-			const newSorts = [...currentSorts, { field, direction: 'asc', priority: nextPriority }];
+			const newSorts: SortColumn[] = [...currentSorts, { field, direction: 'asc', priority: nextPriority }];
 			return { ...prev, sorts: newSorts, page: 1 };
 		});
 	};
