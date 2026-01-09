@@ -221,7 +221,7 @@ describe('RowaKitTable Component (A-11)', () => {
       expect(fetcher).toHaveBeenLastCalledWith({
         page: 1,
         pageSize: 20,
-        sort: undefined,
+        sorts: undefined,
         filters: undefined,
       });
 
@@ -235,7 +235,7 @@ describe('RowaKitTable Component (A-11)', () => {
         expect(fetcher).toHaveBeenLastCalledWith({
           page: 1,
           pageSize: 20,
-          sort: { field: 'name', direction: 'asc' },
+          sorts: [{ field: 'name', direction: 'asc', priority: 0 }],
           filters: undefined,
         });
       });
@@ -247,7 +247,7 @@ describe('RowaKitTable Component (A-11)', () => {
         expect(fetcher).toHaveBeenLastCalledWith({
           page: 1,
           pageSize: 20,
-          sort: { field: 'name', direction: 'desc' },
+          sorts: [{ field: 'name', direction: 'desc', priority: 0 }],
           filters: undefined,
         });
       });
@@ -259,7 +259,7 @@ describe('RowaKitTable Component (A-11)', () => {
         expect(fetcher).toHaveBeenLastCalledWith({
           page: 1,
           pageSize: 20,
-          sort: undefined,
+          sorts: undefined,
           filters: undefined,
         });
       });
@@ -311,7 +311,7 @@ describe('RowaKitTable Component (A-11)', () => {
         expect(fetcher).toHaveBeenLastCalledWith({
           page: 1, // Back to page 1
           pageSize: 20,
-          sort: { field: 'name', direction: 'asc' },
+          sorts: [{ field: 'name', direction: 'asc', priority: 0 }],
           filters: undefined,
         });
       });

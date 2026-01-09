@@ -23,7 +23,7 @@ export function useSortingState(
 					// Remove primary sort if it was descending
 					return {
 						...prev,
-						sorts: [],
+						sorts: undefined,
 						page: 1,
 					};
 				}

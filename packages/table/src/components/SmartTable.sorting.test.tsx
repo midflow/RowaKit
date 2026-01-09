@@ -172,7 +172,7 @@ describe('SmartTable - Sorting (A-07)', () => {
         expect(fetcher).toHaveBeenCalledWith({
           page: 1,
           pageSize: 20,
-          sort: { field: 'name', direction: 'asc' },
+          sorts: [{ field: 'name', direction: 'asc', priority: 0 }],
         });
       });
     });
@@ -204,7 +204,7 @@ describe('SmartTable - Sorting (A-07)', () => {
         expect(fetcher).toHaveBeenCalledWith({
           page: 1,
           pageSize: 20,
-          sort: { field: 'name', direction: 'asc' },
+          sorts: [{ field: 'name', direction: 'asc', priority: 0 }],
         });
       });
 
@@ -214,7 +214,7 @@ describe('SmartTable - Sorting (A-07)', () => {
         expect(fetcher).toHaveBeenCalledWith({
           page: 1,
           pageSize: 20,
-          sort: { field: 'name', direction: 'desc' },
+          sorts: [{ field: 'name', direction: 'desc', priority: 0 }],
         });
       });
     });
@@ -244,21 +244,21 @@ describe('SmartTable - Sorting (A-07)', () => {
       await user.click(nameHeader);
       await waitFor(() => {
         const lastCall = fetcher.mock.calls[fetcher.mock.calls.length - 1][0];
-        expect(lastCall.sort).toEqual({ field: 'name', direction: 'asc' });
+        expect(lastCall.sorts).toEqual([{ field: 'name', direction: 'asc', priority: 0 }]);
       });
 
       // Click 2: desc
       await user.click(nameHeader);
       await waitFor(() => {
         const lastCall = fetcher.mock.calls[fetcher.mock.calls.length - 1][0];
-        expect(lastCall.sort).toEqual({ field: 'name', direction: 'desc' });
+        expect(lastCall.sorts).toEqual([{ field: 'name', direction: 'desc', priority: 0 }]);
       });
 
       // Click 3: no sort
       await user.click(nameHeader);
       await waitFor(() => {
         const lastCall = fetcher.mock.calls[fetcher.mock.calls.length - 1][0];
-        expect(lastCall.sort).toBeUndefined();
+        expect(lastCall.sorts).toBeUndefined();
       });
     });
 
@@ -290,7 +290,7 @@ describe('SmartTable - Sorting (A-07)', () => {
 
       await waitFor(() => {
         const lastCall = fetcher.mock.calls[fetcher.mock.calls.length - 1][0];
-        expect(lastCall.sort).toEqual({ field: 'name', direction: 'asc' });
+        expect(lastCall.sorts).toEqual([{ field: 'name', direction: 'asc', priority: 0 }]);
       });
 
       // Switch to email - should start with ascending
@@ -299,7 +299,7 @@ describe('SmartTable - Sorting (A-07)', () => {
 
       await waitFor(() => {
         const lastCall = fetcher.mock.calls[fetcher.mock.calls.length - 1][0];
-        expect(lastCall.sort).toEqual({ field: 'email', direction: 'asc' });
+        expect(lastCall.sorts).toEqual([{ field: 'email', direction: 'asc', priority: 0 }]);
       });
     });
 
@@ -341,7 +341,7 @@ describe('SmartTable - Sorting (A-07)', () => {
       await waitFor(() => {
         const lastCall = fetcher.mock.calls[fetcher.mock.calls.length - 1][0];
         expect(lastCall.page).toBe(1);
-        expect(lastCall.sort).toEqual({ field: 'name', direction: 'asc' });
+        expect(lastCall.sorts).toEqual([{ field: 'name', direction: 'asc', priority: 0 }]);
       });
     });
   });
@@ -505,7 +505,7 @@ describe('SmartTable - Sorting (A-07)', () => {
         expect(fetcher).toHaveBeenCalledWith({
           page: 1,
           pageSize: 20,
-          sort: { field: 'name', direction: 'asc' },
+          sorts: [{ field: 'name', direction: 'asc', priority: 0 }],
         });
       });
     });
@@ -537,7 +537,7 @@ describe('SmartTable - Sorting (A-07)', () => {
         expect(fetcher).toHaveBeenCalledWith({
           page: 1,
           pageSize: 20,
-          sort: { field: 'name', direction: 'asc' },
+          sorts: [{ field: 'name', direction: 'asc', priority: 0 }],
         });
       });
     });
@@ -607,7 +607,7 @@ describe('SmartTable - Sorting (A-07)', () => {
 
       await waitFor(() => {
         const lastCall = fetcher.mock.calls[fetcher.mock.calls.length - 1][0];
-        expect(lastCall.sort).toEqual({ field: 'name', direction: 'asc' });
+        expect(lastCall.sorts).toEqual([{ field: 'name', direction: 'asc', priority: 0 }]);
       });
 
       // Navigate to next page - sort should be maintained
@@ -617,7 +617,7 @@ describe('SmartTable - Sorting (A-07)', () => {
       await waitFor(() => {
         const lastCall = fetcher.mock.calls[fetcher.mock.calls.length - 1][0];
         expect(lastCall.page).toBe(2);
-        expect(lastCall.sort).toEqual({ field: 'name', direction: 'asc' });
+        expect(lastCall.sorts).toEqual([{ field: 'name', direction: 'asc', priority: 0 }]);
       });
     });
 
@@ -647,7 +647,7 @@ describe('SmartTable - Sorting (A-07)', () => {
 
       await waitFor(() => {
         const lastCall = fetcher.mock.calls[fetcher.mock.calls.length - 1][0];
-        expect(lastCall.sort).toEqual({ field: 'name', direction: 'asc' });
+        expect(lastCall.sorts).toEqual([{ field: 'name', direction: 'asc', priority: 0 }]);
       });
 
       // Change page size - sort should be maintained
@@ -658,7 +658,7 @@ describe('SmartTable - Sorting (A-07)', () => {
         const lastCall = fetcher.mock.calls[fetcher.mock.calls.length - 1][0];
         expect(lastCall.pageSize).toBe(20);
         expect(lastCall.page).toBe(1); // Reset to page 1
-        expect(lastCall.sort).toEqual({ field: 'name', direction: 'asc' });
+        expect(lastCall.sorts).toEqual([{ field: 'name', direction: 'asc', priority: 0 }]);
       });
     });
   });
@@ -780,7 +780,7 @@ describe('SmartTable - Sorting (A-07)', () => {
         expect(fetcher).toHaveBeenCalledWith({
           page: 1,
           pageSize: 20,
-          sort: { field: 'inStock', direction: 'asc' },
+          sorts: [{ field: 'inStock', direction: 'asc', priority: 0 }],
         });
       });
     });
@@ -833,8 +833,8 @@ describe('SmartTable - Sorting (A-07)', () => {
       // but it should not include a sort change
       if (callsAfterDoubleClick > 0) {
         const lastCall = fetcher.mock.calls[fetcher.mock.calls.length - 1][0] as FetcherQuery;
-        // If there was a call, sort should remain the same (undefined initially)
-        expect(lastCall.sort).toBeUndefined();
+        // If there was a call, sorts should remain the same (undefined initially)
+        expect(lastCall.sorts).toBeUndefined();
       }
     });
 
