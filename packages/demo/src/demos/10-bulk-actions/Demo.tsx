@@ -62,7 +62,7 @@ const fetcher: Fetcher<User> = async (query) => {
  * Actions are triggered on selected rows.
  */
 export default function BulkActionsDemo() {
-  const [selectedKeys, setSelectedKeys] = useState<Array<string | number>>([]);
+  const [, setSelectedKeys] = useState<Array<string | number>>([]);
   const [lastAction, setLastAction] = useState<{ action: string; keys: Array<string | number> } | null>(null);
 
   return (

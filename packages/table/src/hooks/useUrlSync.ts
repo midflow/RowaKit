@@ -166,6 +166,18 @@ export function useUrlSync<T>({
 	const didHydrateUrlRef = useRef(false);
 	const didSkipInitialUrlSyncRef = useRef(false);
 	const urlSyncDebounceRef = useRef<NodeJS.Timeout | null>(null);
+	
+	// Store props in refs to avoid unnecessary effect re-runs during hydration
+	const defaultPageSizeRef = useRef(defaultPageSize);
+	const pageSizeOptionsRef = useRef(pageSizeOptions);
+	const enableColumnResizingRef = useRef(enableColumnResizing);
+	const columnsRef = useRef(columns);
+	
+	// Keep refs updated
+	defaultPageSizeRef.current = defaultPageSize;
+	pageSizeOptionsRef.current = pageSizeOptions;
+	enableColumnResizingRef.current = enableColumnResizing;
+	columnsRef.current = columns;
 
 	useEffect(() => {
 		if (!syncToUrl) {
@@ -183,20 +195,18 @@ export function useUrlSync<T>({
 			urlSyncDebounceRef.current = null;
 		}
 
-		const urlStr = serializeUrlState(query, filters, columnWidths, defaultPageSize, enableColumnResizing);
+		const urlStr = serializeUrlState(query, filters, columnWidths, defaultPageSizeRef.current, enableColumnResizingRef.current);
 		const qs = urlStr ? `?${urlStr}` : '';
 		window.history.replaceState(null, '', `${window.location.pathname}${qs}${window.location.hash}`);
 	}, [
 		query,
 		filters,
 		syncToUrl,
-		enableColumnResizing,
-		defaultPageSize,
 		columnWidths,
 	]);
 
 	useEffect(() => {
-		if (!syncToUrl || !enableColumnResizing) return;
+		if (!syncToUrl || !enableColumnResizingRef.current) return;
 		if (!didSkipInitialUrlSyncRef.current) return;
 
 		if (urlSyncDebounceRef.current) {
@@ -204,7 +214,7 @@ export function useUrlSync<T>({
 		}
 
 		urlSyncDebounceRef.current = setTimeout(() => {
-			const urlStr = serializeUrlState(query, filters, columnWidths, defaultPageSize, enableColumnResizing);
+			const urlStr = serializeUrlState(query, filters, columnWidths, defaultPageSizeRef.current, enableColumnResizingRef.current);
 			const qs = urlStr ? `?${urlStr}` : '';
 			window.history.replaceState(null, '', `${window.location.pathname}${qs}${window.location.hash}`);
 			urlSyncDebounceRef.current = null;
@@ -219,10 +229,8 @@ export function useUrlSync<T>({
 	}, [
 		columnWidths,
 		syncToUrl,
-		enableColumnResizing,
 		query,
 		filters,
-		defaultPageSize,
 	]);
 
 	useEffect(() => {
@@ -234,7 +242,7 @@ export function useUrlSync<T>({
 		didHydrateUrlRef.current = true;
 
 		const params = new URLSearchParams(window.location.search);
-		const parsed = parseUrlState(params, defaultPageSize, pageSizeOptions);
+		const parsed = parseUrlState(params, defaultPageSizeRef.current, pageSizeOptionsRef.current);
 
 		setQuery({
 			page: parsed.page,
@@ -248,13 +256,13 @@ export function useUrlSync<T>({
 			setFilters(parsed.filters);
 		}
 
-		if (parsed.columnWidths && enableColumnResizing) {
+		if (parsed.columnWidths && enableColumnResizingRef.current) {
 			const clamped: Record<string, number> = {};
 			for (const [colId, rawWidth] of Object.entries(parsed.columnWidths)) {
 				const widthNum = typeof rawWidth === 'number' ? rawWidth : Number(rawWidth);
 				if (!Number.isFinite(widthNum)) continue;
 
-				const colDef = columns.find((c) => c.id === colId);
+				const colDef = columnsRef.current.find((c) => c.id === colId);
 				if (!colDef) continue;
 
 				const minW = colDef.minWidth ?? 80;
@@ -271,10 +279,6 @@ export function useUrlSync<T>({
 		}
 	}, [
 		syncToUrl,
-		defaultPageSize,
-		enableColumnResizing,
-		pageSizeOptions,
-		columns,
 		setQuery,
 		setFilters,
 		setColumnWidths,

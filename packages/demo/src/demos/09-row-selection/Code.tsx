@@ -31,7 +31,7 @@ const fetcher: Fetcher<User> = async (query) => {
  * Demonstrates enabling selection and handling selection changes.
  */
 export default function RowSelectionCode() {
-  const [selectedKeys, setSelectedKeys] = useState<Array<string | number>>([]);
+  const [, setSelectedKeys] = useState<Array<string | number>>([]);
 
   return (
     <SmartTable

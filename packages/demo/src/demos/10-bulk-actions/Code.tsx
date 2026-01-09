@@ -29,7 +29,7 @@ const fetcher: Fetcher<User> = async (query) => {
  * Demonstrates defining bulk actions with confirmation dialogs.
  */
 export default function BulkActionsCode() {
-  const [selectedKeys, setSelectedKeys] = useState<Array<string | number>>([]);
+  const [, setSelectedKeys] = useState<Array<string | number>>([]);
 
   return (
     <SmartTable
