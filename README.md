@@ -133,6 +133,27 @@ function UsersTable() {
 * No accidental sort during resize
 * Stable layout using `table-layout: fixed`
 
+### Selection & Bulk Actions
+
+* ✅ Row selection with page-scoped checkboxes
+* ✅ Indeterminate state for partial selection
+* ✅ Bulk action buttons with confirmation dialogs
+* ✅ Selection resets on page change
+
+### Export & Integrations
+
+* ✅ CSV/JSON export via pluggable `exporter` callback
+* ✅ Current query snapshot passed (filters, sort, pagination)
+* ✅ Error handling with inline display
+* ✅ Loading state during export
+
+### Accessibility Baseline
+
+* ✅ `aria-sort` on sortable headers
+* ✅ Modal focus trap (Tab/Shift+Tab cycling)
+* ✅ ESC key closes dialogs
+* ✅ Proper dialog semantics (role, aria-modal, aria-labelledby)
+
 ### Saved Views + URL State
 
 * Automatic persistence & hydration
@@ -154,10 +175,11 @@ function UsersTable() {
 ## Roadmap Overview
 
 * ✅ **Stage A** – MVP (server-side pagination & sorting)
-* ✅ **Stage B (v0.2.x)** – production readiness
-* ✅ **Stage C (v0.4.0)** – resizing, URL sync, saved views
+* ✅ **Stage B (v0.2.x)** – production readiness (filters, number/badge columns)
+* ✅ **Stage C (v0.4.0)** – advanced features (resizing, URL sync, saved views)
 * ✅ **Stage D (v0.4.0)** – polish & correctness hardening
-* 💭 **Stage E (planned)** – demand-driven features (row selection, CSV export, multi-sort)
+* ✅ **Stage E (v0.5.0)** – core features + a11y (row selection, bulk actions, export, accessibility)
+* 💭 **Stage F (planned)** – demand-driven features (multi-sort, additional export formats)
 
 See [ROADMAP.md](./docs/ROADMAP.md) for details.
 

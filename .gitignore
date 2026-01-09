@@ -37,6 +37,12 @@ pnpm-debug.log*
 #test files
 test-*.txt
 
+# Junk files (prevent editor/merge artifacts)
+*.tmp
+*.backup
+*.swp~
+*~
+
 #others
 package-lock.json
 packages\table\package-lock.json

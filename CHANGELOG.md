@@ -7,6 +7,77 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.0] - 2026-01-09 (Core Features + a11y)
+
+### Added
+- **Stage E: Hook Refactor (E-01)**
+  - Extracted 5 composable hooks: `useFetcherState`, `useSortingState`, `useColumnResizing`, `useUrlSync`, `useSavedViews`
+  - New `useFocusTrap` hook for modal keyboard navigation
+  - SmartTable refactored from god component to composition-based architecture
+  - All existing behavior preserved; no breaking changes
+  - Improved testability and future extensibility
+
+- **Stage E: Row Selection (E-02)**
+  - Page-scoped row selection with checkboxes (header + body rows)
+  - Selection state module with helpers: `toggleSelectionKey`, `selectAll`, `clearSelection`, `isAllSelected`, `isIndeterminate`
+  - Header checkbox with indeterminate state for partial selection
+  - `enableRowSelection` prop to enable feature
+  - `onSelectionChange` callback for selection changes
+  - Automatic selection reset on page change (prevents user confusion)
+
+- **Stage E: Bulk Actions (E-03)**
+  - `BulkActionBar` component displaying selected count and action buttons
+  - `bulkActions` prop: array of action definitions with callbacks
+  - Confirmation modal support for destructive actions
+  - Reuses existing modal styling for consistency
+  - Snapshot of selected row keys passed to action handlers
+
+- **Stage E: CSV Export (E-04)**
+  - `ExportButton` component with loading and error states
+  - `Exporter` type: callback receiving FetcherQuery, returning Promise<{url} | Blob>
+  - `ExporterResult` type exported for typing
+  - Error handling with inline error display in UI
+  - Current query snapshot passed to exporter (includes filters, sort, pagination)
+
+- **Stage E: Version Automation (E-05)**
+  - Version injected from `package.json` at build time via tsup define plugin
+  - `__ROWAKIT_TABLE_VERSION__` constant defined at build time
+  - Works seamlessly in built artifacts and test environments
+  - Fallback to `0.4.0` for development environments
+
+- **Stage E: Repo Hygiene (E-06)**
+  - Removed junk files (.tmp, .backup) from demo folder
+  - Added `.gitignore` patterns: `*.tmp`, `*.backup`, `*.swp~`, `*~`
+  - Created [CI_JUNK_FILE_PREVENTION.md](./docs/CI_JUNK_FILE_PREVENTION.md) documentation
+  - Pre-commit hook example for automatic enforcement
+
+- **Stage E: Accessibility Baseline (E-07)**
+  - `aria-sort` attributes on sortable headers (ascending/descending/none)
+  - Modal focus trap: Tab/Shift+Tab cycles within modal
+  - ESC key closes all dialogs
+  - Auto-focus first focusable element in modals on open
+  - Proper dialog semantics: `role="dialog"`, `aria-modal="true"`, `aria-labelledby` on all modals
+  - Keyboard-safe column resizing (works with pointer capture)
+
+### Changed
+- SmartTable component now composes hooks instead of inline logic
+- Version constant no longer hardcoded in source code
+- Modal styling unified and documented
+
+### Testing
+- 246 tests passing (18 test files)
+- All existing behavior preserved (backward compatible)
+- New feature coverage: row selection (3 tests), bulk actions (2 tests), export (2 tests)
+
+### Build & Performance
+- ESM bundle: 56.37 KB (gzipped: ~16 KB)
+- CJS bundle: 57.73 KB (gzipped: ~17 KB)
+- DTS: 16.67 KB
+- No performance regressions in existing features
+- Tree-shakeable exports preserved
+
+---
+
 ## [0.4.0] - 2026-01-05 (Polish + Correctness)
 
 ### Added

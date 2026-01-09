@@ -30,6 +30,9 @@ export type {
   ActionDef,
 } from './types';
 
+// Export types
+export type { Exporter, ExporterResult } from './types/export';
+
 // Column helper factory
 export { col } from './column-helpers';
 
@@ -37,4 +40,9 @@ export { col } from './column-helpers';
 export { RowaKitTable, SmartTable } from './components/SmartTable';
 export type { SmartTableProps } from './components/SmartTable';
 
-export const VERSION = '0.4.0';
+// Version injected at build time from package.json
+declare const __ROWAKIT_TABLE_VERSION__: string | undefined;
+
+export const VERSION = typeof __ROWAKIT_TABLE_VERSION__ !== 'undefined' 
+  ? __ROWAKIT_TABLE_VERSION__ 
+  : '0.4.0';

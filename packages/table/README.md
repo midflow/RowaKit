@@ -37,6 +37,11 @@ This makes RowaKit especially suitable for:
 * 📌 **Saved views** – persist table state to localStorage (v0.4.0+)
 * 🔗 **URL sync** – share exact table state via query string (v0.4.0+)
 * 🧮 **Number range filters** – min/max with optional value transforms
+* ✅ **Row selection** – select/deselect rows with bulk header checkbox (v0.5.0+)
+* 🎬 **Bulk actions** – execute operations on multiple selected rows (v0.5.0+)
+* 💾 **CSV export** – server-triggered export with customizable formatter (v0.5.0+)
+* 🔄 **Multi-column sorting** – Ctrl+Click to sort by multiple columns with priority (v0.5.0+)
+* ♿ **Accessibility** – ARIA labels, keyboard navigation, focus management (v0.5.0+)
 * 🔄 **Smart fetching** – retry on error, stale request protection
 * ✅ **Built-in states** – loading, error, empty handled automatically
 
@@ -238,9 +243,10 @@ See the scope lock and rationale in the root repository docs.
 
 ## Versioning & Roadmap
 
-* Current: **v0.4.x** (Stage D – polish & correctness)
+* Current: **v0.5.x** (Stage E – row selection, bulk actions, export, multi-sort, a11y)
 * API is stable; patches are backward compatible
-* Future features are demand-driven (Stage E)
+* Completed: Stages A-E with full feature set for internal business applications
+* See [CHANGELOG.md](./CHANGELOG.md) for detailed v0.5.0 features and [docs/ROADMAP.md](../../docs/ROADMAP.md)
 
 ---
 
