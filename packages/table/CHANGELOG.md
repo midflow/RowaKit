@@ -2,6 +2,36 @@
 
 All notable changes to this package will be documented in this file.
 
+## [0.5.0] - 2026-01-09 (Stage E - Row Selection, Bulk Actions, Export, Multi-Sort, Accessibility)
+
+### Added
+- **Row Selection (E1)**: Select/deselect individual rows with checkbox column, bulk header checkbox, keyboard support (Space/Enter)
+- **Bulk Actions (E2)**: Execute actions on multiple selected rows with confirmation dialogs
+- **Server-triggered CSV Export (E3)**: Export button with customizable exporter function, supports server-side export generation
+- **Multi-Column Sorting (E4)**: Sort by multiple columns (Ctrl+Click to add sorts), maintains priority order
+- **Accessibility Baseline (E7)**: ARIA labels, keyboard navigation, focus trap in modals, semantic HTML
+- `enableRowSelection?: boolean` prop to activate row selection UI
+- `bulkActions?: BulkAction[]` prop for bulk operation handlers
+- `onExport?: Exporter` prop for export functionality
+- `sorts?: SortColumn[]` in FetcherQuery for multi-sort support (backward compatible with `sort`)
+- `useFocusTrap` hook for keyboard-accessible modals and dialogs
+
+### Changed
+- FetcherQuery now supports `sorts: SortColumn[]` array (multi-sort) while maintaining `sort` for backward compatibility
+- Demo system expanded with 5 new Stage E examples (09-13)
+- All Stage E demos implement proper server-side data operations
+
+### Fixed
+- TypeScript typing in useFocusTrap hook for proper non-null assertions on ref assignments
+- Focus management in modal dialogs with proper cyclic Tab/Shift+Tab behavior
+
+### Tests & Verification
+- All 246+ tests passing
+- Build successful: ESM, CJS, and TypeScript definitions
+- Demo server running with 13 interactive examples
+
+---
+
 ## [0.4.0] - 2026-01-05 (Polish + Correctness)
 
 ### Added

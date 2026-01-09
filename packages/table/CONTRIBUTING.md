@@ -330,26 +330,26 @@ Technical approach and key decisions
 
 ## Roadmap and Issues
 
-### Current Stage: D (Polish + Correctness, v0.4.0)
+### Current Stage: E (Row Selection, Bulk Actions, Export, Multi-Sort, Accessibility, v0.5.0)
 
-See [docs/ROADMAP.md](../../docs/ROADMAP.md) and [docs/ROWAKIT_STAGE_D_ISSUES_v3.md](../../docs/ROWAKIT_STAGE_D_ISSUES_v3.md) for detailed roadmap and Stage D issues.
+See [docs/ROADMAP.md](../../docs/ROADMAP.md) for detailed roadmap.
 
-**Completed (Stage D):**
-- ✅ A-01: Monorepo scaffold
-- ✅ A-02: Core types
-- ✅ A-03: Column helpers
-- ✅ A-04: RowaKitTable rendering
-- ✅ A-05: Data fetching state machine
-- ✅ A-06: Pagination UI
-- ✅ A-07: Single-column sorting
-- ✅ A-08: Actions with confirmation
-- ✅ A-09: Minimal styling tokens
-- ✅ A-10: Documentation & examples
+**Completed (Stages A-E):**
+- ✅ A-01 through A-10: Core infrastructure (v0.1.0)
+- ✅ B-01 through B-05: Advanced column types & server-side filters (v0.2.0)
+- ✅ C-01 through C-03: Column resizing, saved views, URL sync (v0.4.0)
+- ✅ D-01 through D-03: Polish, correctness, a11y foundation (v0.4.0)
+- ✅ E1: Row selection & bulk actions (v0.5.0)
+- ✅ E2: CSV export (server-triggered) (v0.5.0)
+- ✅ E3: Multi-column sorting (v0.5.0)
+- ✅ E4: Accessibility baseline (v0.5.0)
 
-**Next (Demand-driven / Stage E):**
-- Row selection + bulk actions
-- Export CSV (server-triggered)
-- Multi-column sorting
+**Feature Complete:** RowaKit Table v0.5.0 is feature-complete for internal business applications with all core Stage A-E requirements shipped.
+
+**Future (Demand-driven):**
+- Community-requested enhancements
+- Performance optimizations
+- Additional export formats
 
 ### Finding Issues
 

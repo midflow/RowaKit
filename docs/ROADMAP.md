@@ -7,9 +7,9 @@
 
 ## Current Status
 
-**Version:** 0.4.0  
-**Stage:** D (Polish + Correctness) - ✅ **COMPLETE**  
-**Next:** Demand-driven enhancements
+**Version:** 0.5.0  
+**Stage:** E (Core Features + a11y) - ✅ **COMPLETE**  
+**Next:** v0.6.0 (demand-driven enhancements)
 
 ---
 
@@ -115,6 +115,61 @@
 
 ---
 
+## Stage E — Core Features + a11y (v0.5.0) ✅ COMPLETE
+
+**Goal:** Add essential features for production-grade tables and ensure baseline accessibility.
+
+### E-01: Hook Refactor (Internal)
+- ✅ Extracted hooks: `useFetcherState`, `useSortingState`, `useColumnResizing`, `useUrlSync`, `useSavedViews`
+- ✅ SmartTable refactored to compose hooks (reduced from god component to clean composition)
+- ✅ All existing behavior preserved; no breaking changes
+- ✅ Easier testing and future feature additions
+
+### E-02: Row Selection
+- ✅ Page-scoped row selection (checkbox in header + body rows)
+- ✅ Selection state module with helpers (`toggleSelectionKey`, `selectAll`, `clearSelection`, etc.)
+- ✅ Selection resets on page change (prevents user confusion)
+- ✅ `enableRowSelection` prop + `onSelectionChange` callback
+- ✅ Header checkbox with indeterminate state for partial selection
+
+### E-03: Bulk Actions
+- ✅ BulkActionBar component (shows selected count + action buttons)
+- ✅ `bulkActions` prop with confirmation modal support
+- ✅ Reuses existing modal styling for consistency
+- ✅ Snapshot of selected rows passed to action handler
+
+### E-04: CSV Export (Optional)
+- ✅ ExportButton component with loading state
+- ✅ `exporter` callback prop (FetcherQuery → Promise<{url} | Blob>)
+- ✅ Error handling with inline error display
+- ✅ Current query snapshot passed to exporter (filters, sort, pagination included)
+- ✅ Supports both URL-based and Blob-based exports
+
+### E-05: Version Automation
+- ✅ Version injected from `package.json` at build time (tsup define plugin)
+- ✅ No more hardcoded version strings in source
+- ✅ Works in built artifacts and test environments
+- ✅ Falls back to `0.4.0` if not injected (dev environment)
+
+### E-06: Repo Hygiene
+- ✅ Removed junk files (.tmp, .backup) from demo folder
+- ✅ Added `.gitignore` patterns for editor artifacts (*.tmp, *.backup, *.swp~, *~)
+- ✅ Documented CI rule for preventing junk files (see [CI_JUNK_FILE_PREVENTION.md](./CI_JUNK_FILE_PREVENTION.md))
+- ✅ Pre-commit hook example provided for automatic enforcement
+
+### E-07: Accessibility Baseline
+- ✅ `aria-sort` attributes on sortable headers (ascending/descending/none)
+- ✅ Modal focus trap: Tab/Shift+Tab cycles within modal, ESC closes
+- ✅ Auto-focus first focusable element in modals
+- ✅ Proper dialog semantics (role="dialog", aria-modal="true", aria-labelledby)
+- ✅ Keyboard-safe column resizing (pointer events work with keyboard navigation)
+
+**Shipped:** 2026-01-09
+
+**Test Results:** 246 tests passing | ESM 56.37 KB | CJS 57.73 KB | DTS generated | Lint clean
+
+---
+
 ## Out of Scope (Permanent)
 
 - ❌ Virtualization (use TanStack Virtual, react-window)
@@ -160,11 +215,14 @@
 - [packages/table/README.md](../packages/table/README.md) — Detailed documentation
 - [DECISIONS_SCOPE_LOCK.md](./DECISIONS_SCOPE_LOCK.md) — Design constraints
 - [CHANGELOG.md](../CHANGELOG.md) — Version history
-- ❌ Grouping/pivot → use AG Grid
-- ❌ Spreadsheet editing → use Handsontable
-- ❌ Client-side data engines → use TanStack Table
 
-**Status:** 💭 **Uncertain.** Only if there's overwhelming demand.
+---
+
+## Release Strategy
+
+- **0.x releases:** May include small breaking changes with migration guides
+- **1.0+:** Strict semver; breaking changes only in major versions
+- **Cadence:** Driven by demand and maintainer availability
 
 ---
 
@@ -172,36 +230,40 @@
 
 ### How Features Get Added
 
-1. **User files an issue** using the feature request template
+1. **User files an issue** with a real-world use case
 2. **Scope check:** Does it conflict with [DECISIONS_SCOPE_LOCK.md](./DECISIONS_SCOPE_LOCK.md)?
-   - If yes → close with explanation
 3. **Demand check:** Is there repeated demand from multiple users?
-   - If no → wait for more requests
-4. **Design:** Ensure feature fits RowaKit's API philosophy
+4. **Design:** Ensure API aligns with RowaKit philosophy
 5. **Implement:** Keep changes minimal, test thoroughly
 6. **Ship:** Update docs, examples, changelog
 
 ### What Gets Rejected
 
-- Features that turn RowaKit into a data grid
+- Features that turn RowaKit into a data grid (use AG Grid instead)
 - Client-side-heavy features (conflicts with "server-first")
 - Niche features solvable with `col.custom()`
-- Features with low ROI vs high complexity
+- Features with low ROI vs high maintenance burden
 
 ---
 
 ## Long-Term Vision
 
 RowaKit will remain:
-- **Server-side first** - always
-- **Small core** - no bloat
-- **Opinionated** - clear constraints
-- **Maintainable** - single maintainer friendly
+- **Server-side first** — always
+- **Small core** — no feature bloat
+- **Opinionated** — clear scope lock
+- **Maintainable** — designed for single maintainer
 
 We will **never**:
 - Compete with AG Grid, TanStack Table, or Handsontable
 - Support every possible use case
-- Sacrifice simplicity for flexibility
+- Sacrifice simplicity for configurability
+
+---
+
+**Last Updated:** 2026-01-09  
+**Current Version:** 0.5.0  
+**Status:** Stage E Complete
 
 ---
 

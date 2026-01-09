@@ -1,7 +1,9 @@
 /**
- * Demo Registry - All 8 progressive demos
+ * Demo Registry - All 13 progressive demos
  * Structure: 01-basic → 02-columns → 03-row-actions → 04-server-filters → 
- *            05-url-sync → 06-saved-views → 07-column-resize → 08-advanced-query
+ *            05-url-sync → 06-saved-views → 07-column-resize → 08-advanced-query →
+ *            09-row-selection → 10-bulk-actions → 11-csv-export →
+ *            12-multi-sort → 13-accessibility
  */
 
 import BasicUsageDemo from '../demos/01-basic/Demo';
@@ -12,6 +14,11 @@ import UrlSyncDemo from '../demos/05-url-sync/Demo';
 import SavedViewsDemo from '../demos/06-saved-views/Demo';
 import ColumnResizeDemo from '../demos/07-column-resize/Demo';
 import AdvancedQueryDemo from '../demos/08-advanced-query/Demo';
+import RowSelectionDemo from '../demos/09-row-selection/Demo';
+import BulkActionsDemo from '../demos/10-bulk-actions/Demo';
+import CsvExportDemo from '../demos/11-csv-export/Demo';
+import MultiSortDemo from '../demos/12-multi-sort/Demo';
+import AccessibilityDemo from '../demos/13-accessibility/Demo';
 
 // Demo metadata (contains learning outcomes and documentation)
 import { meta as basicMeta } from '../demos/01-basic/meta';
@@ -22,6 +29,11 @@ import { meta as urlSyncMeta } from '../demos/05-url-sync/meta';
 import { meta as viewsMeta } from '../demos/06-saved-views/meta';
 import { meta as resizeMeta } from '../demos/07-column-resize/meta';
 import { meta as advancedMeta } from '../demos/08-advanced-query/meta';
+import { meta as selectionMeta } from '../demos/09-row-selection/meta';
+import { meta as bulkActionsMeta } from '../demos/10-bulk-actions/meta';
+import { meta as csvExportMeta } from '../demos/11-csv-export/meta';
+import { meta as multiSortMeta } from '../demos/12-multi-sort/meta';
+import { meta as a11yMeta } from '../demos/13-accessibility/meta';
 
 // Import raw code snippets from Code.tsx files (using Vite ?raw query)
 import basicCode from '../demos/01-basic/Code.tsx?raw';
@@ -32,6 +44,11 @@ import urlSyncCode from '../demos/05-url-sync/Code.tsx?raw';
 import viewsCode from '../demos/06-saved-views/Code.tsx?raw';
 import resizeCode from '../demos/07-column-resize/Code.tsx?raw';
 import advancedCode from '../demos/08-advanced-query/Code.tsx?raw';
+import selectionCode from '../demos/09-row-selection/Code.tsx?raw';
+import bulkActionsCode from '../demos/10-bulk-actions/Code.tsx?raw';
+import csvExportCode from '../demos/11-csv-export/Code.tsx?raw';
+import multiSortCode from '../demos/12-multi-sort/Code.tsx?raw';
+import a11yCode from '../demos/13-accessibility/Code.tsx?raw';
 
 /**
  * DemoMeta interface with learning outcomes and documentation
@@ -52,7 +69,7 @@ export interface DemoMeta {
  */
 export interface DemoConfig extends DemoMeta {
   slug: string;
-  category: 'getting-started' | 'real-world' | 'advanced';
+  category: 'getting-started' | 'real-world' | 'advanced' | 'stage-e';
   component: React.ComponentType;
   code: string; // ✅ Raw code string loaded from Code.tsx
   tags?: string[];
@@ -132,6 +149,51 @@ export const DEMO_REGISTRY: DemoConfig[] = [
     code: advancedCode,
     tags: ['advanced', 'combo'],
   } as DemoConfig,
+  {
+    id: '09-row-selection',
+    ...selectionMeta,
+    slug: 'row-selection',
+    category: 'stage-e',
+    component: RowSelectionDemo,
+    code: selectionCode,
+    tags: ['selection', 'workflow'],
+  } as DemoConfig,
+  {
+    id: '10-bulk-actions',
+    ...bulkActionsMeta,
+    slug: 'bulk-actions',
+    category: 'stage-e',
+    component: BulkActionsDemo,
+    code: bulkActionsCode,
+    tags: ['bulk', 'actions'],
+  } as DemoConfig,
+  {
+    id: '11-csv-export',
+    ...csvExportMeta,
+    slug: 'csv-export',
+    category: 'stage-e',
+    component: CsvExportDemo,
+    code: csvExportCode,
+    tags: ['export', 'download'],
+  } as DemoConfig,
+  {
+    id: '12-multi-sort',
+    ...multiSortMeta,
+    slug: 'multi-sort',
+    category: 'stage-e',
+    component: MultiSortDemo,
+    code: multiSortCode,
+    tags: ['sorting', 'advanced'],
+  } as DemoConfig,
+  {
+    id: '13-accessibility',
+    ...a11yMeta,
+    slug: 'accessibility',
+    category: 'stage-e',
+    component: AccessibilityDemo,
+    code: a11yCode,
+    tags: ['a11y', 'keyboard'],
+  } as DemoConfig,
 ];
 
 /**
@@ -160,6 +222,7 @@ export function getDemoCategories(): Array<{
     'getting-started': 'Getting Started',
     'real-world': 'Real-world Examples',
     'advanced': 'Advanced',
+    'stage-e': 'Stage E (v0.5.0)',
   };
 
   return Object.entries(categories).map(([id, label]) => ({

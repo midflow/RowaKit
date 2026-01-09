@@ -11,6 +11,24 @@
 import { useState, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import type { Fetcher, ColumnDef, FetcherQuery, ActionDef, FilterValue, ActionsColumnDef } from '../types';
+import { useColumnResizing } from '../hooks/useColumnResizing';
+import { useFetcherState } from '../hooks/useFetcherState';
+import { useSavedViews } from '../hooks/useSavedViews';
+import { useSortingState } from '../hooks/useSortingState';
+import { useUrlSync } from '../hooks/useUrlSync';
+import { useFocusTrap } from '../hooks/useFocusTrap';
+import { RowSelectionCell, RowSelectionHeaderCell } from './RowSelectionColumn';
+import { BulkActionBar } from './BulkActionBar';
+import type { BulkActionDef } from './BulkActionBar';
+import { ExportButton } from './ExportButton';
+import type { Exporter } from '../types/export';
+import {
+  clearSelection,
+  isAllSelected,
+  isIndeterminate,
+  selectAll,
+  toggleSelectionKey,
+} from '../state/selection';
 
 // ============================================================================
 // COMPONENT PROPS
@@ -46,19 +64,18 @@ export interface SmartTableProps<T> {
 
   /** Stage C: Enable saved views feature (default: false) */
   enableSavedViews?: boolean;
-}
 
-// ============================================================================
-// STATE MANAGEMENT
-// ============================================================================
+  /** Stage E: Enable row selection (default: false) */
+  enableRowSelection?: boolean;
 
-type FetchState = 'idle' | 'loading' | 'success' | 'empty' | 'error';
+  /** Stage E: Selection change callback */
+  onSelectionChange?: (keys: Array<string | number>) => void;
 
-interface DataState<T> {
-  state: FetchState;
-  items: T[];
-  total: number;
-  error?: string;
+  /** Stage E: Bulk actions based on selection */
+  bulkActions?: BulkActionDef[];
+
+  /** Stage E: Export CSV (server-triggered) */
+  exporter?: Exporter;
 }
 
 /**
@@ -96,281 +113,6 @@ function getRowKey<T>(row: T, rowKey?: keyof T | ((row: T) => string | number)):
  */
 function getHeaderLabel<T>(column: ColumnDef<T>): string {
   return column.header ?? column.id;
-}
-
-// ============================================================================
-// PRD-04: SAVED VIEWS STORAGE HELPERS
-// ============================================================================
-
-interface SavedViewsIndex {
-  name: string;
-  updatedAt: number;
-}
-
-/**
- * Validate saved view name.
- * Rules: trim, 1–40 chars, reject control chars and `/\?%*:|"<>`
- */
-function validateViewName(name: string): { valid: boolean; error?: string } {
-  const trimmed = name.trim();
-  
-  if (trimmed.length === 0) {
-    return { valid: false, error: 'Name cannot be empty' };
-  }
-  
-  if (trimmed.length > 40) {
-    return { valid: false, error: 'Name cannot exceed 40 characters' };
-  }
-  
-  // Reject control chars and special chars
-  // eslint-disable-next-line no-control-regex
-  const invalidChars = /[/\\?%*:|"<>\x00-\x1f\x7f]/;
-  if (invalidChars.test(trimmed)) {
-    return { valid: false, error: 'Name contains invalid characters' };
-  }
-  
-  return { valid: true };
-}
-
-/**
- * Get saved views index from storage.
- * If missing, scan localStorage for rowakit-view-* keys and rebuild index.
- */
-function getSavedViewsIndex(): SavedViewsIndex[] {
-  if (typeof window === 'undefined' || !window.localStorage) {
-    return [];
-  }
-
-  try {
-    const indexStr = localStorage.getItem('rowakit-views-index');
-    if (indexStr) {
-      const index = JSON.parse(indexStr) as SavedViewsIndex[];
-      if (Array.isArray(index)) {
-        return index;
-      }
-    }
-  } catch {
-    // Ignore parse errors
-  }
-
-  // Rebuild index from existing keys
-  const rebuilt: SavedViewsIndex[] = [];
-  try {
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key?.startsWith('rowakit-view-')) {
-        const name = key.substring('rowakit-view-'.length);
-        rebuilt.push({
-          name,
-          updatedAt: Date.now(),
-        });
-      }
-    }
-  } catch {
-    // Ignore iteration errors
-  }
-
-  return rebuilt;
-}
-
-/**
- * Save views index to storage.
- */
-function setSavedViewsIndex(index: SavedViewsIndex[]): void {
-  if (typeof window === 'undefined' || !window.localStorage) {
-    return;
-  }
-
-  try {
-    localStorage.setItem('rowakit-views-index', JSON.stringify(index));
-  } catch {
-    // Ignore storage errors
-  }
-}
-
-/**
- * Load all saved views from storage.
- * Parses index and reads each view, skipping corrupt entries.
- */
-function loadSavedViewsFromStorage(): Array<{
-  name: string;
-  state: {
-    page: number;
-    pageSize: number;
-    sort?: { field: string; direction: 'asc' | 'desc' };
-    filters?: Record<string, FilterValue | undefined>;
-    columnWidths?: Record<string, number>;
-  };
-}> {
-  if (typeof window === 'undefined' || !window.localStorage) {
-    return [];
-  }
-
-  const index = getSavedViewsIndex();
-  const views = [];
-
-  for (const entry of index) {
-    try {
-      const viewStr = localStorage.getItem(`rowakit-view-${entry.name}`);
-      if (viewStr) {
-        const state = JSON.parse(viewStr);
-        views.push({
-          name: entry.name,
-          state,
-        });
-      }
-    } catch {
-      // Skip corrupt entries
-    }
-  }
-
-  return views;
-}
-
-// ============================================================================
-// PRD-05: URL STATE PARSING & SERIALIZATION
-// ============================================================================
-
-/**
- * Parse URL search parameters into table state.
- * Validates all values according to PRD-05 rules:
- * - page >= 1
- * - pageSize from options or defaultPageSize
- * - sortDirection only asc|desc
- * - filters must be object
- * - columnWidths must be object of numbers
- */
-function parseUrlState(
-  params: URLSearchParams,
-  defaultPageSize: number,
-  pageSizeOptions?: number[]
-): {
-  page: number;
-  pageSize: number;
-  sort?: { field: string; direction: 'asc' | 'desc' };
-  filters?: Record<string, FilterValue | undefined>;
-  columnWidths?: Record<string, number>;
-} {
-  // Parse page (default 1, must be >= 1)
-  const pageStr = params.get('page');
-  let page = 1;
-  if (pageStr) {
-    const parsed = parseInt(pageStr, 10);
-    page = !isNaN(parsed) && parsed >= 1 ? parsed : 1;
-  }
-
-  // Parse pageSize (must be valid or use default)
-  const pageSizeStr = params.get('pageSize');
-  let pageSize = defaultPageSize;
-  if (pageSizeStr) {
-    const parsed = parseInt(pageSizeStr, 10);
-    if (!isNaN(parsed) && parsed >= 1) {
-      // If pageSizeOptions provided, validate against it; otherwise accept
-      if (pageSizeOptions && pageSizeOptions.length > 0) {
-        pageSize = pageSizeOptions.includes(parsed) ? parsed : defaultPageSize;
-      } else {
-        pageSize = parsed;
-      }
-    }
-  }
-
-  const result: {
-    page: number;
-    pageSize: number;
-    sort?: { field: string; direction: 'asc' | 'desc' };
-    filters?: Record<string, FilterValue | undefined>;
-    columnWidths?: Record<string, number>;
-  } = { page, pageSize };
-
-  // Parse sort (only if both field and valid direction present)
-  const sortField = params.get('sortField');
-  const sortDir = params.get('sortDirection');
-  if (sortField && (sortDir === 'asc' || sortDir === 'desc')) {
-    result.sort = { field: sortField, direction: sortDir };
-  }
-
-  // Parse filters (must be valid JSON object)
-  const filtersStr = params.get('filters');
-  if (filtersStr) {
-    try {
-      const parsed = JSON.parse(filtersStr);
-      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-        result.filters = parsed;
-      }
-    } catch {
-      // Ignore invalid filters
-    }
-  }
-
-  // Parse columnWidths (must be valid JSON object with number values)
-  const widthsStr = params.get('columnWidths');
-  if (widthsStr) {
-    try {
-      const parsed = JSON.parse(widthsStr);
-      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-        // Validate all values are numbers
-        const widths: Record<string, number> = {};
-        for (const [key, value] of Object.entries(parsed)) {
-          if (typeof value === 'number' && value > 0) {
-            widths[key] = value;
-          }
-        }
-        if (Object.keys(widths).length > 0) {
-          result.columnWidths = widths;
-        }
-      }
-    } catch {
-      // Ignore invalid column widths
-    }
-  }
-
-  return result;
-}
-
-/**
- * Serialize table state to URL search parameters.
- * Omits empty/default values to keep URLs short.
- * PRD-05: Only includes columnWidths if enableColumnResizing is true.
- */
-function serializeUrlState(
-  query: FetcherQuery,
-  filters: Record<string, FilterValue | undefined>,
-  columnWidths: Record<string, number>,
-  defaultPageSize: number,
-  enableColumnResizing: boolean
-): string {
-  const params = new URLSearchParams();
-
-  // Always include page (even if 1, for clarity)
-  params.set('page', String(query.page));
-  
-  // Only include pageSize if different from default
-  if (query.pageSize !== defaultPageSize) {
-    params.set('pageSize', String(query.pageSize));
-  }
-
-  // Include sort if present
-  if (query.sort) {
-    params.set('sortField', query.sort.field);
-    params.set('sortDirection', query.sort.direction);
-  }
-
-  // Include filters if non-empty
-  if (filters && Object.keys(filters).length > 0) {
-    const nonEmptyFilters = Object.fromEntries(
-      Object.entries(filters).filter(([, v]) => v !== undefined)
-    );
-    if (Object.keys(nonEmptyFilters).length > 0) {
-      params.set('filters', JSON.stringify(nonEmptyFilters));
-    }
-  }
-
-  // Include columnWidths only if resizing enabled and widths exist
-  if (enableColumnResizing && Object.keys(columnWidths).length > 0) {
-    params.set('columnWidths', JSON.stringify(columnWidths));
-  }
-
-  return params.toString();
 }
 
 function renderCell<T>(
@@ -571,14 +313,11 @@ export function RowaKitTable<T>({
   enableColumnResizing = false,
   syncToUrl = false,
   enableSavedViews = false,
+  enableRowSelection = false,
+  onSelectionChange,
+  bulkActions,
+  exporter,
 }: SmartTableProps<T>) {
-  // State management
-  const [dataState, setDataState] = useState<DataState<T>>({
-    state: 'idle',
-    items: [],
-    total: 0,
-  });
-
   const [query, setQuery] = useState<FetcherQuery>({
     page: 1,
     pageSize: defaultPageSize,
@@ -586,164 +325,101 @@ export function RowaKitTable<T>({
 
   // Filter state (field -> FilterValue)
   const [filters, setFilters] = useState<Record<string, FilterValue | undefined>>({});
-
-  // Stage C: Column widths for resizing
-  const [columnWidths, setColumnWidths] = useState<Record<string, number>>({});
-
-  // Stage C: Refs for resize optimization
-  const resizeRafRef = useRef<number | null>(null);
-  const resizePendingRef = useRef<{ colId: string; width: number } | null>(null);
-  const tableRef = useRef<HTMLTableElement | null>(null);
-
-  // PRD-01: Prevent accidental sort during resize
-  const isResizingRef = useRef(false);
-  const lastResizeEndTsRef = useRef(0);
-  const resizingColIdRef = useRef<string | null>(null);
-  const didHydrateUrlRef = useRef(false);
-  const didSkipInitialUrlSyncRef = useRef(false);
-
-  // PRD-05: URL sync debounce ref (for columnWidths)
-  const urlSyncDebounceRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Stage C: Saved views
-  const [savedViews, setSavedViews] = useState<Array<{
-    name: string;
-    state: {
-      page: number;
-      pageSize: number;
-      sort?: { field: string; direction: 'asc' | 'desc' };
-      filters?: Record<string, FilterValue | undefined>;
-      columnWidths?: Record<string, number>;
-    };
-  }>>([]);
-
-  // PRD-04: Save view form state
-  const [showSaveViewForm, setShowSaveViewForm] = useState(false);
-  const [saveViewInput, setSaveViewInput] = useState('');
-  const [saveViewError, setSaveViewError] = useState<string>('');
-  const [overwriteConfirmName, setOverwriteConfirmName] = useState<string | null>(null);
-
-  // PRD-04: Hydrate saved views on mount
-  useEffect(() => {
-    if (!enableSavedViews) return;
-
-    const views = loadSavedViewsFromStorage();
-    setSavedViews(views);
-  }, [enableSavedViews]);
-
   // Confirmation state for actions that require confirmation
   const [confirmState, setConfirmState] = useState<ConfirmState<T> | null>(null);
 
-  // Request tracking to ignore stale responses
-  const requestIdRef = useRef(0);
+  // Stage E: Row selection state (page-scoped)
+  const [selectedKeys, setSelectedKeys] = useState<Array<string | number>>([]);
 
-  // Stage C: Sync to URL on query changes (PRD-05: Validated and debounced)
+  // Stage E: Bulk action confirmation state
+  const [bulkConfirmState, setBulkConfirmState] = useState<{
+    action: BulkActionDef;
+    selectedKeys: Array<string | number>;
+  } | null>(null);
+
+  // Stage E7 (a11y): Modal refs for focus trap
+  const confirmModalRef = useRef<HTMLDivElement>(null);
+  const bulkConfirmModalRef = useRef<HTMLDivElement>(null);
+
+  const {
+    tableRef,
+    columnWidths,
+    setColumnWidths,
+    startColumnResize,
+    handleColumnResizeDoubleClick,
+    isResizingRef,
+    lastResizeEndTsRef,
+    resizingColIdRef,
+  } = useColumnResizing(columns);
+
+  useUrlSync({
+    syncToUrl,
+    enableColumnResizing,
+    defaultPageSize,
+    pageSizeOptions,
+    columns,
+    query,
+    setQuery,
+    filters,
+    setFilters,
+    columnWidths,
+    setColumnWidths,
+  });
+
+  const { dataState, handleRetry, isLoading, isError, isEmpty } = useFetcherState(fetcher, query, setQuery);
+  const { handleSort, getSortIndicator } = useSortingState(query, setQuery);
+
+  const pageRowKeys = dataState.items.map((row) => getRowKey(row, rowKey));
+  const headerChecked = isAllSelected(selectedKeys, pageRowKeys);
+  const headerIndeterminate = isIndeterminate(selectedKeys, pageRowKeys);
+
   useEffect(() => {
-    if (!syncToUrl) {
-      didSkipInitialUrlSyncRef.current = false;
-      return;
-    }
+    if (!enableRowSelection) return;
+    setSelectedKeys(clearSelection());
+  }, [enableRowSelection, query.page, dataState.items]);
 
-    // IMPORTANT: On mount, do not overwrite the incoming URL before
-    // `parseUrlState` has a chance to read it.
-    if (!didSkipInitialUrlSyncRef.current) {
-      didSkipInitialUrlSyncRef.current = true;
-      return;
-    }
-
-    // Clear any pending debounce
-    if (urlSyncDebounceRef.current) {
-      clearTimeout(urlSyncDebounceRef.current);
-      urlSyncDebounceRef.current = null;
-    }
-
-    // Query/sort/filter changes: write immediately
-    const urlStr = serializeUrlState(query, filters, columnWidths, defaultPageSize, enableColumnResizing);
-    const qs = urlStr ? `?${urlStr}` : '';
-    // Preserve hash (often used by hash routers like this demo gallery)
-    window.history.replaceState(null, '', `${window.location.pathname}${qs}${window.location.hash}`);
-  }, [query, filters, syncToUrl, enableColumnResizing, defaultPageSize, columnWidths]);
-
-  // PRD-05: Debounce columnWidths updates (150ms) while resizing
   useEffect(() => {
-    if (!syncToUrl || !enableColumnResizing) return;
+    if (!enableRowSelection || !onSelectionChange) return;
+    onSelectionChange(selectedKeys);
+  }, [enableRowSelection, onSelectionChange, selectedKeys]);
 
-    // Skip initial mount so we don't clobber URL before parsing.
-    if (!didSkipInitialUrlSyncRef.current) return;
+  const {
+    savedViews,
+    showSaveViewForm,
+    saveViewInput,
+    saveViewError,
+    overwriteConfirmName,
+    openSaveViewForm,
+    cancelSaveViewForm,
+    onSaveViewInputChange,
+    onSaveViewInputKeyDown,
+    attemptSave,
+    confirmOverwrite,
+    cancelOverwrite,
+    loadSavedView,
+    deleteSavedView,
+    resetTableState,
+  } = useSavedViews({
+    enableSavedViews,
+    enableColumnResizing,
+    defaultPageSize,
+    query,
+    setQuery,
+    setFilters,
+    columnWidths,
+    setColumnWidths,
+  });
 
-    // Clear any pending debounce
-    if (urlSyncDebounceRef.current) {
-      clearTimeout(urlSyncDebounceRef.current);
-    }
+  // Stage E7 (a11y): Apply focus trap to modals
+  useFocusTrap(confirmModalRef, {
+    onEscape: () => setConfirmState(null),
+    autoFocus: true,
+  });
 
-    // Schedule debounced URL update for columnWidths
-    urlSyncDebounceRef.current = setTimeout(() => {
-      const urlStr = serializeUrlState(query, filters, columnWidths, defaultPageSize, enableColumnResizing);
-      const qs = urlStr ? `?${urlStr}` : '';
-      // Preserve hash (often used by hash routers like this demo gallery)
-      window.history.replaceState(null, '', `${window.location.pathname}${qs}${window.location.hash}`);
-      urlSyncDebounceRef.current = null;
-    }, 150);
-
-    // Cleanup on unmount
-    return () => {
-      if (urlSyncDebounceRef.current) {
-        clearTimeout(urlSyncDebounceRef.current);
-        urlSyncDebounceRef.current = null;
-      }
-    };
-  }, [columnWidths, syncToUrl, enableColumnResizing, query, filters, defaultPageSize]);
-
-  // Stage C: Load from URL on mount (PRD-05: Validated parsing)
-  useEffect(() => {
-    if (!syncToUrl) {
-      // If URL sync is disabled, allow future re-hydration if re-enabled.
-      didHydrateUrlRef.current = false;
-      return;
-    }
-    if (didHydrateUrlRef.current) return;
-    didHydrateUrlRef.current = true;
-
-    const params = new URLSearchParams(window.location.search);
-    const parsed = parseUrlState(params, defaultPageSize, pageSizeOptions);
-
-    setQuery({
-      page: parsed.page,
-      pageSize: parsed.pageSize,
-      sort: parsed.sort,
-      filters: parsed.filters,
-    });
-
-    if (parsed.filters) {
-      setFilters(parsed.filters);
-    }
-
-    if (parsed.columnWidths && enableColumnResizing) {
-      // Clamp URL widths by per-column min/max so a stale/malicious URL can't
-      // make a column unusably tiny (e.g. "Product Name" showing only "P").
-      const clamped: Record<string, number> = {};
-      for (const [colId, rawWidth] of Object.entries(parsed.columnWidths)) {
-        const widthNum = typeof rawWidth === 'number' ? rawWidth : Number(rawWidth);
-        if (!Number.isFinite(widthNum)) continue;
-
-        const colDef = columns.find((c) => c.id === colId);
-        if (!colDef) continue;
-
-        const minW = colDef.minWidth ?? 80;
-        const maxW = colDef.maxWidth;
-
-        let finalW = Math.max(minW, widthNum);
-        if (maxW != null) {
-          finalW = Math.min(finalW, maxW);
-        }
-        clamped[colId] = finalW;
-      }
-
-      setColumnWidths(clamped);
-    }
-    // If URL doesn't provide widths, keep `columnWidths` empty and allow
-    // defaults from `column.width` to apply.
-  }, [syncToUrl, defaultPageSize, enableColumnResizing, pageSizeOptions, columns]);
+  useFocusTrap(bulkConfirmModalRef, {
+    onEscape: () => setBulkConfirmState(null),
+    autoFocus: true,
+  });
 
   // Sync filters to query (and reset page to 1 when filters change)
   useEffect(() => {
@@ -770,54 +446,6 @@ export function RowaKitTable<T>({
     }));
   }, [filters, enableFilters]);
 
-  // Fetch data effect
-  useEffect(() => {
-    const currentRequestId = ++requestIdRef.current;
-
-    setDataState((prev) => ({ ...prev, state: 'loading' }));
-
-    fetcher(query)
-      .then((result) => {
-        // Ignore stale responses
-        if (currentRequestId !== requestIdRef.current) {
-          return;
-        }
-
-        if (result.items.length === 0) {
-          setDataState({
-            state: 'empty',
-            items: [],
-            total: result.total,
-          });
-        } else {
-          setDataState({
-            state: 'success',
-            items: result.items,
-            total: result.total,
-          });
-        }
-      })
-      .catch((error: unknown) => {
-        // Ignore stale responses
-        if (currentRequestId !== requestIdRef.current) {
-          return;
-        }
-
-        setDataState({
-          state: 'error',
-          items: [],
-          total: 0,
-          error: error instanceof Error ? error.message : 'Failed to load data',
-        });
-      });
-  }, [fetcher, query]);
-
-  // Retry handler
-  const handleRetry = () => {
-    // Force re-fetch by updating query reference
-    setQuery({ ...query });
-  };
-
   // Pagination handlers
   const handlePreviousPage = () => {
     if (query.page > 1) {
@@ -834,283 +462,6 @@ export function RowaKitTable<T>({
 
   const handlePageSizeChange = (newPageSize: number) => {
     setQuery({ ...query, pageSize: newPageSize, page: 1 });
-  };
-
-  // Sorting handler
-  const handleSort = (field: string) => {
-    setQuery((prev) => {
-      // If sorting by a different field, start with ascending
-      if (prev.sort?.field !== field) {
-        return { ...prev, sort: { field, direction: 'asc' }, page: 1 };
-      }
-
-      // Toggle sort direction for the same field
-      if (prev.sort.direction === 'asc') {
-        return { ...prev, sort: { field, direction: 'desc' }, page: 1 };
-      }
-
-      // Remove sort (back to unsorted)
-      const { sort: _sort, ...rest } = prev;
-      return { ...rest, page: 1 };
-    });
-  };
-
-  // Get sort indicator for a column
-  const getSortIndicator = (field: string): string => {
-    if (!query.sort || query.sort.field !== field) {
-      return '';
-    }
-    return query.sort.direction === 'asc' ? ' ↑' : ' ↓';
-  };
-
-  // Stage C: Schedule column width update (RAF throttle)
-  const scheduleColumnWidthUpdate = (colId: string, width: number) => {
-    resizePendingRef.current = { colId, width };
-
-    if (resizeRafRef.current != null) return;
-
-    resizeRafRef.current = requestAnimationFrame(() => {
-      resizeRafRef.current = null;
-
-      const pending = resizePendingRef.current;
-      if (!pending) return;
-
-      handleColumnResize(pending.colId, pending.width);
-    });
-  };
-
-  // Stage C: Column resize handler
-  const handleColumnResize = (columnId: string, newWidth: number) => {
-    // Enforce minimum width
-    const minWidth = columns.find(c => c.id === columnId)?.minWidth ?? 80;
-    const maxWidth = columns.find(c => c.id === columnId)?.maxWidth;
-    
-    let finalWidth = Math.max(minWidth, newWidth);
-    if (maxWidth) {
-      finalWidth = Math.min(finalWidth, maxWidth);
-    }
-    
-    // PRD-03: Guard against unchanged widths to avoid extra renders
-    if (columnWidths[columnId] === finalWidth) {
-      return;
-    }
-
-    setColumnWidths((prev) => ({
-      ...prev,
-      [columnId]: finalWidth,
-    }));
-  };
-
-  // Stage C: Column resize drag handler
-  // PRD-02: Now uses Pointer Events for mouse + touch + pen support
-  const autoFitColumnWidth = (columnId: string) => {
-    const tableEl = tableRef.current;
-    if (!tableEl) return;
-
-    const th = tableEl.querySelector(`th[data-col-id="${columnId}"]`) as HTMLTableCellElement | null;
-    if (!th) return;
-
-    const tds = Array.from(
-      tableEl.querySelectorAll(`td[data-col-id="${columnId}"]`),
-    ) as HTMLTableCellElement[];
-
-    const headerW = th.scrollWidth;
-    const cellsMaxW = tds.reduce((max, td) => Math.max(max, td.scrollWidth), 0);
-
-    const padding = 24; // buffer for padding + sort icon
-    const raw = Math.max(headerW, cellsMaxW) + padding;
-
-    const colDef = columns.find((c) => c.id === columnId);
-    const minW = colDef?.minWidth ?? 80;
-    const maxW = colDef?.maxWidth ?? 600;
-
-    const finalW = Math.max(minW, Math.min(raw, maxW));
-    setColumnWidths((prev) => ({ ...prev, [columnId]: finalW }));
-  };
-
-  const startColumnResize = (e: React.PointerEvent<HTMLDivElement>, columnId: string) => {
-    e.preventDefault();
-    e.stopPropagation(); // PRD-01: Prevent sort bubbling
-
-    // Double-click auto-fit: handle via pointerdown.detail to avoid relying on
-    // onDoubleClick sequencing in presence of pointer capture.
-    if (e.detail === 2) {
-      autoFitColumnWidth(columnId);
-      return;
-    }
-
-    // PRD-02: Button gating for mouse pointer (require primary button)
-    if (e.pointerType === 'mouse' && e.buttons !== 1) {
-      return;
-    }
-
-    // Save currentTarget reference before event becomes stale
-    const target = e.currentTarget;
-    const pointerId = e.pointerId;
-
-    // PRD-02: Acquire pointer capture on the handle element
-    try {
-      target.setPointerCapture(pointerId);
-    } catch {
-      // setPointerCapture may not be available in test environment
-    }
-
-    // PRD-01: Mark as resizing
-    isResizingRef.current = true;
-    resizingColIdRef.current = columnId;
-    
-    const startX = e.clientX;
-    const th = (target.parentElement as HTMLTableCellElement);
-    
-    // Get the actual width of current column
-    // (either from state if resized, or from offsetWidth if auto)
-    let startWidth = columnWidths[columnId] ?? th.offsetWidth;
-
-    // If current column is too small (< 80px), use a minimum base width
-    // to ensure we always have enough space to drag comfortably
-    const MIN_DRAG_WIDTH = 80;
-    if (startWidth < MIN_DRAG_WIDTH) {
-      // Try to get a usable width from next column or use fallback
-      const nextTh = th.nextElementSibling as HTMLTableCellElement | null;
-      if (nextTh && nextTh.offsetWidth >= 50) {
-        startWidth = nextTh.offsetWidth;
-      } else {
-        // Fallback: use 100px as a comfortable base for dragging
-        startWidth = 100;
-      }
-    }
-
-    // Prevent text selection during drag
-    document.body.classList.add('rowakit-resizing');
-
-    // PRD-02: Use pointer events instead of mouse events
-    const handlePointerMove = (moveEvent: PointerEvent) => {
-      const delta = moveEvent.clientX - startX;
-      const newWidth = startWidth + delta;
-      // Use RAF throttle for smooth performance
-      scheduleColumnWidthUpdate(columnId, newWidth);
-    };
-
-    const cleanupResize = () => {
-      target.removeEventListener('pointermove', handlePointerMove);
-      target.removeEventListener('pointerup', handlePointerUp);
-      target.removeEventListener('pointercancel', handlePointerCancel);
-      
-      // Re-enable text selection
-      document.body.classList.remove('rowakit-resizing');
-      
-      // PRD-01: Mark resize as complete and set suppression window
-      isResizingRef.current = false;
-      resizingColIdRef.current = null;
-      lastResizeEndTsRef.current = Date.now();
-
-      // PRD-02: Release pointer capture
-      try {
-        target.releasePointerCapture(pointerId);
-      } catch {
-        // Already released or pointer no longer active
-      }
-    };
-
-    const handlePointerUp = () => {
-      cleanupResize();
-    };
-
-    const handlePointerCancel = () => {
-      cleanupResize();
-    };
-
-    target.addEventListener('pointermove', handlePointerMove);
-    target.addEventListener('pointerup', handlePointerUp);
-    target.addEventListener('pointercancel', handlePointerCancel);
-  };
-
-  // Stage C: Double-click to auto-fit content
-  // PRD-02: Updated signature to match PointerEvent handler pattern
-  const handleColumnResizeDoubleClick = (e: React.MouseEvent<HTMLDivElement>, columnId: string) => {
-    e.preventDefault();
-    e.stopPropagation(); // PRD-01: Prevent sort bubbling from double-click
-
-    autoFitColumnWidth(columnId);
-  };
-
-  // Stage C: Saved views handlers
-  const saveCurrentView = (name: string) => {
-    const viewState = {
-      page: query.page,
-      pageSize: query.pageSize,
-      sort: query.sort,
-      filters: query.filters,
-      columnWidths: enableColumnResizing ? columnWidths : undefined,
-    };
-
-    setSavedViews((prev) => {
-      const filtered = prev.filter((v) => v.name !== name);
-      return [...filtered, { name, state: viewState }];
-    });
-
-    // PRD-04: Update storage with index
-    if (typeof window !== 'undefined' && window.localStorage) {
-      try {
-        // Save the view
-        localStorage.setItem(`rowakit-view-${name}`, JSON.stringify(viewState));
-        
-        // Update index
-        const index = getSavedViewsIndex();
-        const filtered = index.filter((v) => v.name !== name);
-        filtered.push({ name, updatedAt: Date.now() });
-        setSavedViewsIndex(filtered);
-      } catch {
-        // Ignore storage errors
-      }
-    }
-  };
-
-  const loadSavedView = (name: string) => {
-    const view = savedViews.find((v) => v.name === name);
-    if (!view) return;
-
-    const { state } = view;
-    setQuery({
-      page: state.page,
-      pageSize: state.pageSize,
-      sort: state.sort,
-      filters: state.filters,
-    });
-
-    // Also update the filters state to keep input fields in sync
-    setFilters(state.filters ?? {});
-
-    if (state.columnWidths && enableColumnResizing) {
-      setColumnWidths(state.columnWidths);
-    }
-  };
-
-  const deleteSavedView = (name: string) => {
-    setSavedViews((prev) => prev.filter((v) => v.name !== name));
-    
-    // PRD-04: Remove from storage and index
-    if (typeof window !== 'undefined' && window.localStorage) {
-      try {
-        localStorage.removeItem(`rowakit-view-${name}`);
-        
-        // Update index
-        const index = getSavedViewsIndex();
-        const filtered = index.filter((v) => v.name !== name);
-        setSavedViewsIndex(filtered);
-      } catch {
-        // Ignore storage errors
-      }
-    }
-  };
-
-  const resetTableState = () => {
-    setQuery({
-      page: 1,
-      pageSize: defaultPageSize,
-    });
-    setFilters({});
-    setColumnWidths({});
   };
 
   // Helper function to apply filterTransform to filter values for number columns
@@ -1181,12 +532,11 @@ export function RowaKitTable<T>({
     setFilters({});
   };
 
-  const isLoading = dataState.state === 'loading';
-  const isError = dataState.state === 'error';
-  const isEmpty = dataState.state === 'empty';
   const totalPages = Math.ceil(dataState.total / query.pageSize);
   const canGoPrevious = query.page > 1 && !isLoading;
   const canGoNext = query.page < totalPages && !isLoading;
+
+  const tableColumnCount = columns.length + (enableRowSelection ? 1 : 0);
 
   const hasActiveFilters = enableFilters && Object.values(filters).some(v => v !== undefined);
 
@@ -1199,16 +549,33 @@ export function RowaKitTable<T>({
 
   return (
     <div className={containerClass}>
+      {enableRowSelection && bulkActions && bulkActions.length > 0 && selectedKeys.length > 0 && (
+        <BulkActionBar
+          selectedCount={selectedKeys.length}
+          actions={bulkActions}
+          onActionClick={(actionId) => {
+            const action = bulkActions.find((a) => a.id === actionId);
+            if (!action) return;
+
+            const snapshot = [...selectedKeys];
+
+            if (action.confirm) {
+              setBulkConfirmState({ action, selectedKeys: snapshot });
+              return;
+            }
+
+            action.onClick(snapshot);
+          }}
+        />
+      )}
+
+      {exporter && <ExportButton exporter={exporter} query={query} />}
+
       {enableSavedViews && (
         <div className="rowakit-saved-views-group">
           {!showSaveViewForm ? (
             <button
-              onClick={() => {
-                setShowSaveViewForm(true);
-                setSaveViewInput('');
-                setSaveViewError('');
-                setOverwriteConfirmName(null);
-              }}
+              onClick={openSaveViewForm}
               className="rowakit-saved-view-button"
               type="button"
             >
@@ -1220,22 +587,14 @@ export function RowaKitTable<T>({
                 <div className="rowakit-save-view-confirm">
                   <p>View "{overwriteConfirmName}" already exists. Overwrite?</p>
                   <button
-                    onClick={() => {
-                      saveCurrentView(overwriteConfirmName);
-                      setShowSaveViewForm(false);
-                      setSaveViewInput('');
-                      setSaveViewError('');
-                      setOverwriteConfirmName(null);
-                    }}
+                    onClick={confirmOverwrite}
                     className="rowakit-saved-view-button"
                     type="button"
                   >
                     Overwrite
                   </button>
                   <button
-                    onClick={() => {
-                      setOverwriteConfirmName(null);
-                    }}
+                    onClick={cancelOverwrite}
                     className="rowakit-saved-view-button"
                     type="button"
                   >
@@ -1247,30 +606,8 @@ export function RowaKitTable<T>({
                   <input
                     type="text"
                     value={saveViewInput}
-                    onChange={(e) => {
-                      setSaveViewInput(e.target.value);
-                      setSaveViewError('');
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        // Validate and save
-                        const validation = validateViewName(saveViewInput);
-                        if (!validation.valid) {
-                          setSaveViewError(validation.error || 'Invalid name');
-                          return;
-                        }
-
-                        // Check if exists
-                        if (savedViews.some((v) => v.name === saveViewInput.trim())) {
-                          setOverwriteConfirmName(saveViewInput.trim());
-                        } else {
-                          saveCurrentView(saveViewInput.trim());
-                          setShowSaveViewForm(false);
-                          setSaveViewInput('');
-                          setSaveViewError('');
-                        }
-                      }
-                    }}
+                    onChange={onSaveViewInputChange}
+                    onKeyDown={onSaveViewInputKeyDown}
                     placeholder="Enter view name..."
                     className="rowakit-save-view-input"
                   />
@@ -1278,34 +615,14 @@ export function RowaKitTable<T>({
                     <div className="rowakit-save-view-error">{saveViewError}</div>
                   )}
                   <button
-                    onClick={() => {
-                      const validation = validateViewName(saveViewInput);
-                      if (!validation.valid) {
-                        setSaveViewError(validation.error || 'Invalid name');
-                        return;
-                      }
-
-                      // Check if exists
-                      if (savedViews.some((v) => v.name === saveViewInput.trim())) {
-                        setOverwriteConfirmName(saveViewInput.trim());
-                      } else {
-                        saveCurrentView(saveViewInput.trim());
-                        setShowSaveViewForm(false);
-                        setSaveViewInput('');
-                        setSaveViewError('');
-                      }
-                    }}
+                    onClick={attemptSave}
                     className="rowakit-saved-view-button"
                     type="button"
                   >
                     Save
                   </button>
                   <button
-                    onClick={() => {
-                      setShowSaveViewForm(false);
-                      setSaveViewInput('');
-                      setSaveViewError('');
-                    }}
+                    onClick={cancelSaveViewForm}
                     className="rowakit-saved-view-button"
                     type="button"
                   >
@@ -1359,6 +676,20 @@ export function RowaKitTable<T>({
       <table ref={tableRef}>
         <thead>
           <tr>
+            {enableRowSelection && (
+              <RowSelectionHeaderCell
+                checked={headerChecked}
+                indeterminate={headerIndeterminate}
+                disabled={isLoading || pageRowKeys.length === 0}
+                onChange={(checked) => {
+                  if (checked) {
+                    setSelectedKeys(selectAll(pageRowKeys));
+                  } else {
+                    setSelectedKeys(clearSelection());
+                  }
+                }}
+              />
+            )}
             {columns.map((column) => {
               const isSortable = column.kind !== 'actions' && 
                                  (column.kind === 'custom' ? false : column.sortable === true);
@@ -1374,23 +705,27 @@ export function RowaKitTable<T>({
                 <th
                   key={column.id}
                   data-col-id={column.id}
-                  onClick={isSortable ? () => {
+                  onClick={isSortable ? (e) => {
                     // PRD-01: Suppress sort if resizing or during suppression window
                     if (isResizingRef.current) return;
                     if (Date.now() - lastResizeEndTsRef.current < 150) return;
-                    handleSort(String(field));
+                    // PRD-E4: Multi-sort support via Ctrl/Cmd + click
+                    const isMultiSort = e.ctrlKey || e.metaKey;
+                    handleSort(String(field), isMultiSort);
                   } : undefined}
                   role={isSortable ? 'button' : undefined}
                   tabIndex={isSortable ? 0 : undefined}
                   onKeyDown={isSortable ? (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
-                      handleSort(String(field));
+                      // PRD-E4: Shift for multi-sort in keyboard mode
+                      const isMultiSort = e.shiftKey;
+                      handleSort(String(field), isMultiSort);
                     }
                   } : undefined}
                   aria-sort={
-                    isSortable && query.sort?.field === String(field)
-                      ? query.sort.direction === 'asc' ? 'ascending' : 'descending'
+                    isSortable && (query.sorts?.find(s => s.field === String(field))?.priority === 0 || query.sort?.field === String(field))
+                      ? (query.sorts?.find(s => s.field === String(field))?.direction ?? query.sort?.direction) === 'asc' ? 'ascending' : 'descending'
                       : undefined
                   }
                   style={{
@@ -1419,6 +754,7 @@ export function RowaKitTable<T>({
           </tr>
           {enableFilters && (
             <tr className="rowakit-table-filter-row">
+              {enableRowSelection && <th></th>}
               {columns.map((column) => {
                 const field = column.kind === 'actions' || column.kind === 'custom' ? '' : String(column.field);
                 const canFilter = field && column.kind !== 'actions';
@@ -1624,7 +960,7 @@ export function RowaKitTable<T>({
         <tbody>
           {isLoading && (
             <tr>
-              <td colSpan={columns.length} className="rowakit-table-loading">
+              <td colSpan={tableColumnCount} className="rowakit-table-loading">
                 <div className="rowakit-table-loading-spinner"></div>
                 <span>Loading...</span>
               </td>
@@ -1633,7 +969,7 @@ export function RowaKitTable<T>({
 
           {isError && (
             <tr>
-              <td colSpan={columns.length} className="rowakit-table-error">
+              <td colSpan={tableColumnCount} className="rowakit-table-error">
                 <div className="rowakit-table-error-message">
                   {dataState.error ?? 'An error occurred'}
                 </div>
@@ -1650,7 +986,7 @@ export function RowaKitTable<T>({
 
           {isEmpty && (
             <tr>
-              <td colSpan={columns.length} className="rowakit-table-empty">
+              <td colSpan={tableColumnCount} className="rowakit-table-empty">
                 No data
               </td>
             </tr>
@@ -1661,6 +997,16 @@ export function RowaKitTable<T>({
               const key = getRowKey(row, rowKey);
               return (
                 <tr key={key}>
+                  {enableRowSelection && (
+                    <RowSelectionCell
+                      rowKey={key}
+                      disabled={isLoading}
+                      checked={selectedKeys.includes(key)}
+                      onChange={() => {
+                        setSelectedKeys((prev) => toggleSelectionKey(prev, key));
+                      }}
+                    />
+                  )}
                   {columns.map((column) => {
                     const cellClass = [
                       column.kind === 'number' ? 'rowakit-cell-number' : '',
@@ -1744,6 +1090,7 @@ export function RowaKitTable<T>({
       {/* Confirmation Modal */}
       {confirmState && (
         <div
+          ref={confirmModalRef}
           className="rowakit-modal-backdrop"
           onClick={() => setConfirmState(null)}
           role="dialog"
@@ -1770,6 +1117,45 @@ export function RowaKitTable<T>({
                 onClick={() => {
                   void confirmState.action.onClick(confirmState.row);
                   setConfirmState(null);
+                }}
+                className="rowakit-button rowakit-button-danger"
+                type="button"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {bulkConfirmState && (
+        <div
+          ref={bulkConfirmModalRef}
+          className="rowakit-modal-backdrop"
+          onClick={() => setBulkConfirmState(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="bulk-confirm-dialog-title"
+        >
+          <div className="rowakit-modal" onClick={(e) => e.stopPropagation()}>
+            <h2 id="bulk-confirm-dialog-title" className="rowakit-modal-title">
+              {bulkConfirmState.action.confirm?.title ?? 'Confirm Action'}
+            </h2>
+            <p className="rowakit-modal-content">
+              {bulkConfirmState.action.confirm?.description ?? 'Are you sure you want to perform this action? This action cannot be undone.'}
+            </p>
+            <div className="rowakit-modal-actions">
+              <button
+                onClick={() => setBulkConfirmState(null)}
+                className="rowakit-button rowakit-button-secondary"
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  bulkConfirmState.action.onClick(bulkConfirmState.selectedKeys);
+                  setBulkConfirmState(null);
                 }}
                 className="rowakit-button rowakit-button-danger"
                 type="button"

@@ -34,9 +34,30 @@ export type FilterValue =
 export type Filters = Record<string, FilterValue | undefined>;
 
 /**
+ * Sort column definition for multi-column sorting.
+ * 
+ * Stage E adds multi-column sorting support:
+ * - sorts is an array of sort configurations (primary, secondary, etc.)
+ * - Ctrl/Cmd + click on header adds secondary sort
+ * - Click on header performs primary sort only
+ */
+export interface SortColumn {
+  /** Field name to sort by */
+  field: string;
+  /** Sort direction */
+  direction: 'asc' | 'desc';
+  /** Sort priority (0 = primary, 1 = secondary, etc.) */
+  priority: number;
+}
+
+/**
  * Query parameters passed to the fetcher function.
  *
  * All pagination, sorting, and filtering state is passed through this query.
+ * 
+ * Stage E changes:
+ * - sort is deprecated in favor of sorts array (backward compatible)
+ * - sorts supports multi-column sorting
  */
 export interface FetcherQuery {
   /** Current page number (1-based) */
@@ -45,13 +66,16 @@ export interface FetcherQuery {
   /** Number of items per page */
   pageSize: number;
 
-  /** Optional sorting configuration */
+  /** Optional sorting configuration - DEPRECATED, use sorts instead */
   sort?: {
     /** Field name to sort by */
     field: string;
     /** Sort direction */
     direction: 'asc' | 'desc';
   };
+
+  /** Multi-column sorting configuration (Stage E+) */
+  sorts?: SortColumn[];
 
   /** Optional filters (omitted when empty) */
   filters?: Filters;
