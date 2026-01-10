@@ -94,7 +94,7 @@ export function UsersTable() {
 
 ---
 
-## What you get (v0.5.0)
+## What you get (v0.6.0 Release Candidate)
 
 ### Core
 
@@ -127,7 +127,8 @@ export function UsersTable() {
 
 * ✅ Stage A–D: server-side table foundation
 * ✅ Stage E (v0.5.0): workflows + stability
-* ⏭ Stage F: demand-driven enhancements
+* 🚀 Stage F (v0.6.0 RC): API completeness + production validation
+* ⏭ Stage G: demand-driven enhancements
 
 See full roadmap: `docs/ROADMAP.md`
 

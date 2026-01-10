@@ -2,6 +2,38 @@
 
 All notable changes to this package will be documented in this file.
 
+## [0.6.0] - 2026-01-11 (Stage F - API Completeness & Release Candidate)
+
+### Added
+- **F-01: Missing Type Exports**
+  - `SortColumn` type export: Enables proper TypeScript typing for multi-column sorts
+  - `BulkActionDef` type export: Enables proper TypeScript typing for bulk actions
+  - Impact: Full IDE autocomplete and type inference for public API consumers
+
+- **F-02: Multi-Sort Feature Documentation**
+  - Added comprehensive section to README.md explaining Ctrl/Cmd+Click multi-sort behavior
+  - Documented `sorts: SortColumn[]` array format with priority-based ordering
+  - Migration guide: `sort` field (deprecated) → `sorts` array (new)
+  - Backward compatible: both fields coexist; `sort` removal planned for v2.0.0
+
+- **F-03: Production Validation Framework**
+  - Created `docs/PRODUCTION_USAGE.md` template for Phase 2 tracking
+  - Enables data-driven decision for v1.0.0 release based on real-world deployments
+
+### Changed
+- Package version bumped from 0.5.0 to 0.6.0
+- README.md now documents all v0.6.0 features with examples
+- ROADMAP.md includes Stage F implementation details
+
+### Status
+- 🚀 **Release Candidate**: Ready for production validation
+- ✅ All 246 tests passing
+- ✅ TypeScript compilation: clean
+- ✅ Build artifacts: successful (58.78 KB ESM, 60.16 KB CJS, 17.43 KB DTS)
+- ⏳ Phase 2: Production deployments pending (2-3 weeks)
+
+---
+
 ## [0.5.0] - 2026-01-09 (Stage E - Row Selection, Bulk Actions, Export, Multi-Sort, Accessibility)
 
 ### Added

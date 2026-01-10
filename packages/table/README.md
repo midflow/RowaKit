@@ -226,9 +226,9 @@ Export is server-triggered and scales well for large datasets.
 
 ## Roadmap & Versioning
 
-* Current: **0.5.0** (Stage E)
-* No breaking changes in 0.5.x
-* API freeze planned for 1.0.0
+* Current: **0.6.0** (Stage F Release Candidate)
+* No breaking changes in 0.6.x
+* API freeze begins at 1.0.0
 
 See roadmap: `docs/ROADMAP.md`
 
