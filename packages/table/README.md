@@ -148,6 +148,42 @@ Guidelines:
 
 ---
 
+## Multi-Column Sorting
+
+Sort by multiple columns simultaneously using **Ctrl+Click** (Windows/Linux) or **Cmd+Click** (Mac) on column headers:
+
+```tsx
+// Hold Ctrl/Cmd and click column headers in order
+// Priority is determined by click order (first click = priority 1)
+
+// The fetcher receives sorts array:
+const fetcher = async (query: FetcherQuery) => {
+  // query.sorts = [
+  //   { field: 'lastName', direction: 'asc', priority: 1 },
+  //   { field: 'firstName', direction: 'asc', priority: 2 },
+  //   { field: 'salary', direction: 'desc', priority: 3 }
+  // ]
+  const res = await fetch('/api/users', {
+    method: 'POST',
+    body: JSON.stringify(query),
+  });
+  return res.json();
+};
+
+<RowaKitTable fetcher={fetcher} columns={[/* ... */]} />
+```
+
+**Migration from deprecated `sort` field:**
+- Old format: `query.sort = { field: 'name', direction: 'asc' }`
+- New format: `query.sorts = [{ field: 'name', direction: 'asc', priority: 1 }]`
+- Both fields coexist during transition; `sort` will be removed in v2.0.0
+
+**UI Indicators:**
+- Single column: Standard sort arrow indicator
+- Multiple columns: Priority number displayed on sorted column headers
+
+---
+
 ## Bulk Actions
 
 ```tsx
