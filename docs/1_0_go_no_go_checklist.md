@@ -8,23 +8,24 @@
 
 ## 🎯 Purpose
 
-This checklist defines the **objective criteria** to decide whether RowaKit is ready to release **v1.0.0**.
+This checklist defines **objective criteria** to decide whether RowaKit is ready to release **v1.0.0**.
 
 Version **1.0.0** represents:
 - API stability guarantee
 - Production trust signal
 - Long-term support commitment
 
-If any **GO** item is not satisfied, the release must be delayed.
+If any **MANDATORY** item is not satisfied, the release must be **NO-GO**.
 
 ---
 
 ## 1️⃣ API Stability (MANDATORY)
 
-- [ ] `API_STABILITY.md` exists and is reviewed
+- [ ] `docs/API_STABILITY.md` exists and is reviewed
+- [ ] `docs/API_FREEZE_SUMMARY.md` exists and is reviewed
 - [ ] Public APIs are clearly defined and documented
+- [ ] Experimental APIs are explicitly labeled
 - [ ] No known breaking changes planned for the next MINOR release
-- [ ] All experimental APIs are explicitly marked
 
 **Decision:** GO / NO-GO
 
@@ -32,7 +33,7 @@ If any **GO** item is not satisfied, the release must be delayed.
 
 ## 2️⃣ Feature Completeness (MANDATORY)
 
-The following **core business workflows** must be complete:
+The following core workflows must be complete:
 
 - [ ] Server-side pagination
 - [ ] Server-side sorting
@@ -70,23 +71,23 @@ The following **core business workflows** must be complete:
 
 ---
 
-## 5️⃣ Test Coverage & Reliability
+## 5️⃣ Test Coverage & Reliability (MANDATORY)
 
 - [ ] All tests pass in CI
-- [ ] Core table behaviors are covered by tests
+- [ ] Core behaviors are covered by tests
 - [ ] Workflow features (selection, bulk, export) are tested
-- [ ] No flaky or disabled tests
+- [ ] No flaky or skipped tests
 
 **Decision:** GO / NO-GO
 
 ---
 
-## 6️⃣ Documentation Readiness
+## 6️⃣ Documentation Readiness (MANDATORY)
 
-- [ ] Root `README.md` is accurate and up to date
+- [ ] Root `README.md` is accurate
 - [ ] `packages/table/README.md` matches implementation
-- [ ] Roadmap reflects post-1.0 direction
-- [ ] Breaking change policy is documented
+- [ ] `docs/ROADMAP.md` reflects post-1.0 direction
+- [ ] No over-claims in docs (features must match code)
 
 **Decision:** GO / NO-GO
 
@@ -95,19 +96,31 @@ The following **core business workflows** must be complete:
 ## 7️⃣ Demo & Developer Experience
 
 - [ ] Demo builds and runs
-- [ ] Demo showcases all core workflows
-- [ ] No demo-only hacks leaking into library code
-- [ ] Getting started experience is under 5 minutes
+- [ ] Demo showcases core workflows
+- [ ] No demo-only hacks leaking into the library
+- [ ] Getting started is under 5 minutes
 
 **Decision:** GO / NO-GO
 
 ---
 
-## 8️⃣ Release Confidence
+## 8️⃣ Validation Evidence (MANDATORY)
 
-- [ ] At least one real production usage exists
-- [ ] Maintainers are willing to support v1.x API for 12–24 months
-- [ ] Clear plan exists for handling bugs and security issues
+v1.0.0 requires **strong real-world validation evidence**.
+
+### Option A — Production/Internal Usage (Preferred)
+- [ ] At least one real internal/production usage exists
+- [ ] Evidence is recorded in `docs/PRODUCTION_USAGE.md`
+
+### Option B — Production-like Evidence (Alternative)
+Only allowed if production/internal usage does not exist.
+
+- [ ] `docs/VALIDATION_EVIDENCE_POLICY.md` exists and is accepted by maintainers
+- [ ] `docs/PRODUCTION_LIKE_VALIDATION.md` exists with **PASS**
+- [ ] `docs/CONSUMER_COMPAT_MATRIX.md` exists with **PASS**
+- [ ] CI runs harness + consumer checks successfully
+
+> If Option A is not satisfied, Option B must be fully satisfied.
 
 **Decision:** GO / NO-GO
 
@@ -115,18 +128,19 @@ The following **core business workflows** must be complete:
 
 ## 🏁 Final Decision
 
-> **Release v1.0.0:**  
-> ☐ GO  
-> ☐ NO-GO
+> **Release v1.0.0:**
+
+- [ ] GO
+- [ ] NO-GO
 
 ### Notes
 
-(Record any blockers or follow-up actions here)
+(Record blockers and follow-up actions here)
 
 ---
 
 ## 📌 Architect Note
 
-If this checklist feels strict, it is intentional.
 v1.0.0 is not about features — it is about **trust**.
+If validation evidence is weak, the correct decision is **NO-GO**.
 
