@@ -4,8 +4,8 @@
  * Tests pagination, sorting, and filtering through the actual UI.
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { render, screen, waitFor, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { HarnessTestApp } from './HarnessTestApp';
@@ -24,6 +24,12 @@ describe('Core Scenarios (UI Level)', () => {
         errorRate: 0, // No errors for core tests
       },
     });
+  });
+
+  afterEach(() => {
+    cleanup();
+    // Clear any pending timers
+    vi.clearAllTimers();
   });
 
   describe('Pagination', () => {

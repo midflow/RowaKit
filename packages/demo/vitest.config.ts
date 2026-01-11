@@ -8,5 +8,8 @@ export default defineConfig({
     environment: 'jsdom',
     include: ['src/harness/**/*.test.ts', 'src/harness/**/*.test.tsx'],
     setupFiles: ['./vitest.setup.ts'],
+    // Ensure cleanup between tests
+    restoreMocks: true,
+    clearMocks: true,
   },
 });

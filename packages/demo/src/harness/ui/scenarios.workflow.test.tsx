@@ -4,8 +4,8 @@
  * Tests row selection, bulk actions, and export through the UI.
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { render, screen, waitFor, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { HarnessTestApp } from './HarnessTestApp';
@@ -25,6 +25,12 @@ describe('Workflow Scenarios (UI Level)', () => {
         errorRate: 0,
       },
     });
+  });
+
+  afterEach(() => {
+    cleanup();
+    vi.clearAllTimers();
+    vi.clearAllMocks();
   });
 
   describe('Row Selection', () => {

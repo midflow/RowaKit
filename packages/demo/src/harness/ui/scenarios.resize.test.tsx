@@ -4,8 +4,8 @@
  * Tests column resizing behavior (best-effort in JSDOM).
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { render, screen, waitFor, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { HarnessTestApp } from './HarnessTestApp';
@@ -24,6 +24,11 @@ describe('Column Resizing (UI Level)', () => {
         errorRate: 0,
       },
     });
+  });
+
+  afterEach(() => {
+    cleanup();
+    vi.clearAllTimers();
   });
 
   describe('Resize Behavior', () => {

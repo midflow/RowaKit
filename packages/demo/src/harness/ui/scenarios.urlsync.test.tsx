@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { HarnessTestApp } from './HarnessTestApp';
@@ -31,7 +31,11 @@ describe('URL Sync & Saved Views (UI Level)', () => {
   });
 
   afterEach(() => {
+    cleanup();
     localStorage.clear();
+    window.history.replaceState({}, '', window.location.pathname);
+    vi.clearAllTimers();
+    vi.clearAllMocks();
   });
 
   describe('URL Sync', () => {
