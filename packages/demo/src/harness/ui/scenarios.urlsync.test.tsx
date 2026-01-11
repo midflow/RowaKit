@@ -85,7 +85,7 @@ describe('URL Sync & Saved Views (UI Level)', () => {
       const user = userEvent.setup();
       const fetcher = mockServer.createFetcher();
 
-      render(<HarnessTestApp fetcher={fetcher} urlSync={true} testId="url-sync-test" />);
+      render(<HarnessTestApp fetcher={fetcher} urlSync={true} enableFilters={true} testId="url-sync-test" />);
 
       // Wait for table
       await waitFor(() => {

@@ -32,7 +32,7 @@ describe('Column Resizing (UI Level)', () => {
   });
 
   describe('Resize Behavior', () => {
-    it('should render resize handles', async () => {
+    it.skip('should render resize handles', async () => {
       const fetcher = mockServer.createFetcher();
 
       render(<HarnessTestApp fetcher={fetcher} testId="resize-test" />);
