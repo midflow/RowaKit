@@ -7,7 +7,9 @@
     "dev": "vite --port 5173 --strictPort",
     "build": "vite build",
     "preview": "vite preview",
-    "harness": "vitest run --config vitest.config.ts src/harness/runner.test.ts"
+    "harness": "vitest run --config vitest.config.ts",
+    "harness:ui": "vitest run --config vitest.config.ts src/harness/ui/runner.ui.test.ts",
+    "harness:watch": "vitest --config vitest.config.ts"
   },
   "dependencies": {
     "@rowakit/table": "workspace:*",
@@ -15,9 +17,13 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^14.3.1",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^23.2.0",
     "typescript": "^5.3.3",
     "vite": "^5.4.11",
     "vitest": "^1.6.1"
