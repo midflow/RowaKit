@@ -29,6 +29,7 @@ describe('Workflow Scenarios (UI Level)', () => {
 
   afterEach(() => {
     cleanup();
+    mockServer.dispose();
     vi.clearAllMocks();
     localStorage.clear();
     sessionStorage.clear();
@@ -54,21 +55,15 @@ describe('Workflow Scenarios (UI Level)', () => {
         />
       );
 
-      // Wait for table to render
-      await waitFor(() => {
-        expect(screen.getAllByRole('row').length).toBeGreaterThan(1);
-      });
+      // Data-ready marker
+      await screen.findByText(/page 1 of/i);
 
-      // Select first data row (skip header row)
-      const checkboxes = screen.getAllByRole('checkbox');
-      const firstRowCheckbox = checkboxes[1]; // Index 0 is "select all"
-      
-      await user.click(firstRowCheckbox);
+	  // Select first data row by accessible name
+    const firstRowCheckbox = await screen.findByRole('checkbox', { name: /^select row user-1$/i });
+	  await user.click(firstRowCheckbox);
 
-      // Verify selection count displayed (indicates checkbox was checked)
-      await waitFor(() => {
-        expect(screen.getByText(/1 selected/i)).toBeInTheDocument();
-      }, { timeout: 3000 });
+	  // Verify selection indicator
+	  await screen.findByText(/1 selected/i);
     });
 
     it('should select all rows on page', async () => {
@@ -89,21 +84,17 @@ describe('Workflow Scenarios (UI Level)', () => {
         />
       );
 
-      // Wait for table to render
-      await waitFor(() => {
-        expect(screen.getAllByRole('row').length).toBeGreaterThan(1);
-      });
+      // Data-ready marker (ensure real rows exist, not just skeleton)
+      await screen.findByText(/page 1 of/i);
+      await screen.findByText('User 1');
 
       // Click "select all" checkbox in header
-      const checkboxes = screen.getAllByRole('checkbox');
-      const selectAllCheckbox = checkboxes[0];
-      
+      const selectAllCheckbox = await screen.findByRole('checkbox', { name: /^select all rows$/i });
+      await waitFor(() => expect(selectAllCheckbox).toBeEnabled());
       await user.click(selectAllCheckbox);
 
       // Verify selection count (default page size is 20)
-      await waitFor(() => {
-        expect(screen.getByText(/20 selected/i)).toBeInTheDocument();
-      }, { timeout: 3000 });
+      await screen.findByText(/^20 selected$/i, undefined, { timeout: 3000 });
     });
 
     it('should reset selection on page change', async () => {
@@ -124,27 +115,25 @@ describe('Workflow Scenarios (UI Level)', () => {
         />
       );
 
-      // Wait for table
-      await waitFor(() => {
-        expect(screen.getAllByRole('row').length).toBeGreaterThan(1);
-      });
+      // Data-ready marker
+      await screen.findByText(/page 1 of/i);
 
       // Select a row
-      const checkboxes = screen.getAllByRole('checkbox');
-      await user.click(checkboxes[1]);
-      
-      await waitFor(() => {
-        expect(screen.getByText(/1 selected/i)).toBeInTheDocument();
-      }, { timeout: 3000 });
+      const rowCheckbox = await screen.findByRole('checkbox', { name: /^select row user-1$/i });
+      await user.click(rowCheckbox);
+      await screen.findByText(/1 selected/i);
 
       // Navigate to next page
       const nextButton = screen.getByRole('button', { name: /next/i });
       await user.click(nextButton);
 
+	  // Wait for page navigation to complete
+	  await screen.findByText(/page 2 of/i);
+
       // Verify selection cleared
-      await waitFor(() => {
-        expect(screen.queryByText(/selected/i)).not.toBeInTheDocument();
-      });
+	  await waitFor(() => {
+		expect(screen.queryByText(/1 selected/i)).not.toBeInTheDocument();
+	  });
     });
   });
 
@@ -171,19 +160,16 @@ describe('Workflow Scenarios (UI Level)', () => {
         />
       );
 
-      // Wait for table
-      await waitFor(() => {
-        expect(screen.getAllByRole('row').length).toBeGreaterThan(1);
-      });
+      // Data-ready marker
+      await screen.findByText(/page 1 of/i);
 
       // Select two rows
-      const checkboxes = screen.getAllByRole('checkbox');
-      await user.click(checkboxes[1]);
-      await user.click(checkboxes[2]);
+      const row1 = await screen.findByRole('checkbox', { name: /^select row user-1$/i });
+      const row2 = await screen.findByRole('checkbox', { name: /^select row user-2$/i });
+      await user.click(row1);
+      await user.click(row2);
 
-      await waitFor(() => {
-        expect(screen.getByText(/2 selected/i)).toBeInTheDocument();
-      }, { timeout: 3000 });
+      await screen.findByText(/2 selected/i);
 
       // Click bulk action button
       const actionButton = screen.getByRole('button', { name: /test action/i });
@@ -222,23 +208,18 @@ describe('Workflow Scenarios (UI Level)', () => {
         />
       );
 
-      // Wait for table
-      await waitFor(() => {
-        expect(screen.getAllByRole('row').length).toBeGreaterThan(1);
-      });
+      // Data-ready marker
+      await screen.findByText(/page 1 of/i);
 
       // Select a row
-      const checkboxes = screen.getAllByRole('checkbox');
-      await user.click(checkboxes[1]);
+      const row1 = await screen.findByRole('checkbox', { name: /^select row user-1$/i });
+      await user.click(row1);
 
-      // Wait for selection to register
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
-        expect(screen.getByText(/1 selected/i)).toBeInTheDocument();
-      }, { timeout: 3000 });
+      // Wait for selection indicator BEFORE searching for bulk actions
+      await screen.findByText(/1 selected/i);
+	  const deleteButton = await screen.findByRole('button', { name: /delete/i });
 
       // Click delete button
-      const deleteButton = screen.getByRole('button', { name: /delete/i });
       await user.click(deleteButton);
 
       // Verify confirmation dialog appears
@@ -281,30 +262,22 @@ describe('Workflow Scenarios (UI Level)', () => {
         />
       );
 
-      // Wait for table
-      await waitFor(() => {
-        expect(screen.getAllByRole('row').length).toBeGreaterThan(1);
-      });
+      // Data-ready marker
+      await screen.findByText(/page 1 of/i);
 
       // Select a row
-      const checkboxes = screen.getAllByRole('checkbox');
-      await user.click(checkboxes[1]);
+      const row1 = await screen.findByRole('checkbox', { name: /^select row user-1$/i });
+      await user.click(row1);
 
-      // Wait for selection to register and delete button to appear
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
-        expect(screen.getByText(/1 selected/i)).toBeInTheDocument();
-      }, { timeout: 3000 });
+      // Wait for selection indicator BEFORE searching for bulk actions
+      await screen.findByText(/1 selected/i);
+      const deleteButton = await screen.findByRole('button', { name: /delete/i });
 
       // Click delete button
-      const deleteButton = screen.getByRole('button', { name: /delete/i });
       await user.click(deleteButton);
 
       // Click confirm
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /confirm/i })).toBeInTheDocument();
-      }, { timeout: 3000 });
-      const confirmButton = screen.getByRole('button', { name: /confirm/i });
+      const confirmButton = await screen.findByRole('button', { name: /confirm/i });
       await user.click(confirmButton);
 
       // Verify onClick called

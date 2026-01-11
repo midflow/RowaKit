@@ -28,6 +28,7 @@ describe('Column Resizing (UI Level)', () => {
 
   afterEach(() => {
     cleanup();
+    mockServer.dispose();
     vi.clearAllMocks();
     localStorage.clear();
     sessionStorage.clear();

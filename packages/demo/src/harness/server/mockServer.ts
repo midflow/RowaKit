@@ -51,6 +51,9 @@ export class MockServer {
   private config: MockServerConfig;
   private requestCounter = 0;
 
+	private disposed = false;
+	private pendingDelayTimers = new Map<ReturnType<typeof setTimeout>, () => void>();
+
   constructor(config: MockServerConfig) {
     this.config = config;
     this.dataset = generateDataset(config.datasetSize, config.seed);
@@ -64,10 +67,18 @@ export class MockServer {
     return async (query: FetcherQuery): Promise<FetcherResult<TestUser>> => {
       const requestId = ++this.requestCounter;
 
+			if (this.disposed) {
+				return { items: [], total: 0 };
+			}
+
       try {
         // Simulate network latency
         const latency = this.simulateLatency();
         await this.delay(latency);
+
+			if (this.disposed) {
+				return { items: [], total: 0 };
+			}
 
         // Simulate network errors
         if (this.shouldSimulateError()) {
@@ -120,7 +131,28 @@ export class MockServer {
    * Delay helper
    */
   private delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise((resolve) => {
+      const timeoutId = setTimeout(() => {
+        this.pendingDelayTimers.delete(timeoutId);
+        resolve();
+      }, ms);
+      this.pendingDelayTimers.set(timeoutId, resolve);
+    });
+  }
+
+  /**
+   * Dispose any pending network timers.
+   *
+   * This prevents async leakage between UI harness tests (unmounted tables still
+   * awaiting latency timers), making the suite deterministic in CI.
+   */
+  dispose(): void {
+    this.disposed = true;
+    for (const [timeoutId, resolve] of this.pendingDelayTimers.entries()) {
+      clearTimeout(timeoutId);
+      resolve();
+    }
+    this.pendingDelayTimers.clear();
   }
 
   /**

@@ -9,9 +9,12 @@
 
 ## Executive Summary
 
-This validation demonstrates RowaKit's production readiness through a comprehensive test harness that simulates production-like conditions with a **50,000-row dataset** and realistic network latency.
+This validation demonstrates RowaKit's production readiness through a comprehensive harness that includes:
 
-**Result:** ✅ **ALL TESTS PASSED** (35/35 scenarios)
+- **Production-like (logic-level) scenarios** using a **50,000-row dataset** with simulated network latency/error configuration.
+- **UI-level scenarios** (React Testing Library + JSDOM) validating pagination/sort/filter/workflows, URL sync, and resizing behaviors.
+
+**Result:** ✅ **PASS** — `pnpm demo:harness` completed successfully **3 consecutive runs**.
 
 ---
 
@@ -42,7 +45,7 @@ Network conditions simulate real-world API latency with occasional errors to tes
 
 ## Scenario Results
 
-### Core Scenarios (10/10 ✅)
+### Core Scenarios (Logic-level) (35/35 ✅)
 
 **Pagination:**
 - ✅ Next/prev navigation works correctly
@@ -62,7 +65,20 @@ Network conditions simulate real-world API latency with occasional errors to tes
 
 ---
 
-### Workflow Scenarios (9/9 ✅)
+### UI Harness (28 passed / 4 skipped ✅)
+
+The UI harness is executed as part of `pnpm demo:harness` and currently contains **32 UI tests**:
+
+- **Core (UI Level):** 8 passed
+- **Workflow (UI Level):** 9 passed
+- **URL Sync & Saved Views (UI Level):** 6 passed / 3 skipped
+- **Column Resizing (UI Level):** 4 passed / 1 skipped
+- **Debug workflow (UI Level):** 1 passed (diagnostic test)
+
+**Skipped tests (intentional):**
+
+- Saved Views: save/load/delete tests are currently marked `it.skip`.
+- Resize handles render test is skipped due to known JSDOM limitations.
 
 **Row Selection:**
 - ✅ Select individual rows
@@ -83,36 +99,34 @@ Network conditions simulate real-world API latency with occasional errors to tes
 
 ---
 
-### URL Sync & Saved Views (6/6 ✅)
+### URL Sync & Saved Views (UI Level)
 
-- ✅ Query params encode table state
-- ✅ Browser back/forward support
-- ✅ Can save table state to named view
-- ✅ Can load saved state
-- ✅ Can delete saved view
-- ✅ Recovers from corrupted state
+- ✅ Pagination/sorting/filters sync to URL
+- ✅ Restores state from URL on mount (including `aria-sort`)
+- ✅ Supports browser back/forward via `popstate`
+- ✅ Recovers from corrupted localStorage
+- ⏭️ Saved view save/load/delete (skipped)
 
 ---
 
-### Column Resizing (5/5 ✅)
+### Column Resizing (UI Level)
 
-- ✅ Stores column widths
-- ✅ Respects min/max bounds
-- ✅ Double-click auto-fit calculation
-- ✅ Does not trigger sort on resize handle
-- ✅ Persists to URL or localStorage
+- ✅ Column width persistence logic
+- ✅ Min/max bounds
+- ✅ Auto-fit logic test
+- ✅ Resize click does not trigger sort (JSDOM-limited; validated where possible)
+- ⏭️ Resize handle render test (skipped)
 
 ---
 
 ### Stress Test (4/4 ✅)
 
-- ✅ 50 repeated randomized interactions (page, sort, filter combinations)
+- ✅ 100 repeated randomized interactions (page, sort, filter combinations)
 - ✅ Rapid pagination clicks (back and forth)
 - ✅ Rapid sort toggles
 - ✅ Rapid filter changes
 
-**Success Rate:** 100% (all stress iterations passed)  
-**Duration:** ~4 seconds
+**Success Rate:** 100% (all stress iterations passed)
 
 ---
 
@@ -120,11 +134,11 @@ Network conditions simulate real-world API latency with occasional errors to tes
 
 | Metric | Result |
 |--------|--------|
-| **Total Tests** | 35 |
-| **Passed** | 35 |
-| **Failed** | 0 |
-| **Duration** | 4.17s |
-| **Success Rate** | 100% |
+| **Test Files** | 6 |
+| **Tests (passed)** | 63 |
+| **Tests (skipped)** | 4 |
+| **Tests (failed)** | 0 |
+| **Runs (consecutive)** | 3 |
 
 All scenarios completed successfully with no failures or timeouts.
 
@@ -133,7 +147,10 @@ All scenarios completed successfully with no failures or timeouts.
 ## Commands
 
 ```bash
-# Run harness
+# Run full demo harness (UI + production-like runner)
+pnpm demo:harness
+
+# Or run only the demo package harness directly
 pnpm --filter @rowakit/demo harness
 
 # With custom config
@@ -154,10 +171,8 @@ pnpm --filter @rowakit/demo harness
 
 ### 🟢 No Issues Found
 
-- No errors encountered during 50 stress iterations
-- No race conditions or stale request bugs
-- No memory leaks or performance degradation
-- No edge case failures (empty datasets, boundary conditions)
+- No deterministic failures observed across 3 consecutive full harness runs
+- No timeouts in UI-level scenarios
 
 ---
 
@@ -167,8 +182,8 @@ pnpm --filter @rowakit/demo harness
 |----------|--------|-------|
 | **Dataset Scale** | ✅ PASS | 50k rows handled successfully |
 | **Network Simulation** | ✅ PASS | Latency and errors handled correctly |
-| **Core Features** | ✅ PASS | All 10 core scenarios passed |
-| **Workflows** | ✅ PASS | All 9 workflow scenarios passed |
+| **Core Scenarios (logic-level)** | ✅ PASS | 35/35 tests passed |
+| **UI Harness** | ✅ PASS | 28 passed / 4 skipped |
 | **Stress Test** | ✅ PASS | 100% success rate under load |
 
 ---

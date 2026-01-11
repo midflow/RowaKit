@@ -28,6 +28,7 @@ describe('Core Scenarios (UI Level)', () => {
 
   afterEach(() => {
     cleanup();
+    mockServer.dispose();
     vi.clearAllMocks();
     // Clear storage and history
     localStorage.clear();

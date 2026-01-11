@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, waitFor, cleanup } from '@testing-library/react';
+import { render, screen, waitFor, cleanup, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { HarnessTestApp } from './HarnessTestApp';
@@ -32,6 +32,7 @@ describe('URL Sync & Saved Views (UI Level)', () => {
 
   afterEach(() => {
     cleanup();
+    mockServer.dispose();
     localStorage.clear();
     window.history.replaceState({}, '', '/');
     vi.clearAllMocks();
@@ -45,13 +46,11 @@ describe('URL Sync & Saved Views (UI Level)', () => {
 
       render(<HarnessTestApp fetcher={fetcher} urlSync={true} testId="url-sync-test" />);
 
-      // Wait for table
-      await waitFor(() => {
-        expect(screen.getAllByRole('row').length).toBeGreaterThan(1);
-      });
+      // Wait for initial load/pagination UI (row-count can be >1 even while loading)
+      await screen.findByText(/page 1 of/i);
 
       // Navigate to page 2
-      const nextButton = screen.getByRole('button', { name: /next/i });
+      const nextButton = await screen.findByRole('button', { name: /next/i });
       await user.click(nextButton);
 
       // Verify URL contains page parameter
@@ -115,9 +114,7 @@ describe('URL Sync & Saved Views (UI Level)', () => {
       render(<HarnessTestApp fetcher={fetcher} urlSync={true} testId="url-restore-test" />);
 
       // Wait for table to render with restored state
-      await waitFor(() => {
-        expect(screen.getByText(/page 3/i)).toBeInTheDocument();
-      }, { timeout: 3000 });
+	  await screen.findByText(/page 3 of/i);
 
       // Verify page size also restored (check select value)
       const pageSizeSelect = screen.getByLabelText(/rows per page/i);
@@ -125,7 +122,9 @@ describe('URL Sync & Saved Views (UI Level)', () => {
 
       // Verify sort restored
       const nameHeader = screen.getByRole('button', { name: /name/i });
-      expect(nameHeader).toHaveAttribute('aria-sort', 'ascending');
+		await waitFor(() => {
+			expect(nameHeader).toHaveAttribute('aria-sort', 'ascending');
+		}, { timeout: 3000 });
     });
 
     it('should support browser back/forward', async () => {
@@ -135,28 +134,26 @@ describe('URL Sync & Saved Views (UI Level)', () => {
       render(<HarnessTestApp fetcher={fetcher} urlSync={true} testId="history-test" />);
 
       // Wait for initial load
-      await waitFor(() => {
-        expect(screen.getAllByRole('row').length).toBeGreaterThan(1);
-      });
+	  await screen.findByText(/page 1 of/i);
 
       // Navigate to page 2
       const nextButton = screen.getByRole('button', { name: /next/i });
       await user.click(nextButton);
       
-      await waitFor(() => {
-        expect(screen.getByText(/page 2/i)).toBeInTheDocument();
-      }, { timeout: 3000 });
+	  await screen.findByText(/page 2 of/i);
 
       // Go back
-      window.history.back();
-      
-      // Trigger popstate event manually (jsdom doesn't auto-trigger)
-      window.dispatchEvent(new PopStateEvent('popstate'));
+      await act(async () => {
+        window.history.back();
+        // Trigger popstate event manually (jsdom doesn't auto-trigger)
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      });
 
       // Verify back to page 1
-      await waitFor(() => {
-        expect(screen.getByText(/page 1/i)).toBeInTheDocument();
-      }, { timeout: 3000 });
+		await waitFor(() => {
+			expect(window.location.search).toContain('page=1');
+		}, { timeout: 3000 });
+		await screen.findByText(/page 1 of/i, undefined, { timeout: 3000 });
     });
   });
 
