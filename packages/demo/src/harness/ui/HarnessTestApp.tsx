@@ -23,6 +23,8 @@ export interface HarnessTestAppProps {
   savedViews?: string;
   /** Enable filters */
   enableFilters?: boolean;
+  /** Enable column resizing */
+  enableColumnResizing?: boolean;
   /** Test ID for query targeting */
   testId?: string;
 }
@@ -41,6 +43,7 @@ export function HarnessTestApp({
   urlSync = false,
   savedViews,
   enableFilters = false,
+  enableColumnResizing = false,
   testId = 'harness-table',
 }: HarnessTestAppProps) {
   const columns = [
@@ -101,6 +104,7 @@ export function HarnessTestApp({
         syncToUrl={urlSync}
         enableSavedViews={!!savedViews}
         enableFilters={enableFilters}
+        enableColumnResizing={enableColumnResizing}
       />
     </div>
   );
