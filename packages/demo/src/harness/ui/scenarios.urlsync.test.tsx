@@ -89,7 +89,7 @@ describe('URL Sync & Saved Views (UI Level)', () => {
       });
 
       // Apply filter
-      const nameFilter = screen.getByPlaceholderText(/search name/i);
+      const nameFilter = screen.getByPlaceholderText(/filter name/i);
       await user.type(nameFilter, 'John');
 
       // Verify URL contains filter parameter

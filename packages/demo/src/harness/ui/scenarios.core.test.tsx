@@ -168,11 +168,9 @@ describe('Core Scenarios (UI Level)', () => {
         expect(deptHeader).toHaveAttribute('aria-sort', 'ascending');
       });
 
-      // Then sort by Name (with Shift to add to sort)
+      // Then sort by Name (with Ctrl to add to sort - PRD-E4)
       const nameHeader = screen.getByRole('button', { name: /name/i });
-      await user.keyboard('[ShiftLeft>]');
-      await user.click(nameHeader);
-      await user.keyboard('[/ShiftLeft]');
+      await user.click(nameHeader, { ctrlKey: true });
 
       // Verify both columns have sort indicators
       await waitFor(() => {
@@ -195,7 +193,7 @@ describe('Core Scenarios (UI Level)', () => {
       });
 
       // Find filter input for Name column
-      const nameFilter = screen.getByPlaceholderText(/search name/i);
+      const nameFilter = screen.getByPlaceholderText(/filter name/i);
       await user.type(nameFilter, 'John');
 
       // Wait for filter to apply
@@ -217,14 +215,16 @@ describe('Core Scenarios (UI Level)', () => {
       });
 
       // Apply filter
-      const nameFilter = screen.getByPlaceholderText(/search name/i);
+      const nameFilter = screen.getByPlaceholderText(/filter name/i);
       await user.type(nameFilter, 'John');
       await waitFor(() => {
         expect(nameFilter).toHaveValue('John');
       });
 
-      // Clear filter
-      const clearButton = screen.getByRole('button', { name: /clear filters/i });
+      // Wait for clear button to appear (only shows when filters active)
+      const clearButton = await waitFor(() => {
+        return screen.getByRole('button', { name: /clear.*filter/i });
+      });
       await user.click(clearButton);
 
       // Verify filter cleared
