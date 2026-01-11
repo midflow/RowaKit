@@ -39,3 +39,8 @@ global.ResizeObserver = class ResizeObserver {
   observe() {}
   unobserve() {}
 } as any;
+
+// Mock window.open (required for export functionality)
+global.window.open = ((url: string, target?: string, features?: string) => {
+  return { document: {}, close: () => {} } as any;
+}) as any;
