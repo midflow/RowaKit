@@ -57,11 +57,9 @@ describe('Workflow Scenarios (UI Level)', () => {
       
       await user.click(firstRowCheckbox);
 
-      // Verify checkbox is checked
-      expect(firstRowCheckbox).toBeChecked();
-
-      // Verify selection count displayed
+      // Verify checkbox is checked and selection count displayed
       await waitFor(() => {
+        expect(firstRowCheckbox).toBeChecked();
         expect(screen.getByText(/1 selected/i)).toBeInTheDocument();
       });
     });
@@ -95,8 +93,9 @@ describe('Workflow Scenarios (UI Level)', () => {
       
       await user.click(selectAllCheckbox);
 
-      // Verify selection count (default page size is 20)
+      // Verify checkbox checked and selection count (default page size is 20)
       await waitFor(() => {
+        expect(selectAllCheckbox).toBeChecked();
         expect(screen.getByText(/20 selected/i)).toBeInTheDocument();
       });
     });
@@ -129,6 +128,7 @@ describe('Workflow Scenarios (UI Level)', () => {
       await user.click(checkboxes[1]);
       
       await waitFor(() => {
+        expect(checkboxes[1]).toBeChecked();
         expect(screen.getByText(/1 selected/i)).toBeInTheDocument();
       });
 
@@ -177,6 +177,8 @@ describe('Workflow Scenarios (UI Level)', () => {
       await user.click(checkboxes[2]);
 
       await waitFor(() => {
+        expect(checkboxes[1]).toBeChecked();
+        expect(checkboxes[2]).toBeChecked();
         expect(screen.getByText(/2 selected/i)).toBeInTheDocument();
       });
 
@@ -225,6 +227,12 @@ describe('Workflow Scenarios (UI Level)', () => {
       // Select a row
       const checkboxes = screen.getAllByRole('checkbox');
       await user.click(checkboxes[1]);
+
+      // Wait for selection to register
+      await waitFor(() => {
+        expect(checkboxes[1]).toBeChecked();
+        expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
+      });
 
       // Click delete button
       const deleteButton = screen.getByRole('button', { name: /delete/i });
@@ -278,6 +286,12 @@ describe('Workflow Scenarios (UI Level)', () => {
       // Select a row
       const checkboxes = screen.getAllByRole('checkbox');
       await user.click(checkboxes[1]);
+
+      // Wait for selection to register and delete button to appear
+      await waitFor(() => {
+        expect(checkboxes[1]).toBeChecked();
+        expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
+      });
 
       // Click delete button
       const deleteButton = screen.getByRole('button', { name: /delete/i });
