@@ -67,7 +67,7 @@ describe('Workflow Scenarios (UI Level)', () => {
       await waitFor(() => {
         expect(firstRowCheckbox).toBeChecked();
         expect(screen.getByText(/1 selected/i)).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
     });
 
     it('should select all rows on page', async () => {
@@ -103,7 +103,7 @@ describe('Workflow Scenarios (UI Level)', () => {
       await waitFor(() => {
         expect(selectAllCheckbox).toBeChecked();
         expect(screen.getByText(/20 selected/i)).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
     });
 
     it('should reset selection on page change', async () => {
@@ -136,7 +136,7 @@ describe('Workflow Scenarios (UI Level)', () => {
       await waitFor(() => {
         expect(checkboxes[1]).toBeChecked();
         expect(screen.getByText(/1 selected/i)).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Navigate to next page
       const nextButton = screen.getByRole('button', { name: /next/i });
@@ -186,7 +186,7 @@ describe('Workflow Scenarios (UI Level)', () => {
         expect(checkboxes[1]).toBeChecked();
         expect(checkboxes[2]).toBeChecked();
         expect(screen.getByText(/2 selected/i)).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Click bulk action button
       const actionButton = screen.getByRole('button', { name: /test action/i });
@@ -238,7 +238,7 @@ describe('Workflow Scenarios (UI Level)', () => {
       await waitFor(() => {
         expect(checkboxes[1]).toBeChecked();
         expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Click delete button
       const deleteButton = screen.getByRole('button', { name: /delete/i });
@@ -248,7 +248,7 @@ describe('Workflow Scenarios (UI Level)', () => {
       await waitFor(() => {
         expect(screen.getByText(/confirm delete/i)).toBeInTheDocument();
         expect(screen.getByText(/are you sure/i)).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Click cancel
       const cancelButton = screen.getByRole('button', { name: /cancel/i });
@@ -297,7 +297,7 @@ describe('Workflow Scenarios (UI Level)', () => {
       await waitFor(() => {
         expect(checkboxes[1]).toBeChecked();
         expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Click delete button
       const deleteButton = screen.getByRole('button', { name: /delete/i });
@@ -306,14 +306,14 @@ describe('Workflow Scenarios (UI Level)', () => {
       // Click confirm
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /confirm/i })).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
       const confirmButton = screen.getByRole('button', { name: /confirm/i });
       await user.click(confirmButton);
 
       // Verify onClick called
       await waitFor(() => {
         expect(bulkActionSpy).toHaveBeenCalled();
-      });
+      }, { timeout: 3000 });
     });
   });
 

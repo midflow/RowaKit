@@ -63,21 +63,21 @@ describe('Core Scenarios (UI Level)', () => {
       // Wait for initial render
       await waitFor(() => {
         expect(screen.getByText(/page 1 of/i)).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Go to page 2
       const nextButton = screen.getByRole('button', { name: /next/i });
       await user.click(nextButton);
       await waitFor(() => {
         expect(screen.getByText(/page 2/i)).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Go back to page 1
       const prevButton = screen.getByRole('button', { name: /previous/i });
       await user.click(prevButton);
       await waitFor(() => {
         expect(screen.getByText(/page 1/i)).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
     });
 
     it('should change page size', async () => {

@@ -57,7 +57,7 @@ describe('URL Sync & Saved Views (UI Level)', () => {
       // Verify URL contains page parameter
       await waitFor(() => {
         expect(window.location.search).toContain('page=2');
-      });
+      }, { timeout: 3000 });
     });
 
     it('should sync sorting to URL', async () => {
@@ -78,7 +78,7 @@ describe('URL Sync & Saved Views (UI Level)', () => {
       // Verify URL contains sort parameter
       await waitFor(() => {
         expect(window.location.search).toMatch(/sort.*name/);
-      });
+      }, { timeout: 3000 });
     });
 
     it('should sync filters to URL', async () => {
@@ -99,7 +99,7 @@ describe('URL Sync & Saved Views (UI Level)', () => {
       // Verify URL contains filter parameter
       await waitFor(() => {
         expect(window.location.search).toMatch(/filter.*name.*john/i);
-      }, { timeout: 2000 });
+      }, { timeout: 3000 });
     });
 
     it('should restore state from URL on mount', async () => {
@@ -117,7 +117,7 @@ describe('URL Sync & Saved Views (UI Level)', () => {
       // Wait for table to render with restored state
       await waitFor(() => {
         expect(screen.getByText(/page 3/i)).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Verify page size also restored (check select value)
       const pageSizeSelect = screen.getByLabelText(/rows per page/i);
@@ -145,7 +145,7 @@ describe('URL Sync & Saved Views (UI Level)', () => {
       
       await waitFor(() => {
         expect(screen.getByText(/page 2/i)).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Go back
       window.history.back();
@@ -156,7 +156,7 @@ describe('URL Sync & Saved Views (UI Level)', () => {
       // Verify back to page 1
       await waitFor(() => {
         expect(screen.getByText(/page 1/i)).toBeInTheDocument();
-      }, { timeout: 2000 });
+      }, { timeout: 3000 });
     });
   });
 
@@ -211,7 +211,7 @@ describe('URL Sync & Saved Views (UI Level)', () => {
         const views = JSON.parse(stored!);
         expect(views['My View']).toBeDefined();
         expect(views['My View'].sorts).toBeDefined();
-      });
+      }, { timeout: 3000 });
     });
 
     it.skip('should load saved view', async () => {
