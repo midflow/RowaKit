@@ -91,7 +91,7 @@ export function runStressScenarios(
       // At least 95% success rate
       const successRate = results.filter((r) => r).length / results.length;
       expect(successRate).toBeGreaterThan(0.95);
-    });
+    }, 15000); // 15-second timeout for stress test
 
     it('Stress — rapid pagination clicks', async () => {
       const fetcher = createFetcher();

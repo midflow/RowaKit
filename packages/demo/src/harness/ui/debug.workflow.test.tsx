@@ -26,6 +26,7 @@ describe('DEBUG: Workflow Selection', () => {
   });
 
   afterEach(() => {
+    mockServer.dispose();
     vi.clearAllMocks();
     localStorage.clear();
     sessionStorage.clear();
