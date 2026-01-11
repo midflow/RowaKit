@@ -7,6 +7,7 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     include: ['src/harness/**/*.test.ts', 'src/harness/**/*.test.tsx'],
+    exclude: ['**/runner.ui.test.ts', '**/debug.test.tsx'], // Exclude runner and debug tests
     setupFiles: ['./vitest.setup.ts'],
     // Ensure cleanup between tests
     restoreMocks: true,

@@ -28,7 +28,10 @@ describe('Column Resizing (UI Level)', () => {
 
   afterEach(() => {
     cleanup();
-    vi.clearAllTimers();
+    vi.clearAllMocks();
+    localStorage.clear();
+    sessionStorage.clear();
+    window.history.replaceState({}, '', '/');
   });
 
   describe('Resize Behavior', () => {

@@ -33,9 +33,9 @@ describe('URL Sync & Saved Views (UI Level)', () => {
   afterEach(() => {
     cleanup();
     localStorage.clear();
-    window.history.replaceState({}, '', window.location.pathname);
-    vi.clearAllTimers();
+    window.history.replaceState({}, '', '/');
     vi.clearAllMocks();
+    sessionStorage.clear();
   });
 
   describe('URL Sync', () => {

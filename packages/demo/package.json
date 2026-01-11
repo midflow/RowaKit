@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "harness": "vitest run --config vitest.config.ts",
-    "harness:ui": "vitest run --config vitest.config.ts src/harness/ui/runner.ui.test.ts",
+    "harness:ui": "vitest run --config vitest.config.ts",
     "harness:watch": "vitest --config vitest.config.ts"
   },
   "dependencies": {

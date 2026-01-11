@@ -29,8 +29,10 @@ describe('Workflow Scenarios (UI Level)', () => {
 
   afterEach(() => {
     cleanup();
-    vi.clearAllTimers();
     vi.clearAllMocks();
+    localStorage.clear();
+    sessionStorage.clear();
+    window.history.replaceState({}, '', '/');
   });
 
   describe('Row Selection', () => {

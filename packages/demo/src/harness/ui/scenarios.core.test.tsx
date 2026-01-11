@@ -28,8 +28,11 @@ describe('Core Scenarios (UI Level)', () => {
 
   afterEach(() => {
     cleanup();
-    // Clear any pending timers
-    vi.clearAllTimers();
+    vi.clearAllMocks();
+    // Clear storage and history
+    localStorage.clear();
+    sessionStorage.clear();
+    window.history.replaceState({}, '', '/');
   });
 
   describe('Pagination', () => {
