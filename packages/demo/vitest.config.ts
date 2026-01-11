@@ -14,5 +14,7 @@ export default defineConfig({
     clearMocks: true,
     // Run tests sequentially to avoid timing issues
     threads: false,
+    // Isolate modules between test files for better isolation
+    isolate: true,
   },
 });
