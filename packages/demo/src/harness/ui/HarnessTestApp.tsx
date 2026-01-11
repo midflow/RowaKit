@@ -12,7 +12,7 @@ export interface HarnessTestAppProps {
   /** Data fetcher */
   fetcher: Fetcher<TestUser>;
   /** Enable row selection */
-  enableSelection?: boolean;
+  enableRowSelection?: boolean;
   /** Bulk actions */
   bulkActions?: BulkActionDef[];
   /** Export handler */
@@ -35,7 +35,7 @@ export interface HarnessTestAppProps {
  */
 export function HarnessTestApp({
   fetcher,
-  enableSelection = false,
+  enableRowSelection = false,
   bulkActions,
   exporter,
   urlSync = false,
@@ -94,12 +94,12 @@ export function HarnessTestApp({
       <RowaKitTable
         fetcher={fetcher}
         columns={columns}
-        getRowKey={(row) => row.id}
-        enableSelection={enableSelection}
+        rowKey={(row) => row.id}
+        enableRowSelection={enableRowSelection}
         bulkActions={bulkActions}
         exporter={exporter}
-        urlSync={urlSync}
-        savedViews={savedViews}
+        syncToUrl={urlSync}
+        enableSavedViews={!!savedViews}
         enableFilters={enableFilters}
       />
     </div>

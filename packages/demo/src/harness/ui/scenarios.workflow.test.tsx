@@ -32,10 +32,16 @@ describe('Workflow Scenarios (UI Level)', () => {
       const user = userEvent.setup();
       const fetcher = mockServer.createFetcher();
 
+      // Need bulkActions for selection count to display
+      const bulkActions: BulkActionDef[] = [
+        { id: 'dummy', label: 'Dummy', onClick: vi.fn() },
+      ];
+
       render(
         <HarnessTestApp
           fetcher={fetcher}
-          enableSelection={true}
+          enableRowSelection={true}
+          bulkActions={bulkActions}
           testId="selection-test"
         />
       );
@@ -64,10 +70,16 @@ describe('Workflow Scenarios (UI Level)', () => {
       const user = userEvent.setup();
       const fetcher = mockServer.createFetcher();
 
+      // Need bulkActions for selection count to display
+      const bulkActions: BulkActionDef[] = [
+        { id: 'dummy', label: 'Dummy', onClick: vi.fn() },
+      ];
+
       render(
         <HarnessTestApp
           fetcher={fetcher}
-          enableSelection={true}
+          enableRowSelection={true}
+          bulkActions={bulkActions}
           testId="selection-test"
         />
       );
@@ -83,9 +95,9 @@ describe('Workflow Scenarios (UI Level)', () => {
       
       await user.click(selectAllCheckbox);
 
-      // Verify selection count (should be page size, e.g., 25)
+      // Verify selection count (default page size is 20)
       await waitFor(() => {
-        expect(screen.getByText(/25 selected/i)).toBeInTheDocument();
+        expect(screen.getByText(/20 selected/i)).toBeInTheDocument();
       });
     });
 
@@ -93,10 +105,16 @@ describe('Workflow Scenarios (UI Level)', () => {
       const user = userEvent.setup();
       const fetcher = mockServer.createFetcher();
 
+      // Need bulkActions for selection count to display
+      const bulkActions: BulkActionDef[] = [
+        { id: 'dummy', label: 'Dummy', onClick: vi.fn() },
+      ];
+
       render(
         <HarnessTestApp
           fetcher={fetcher}
-          enableSelection={true}
+          enableRowSelection={true}
+          bulkActions={bulkActions}
           testId="selection-test"
         />
       );
@@ -142,7 +160,7 @@ describe('Workflow Scenarios (UI Level)', () => {
       render(
         <HarnessTestApp
           fetcher={fetcher}
-          enableSelection={true}
+          enableRowSelection={true}
           bulkActions={bulkActions}
           testId="bulk-action-test"
         />
@@ -193,7 +211,7 @@ describe('Workflow Scenarios (UI Level)', () => {
       render(
         <HarnessTestApp
           fetcher={fetcher}
-          enableSelection={true}
+          enableRowSelection={true}
           bulkActions={bulkActions}
           testId="bulk-confirm-test"
         />
@@ -246,7 +264,7 @@ describe('Workflow Scenarios (UI Level)', () => {
       render(
         <HarnessTestApp
           fetcher={fetcher}
-          enableSelection={true}
+          enableRowSelection={true}
           bulkActions={bulkActions}
           testId="bulk-confirm-test"
         />
