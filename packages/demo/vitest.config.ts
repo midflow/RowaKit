@@ -11,5 +11,7 @@ export default defineConfig({
     // Ensure cleanup between tests
     restoreMocks: true,
     clearMocks: true,
+    // Run tests sequentially to avoid timing issues
+    threads: false,
   },
 });
