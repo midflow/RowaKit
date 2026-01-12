@@ -1,7 +1,7 @@
 # Production-like Validation Report
 
 > **Project:** RowaKit  
-> **Version:** v0.6.0 Release Candidate  
+> **Version:** v1.0.0 readiness validation  
 > **Date:** 2026-01-11  
 > **Status:** ✅ **PASS**
 
@@ -135,8 +135,8 @@ The UI harness is executed as part of `pnpm demo:harness` and currently contains
 | Metric | Result |
 |--------|--------|
 | **Test Files** | 6 |
-| **Tests (passed)** | 63 |
-| **Tests (skipped)** | 4 |
+| **Tests (passed)** | 62 |
+| **Tests (skipped)** | 5 |
 | **Tests (failed)** | 0 |
 | **Runs (consecutive)** | 3 |
 

@@ -49,4 +49,4 @@ declare const __ROWAKIT_TABLE_VERSION__: string | undefined;
 
 export const VERSION = typeof __ROWAKIT_TABLE_VERSION__ !== 'undefined' 
   ? __ROWAKIT_TABLE_VERSION__ 
-  : '0.6.0';
+  : '1.0.0';

@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.0] - 2026-01-12 (OSS 1.0 Stable Release)
+
+### Added
+- **Stability & governance**
+  - API stability contract: `docs/API_STABILITY.md`
+  - API freeze summary: `docs/API_FREEZE_SUMMARY.md`
+  - Canonical release decision: `docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md`
+  - Executive decision summary: `docs/V1_0_0_RELEASE_DECISION.md`
+
+### Changed
+- Released `@rowakit/table` as **stable v1.0.0**.
+
+### Validation
+- Production-like harness validation: `docs/PRODUCTION_LIKE_VALIDATION.md` (PASS)
+- Consumer compatibility validation: `docs/CONSUMER_COMPAT_MATRIX.md` (PASS)
+
+---
+
 ## [0.6.0] - 2026-01-11 (Stage F - API Completeness & Release Candidate)
 
 ### Added

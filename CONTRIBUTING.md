@@ -40,6 +40,9 @@ See:
 - `docs/API_STABILITY.md`
 - `docs/API_FREEZE_SUMMARY.md`
 
+For maintainers preparing releases:
+- `RELEASE_TEMPLATE.md`
+
 ---
 
 ## 🐛 Reporting Bugs

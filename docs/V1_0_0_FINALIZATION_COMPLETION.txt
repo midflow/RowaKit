@@ -105,14 +105,14 @@ and ready for tagging.
 
 > **Date:** 2026-01-12  
 > **Project:** RowaKit  
-> **Current Version:** v0.6.0  
+> **Current Version:** v1.0.0  
 > **Status:** 🟢 **GO** (All blockers resolved)  
 > **Recommendation:** Ready for v1.0.0 tag
 ```
 
 **Body:**
 - Comprehensive checklist results (all PASS)
-- 309 tests passing (246 core + 63 harness)
+- 308 tests passing (246 core + 62 harness)
 - Complete validation evidence
 - Risk assessment: LOW
 - Final recommendation: Ready for v1.0.0 tag

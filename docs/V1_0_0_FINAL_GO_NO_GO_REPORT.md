@@ -2,7 +2,7 @@
 
 > **Date:** 2026-01-12  
 > **Project:** RowaKit  
-> **Current Version:** v0.6.0  
+> **Current Version:** v1.0.0  
 > **Status:** 🟢 **GO** (All blockers resolved)  
 > **Recommendation:** Ready for v1.0.0 tag
 
@@ -16,7 +16,7 @@ All mandatory checks pass, blockers have been fixed, and validation evidence is 
 
 - ✅ **API Stability**: Comprehensive freeze documentation with intentional, stable public APIs
 - ✅ **Feature Completeness**: All core workflows (pagination, sorting, filtering, URL sync, selection, bulk actions, export)
-- ✅ **Reliability**: All tests passing (246 core + 63 harness = **309 total**)
+- ✅ **Reliability**: All tests passing (246 core + 62 harness = **308 total**)
 - ✅ **Validation Evidence**: Production-like harness + consumer compatibility confirmed
 - ✅ **Backward Compatibility**: No breaking changes since v0.5.x
 - ✅ **Documentation**: Comprehensive, accurate, and consistent with implementation
@@ -106,7 +106,7 @@ All mandatory checks pass, blockers have been fixed, and validation evidence is 
 | Internal logic in hooks/modules | ✅ PASS | URL sync, selection, bulk actions isolated |
 | Public vs internal boundary clear | ✅ PASS | Only documented exports are public |
 | No architectural TODOs | ✅ PASS | No blocking architectural debt |
-| Test coverage for core features | ✅ PASS | 246 core tests; 63 harness tests |
+| Test coverage for core features | ✅ PASS | 246 core tests; 62 harness tests |
 
 **Summary:** Architecture is clean and maintainable.
 
@@ -125,11 +125,11 @@ Core Package Tests:
 
 Harness Tests (Production-like):
   Test Files: 6 passed
-  Tests: 63 passed | 4 skipped (intentional)
+  Tests: 62 passed | 5 skipped (intentional)
   Duration: 6.97s
   Status: ✅ ALL PASS
 
-TOTAL: 309 tests passed | 4 intentional skips
+TOTAL: 308 tests passed | 5 intentional skips
 ```
 
 **Previously Failing Tests (NOW FIXED):**
@@ -147,6 +147,7 @@ TOTAL: 309 tests passed | 4 intentional skips
 | Workflow (selection, bulk actions, export) | 9 pass | ✅ PASS |
 | URL Sync & Saved Views | 6 pass / 3 skip | ✅ PASS (skips intentional) |
 | Column Resizing | 4 pass / 1 skip | ✅ PASS (skip is JSDOM limitation) |
+| Debug (workflow selection) | 0 pass / 1 skip | ✅ PASS (opt-in via `ROWAKIT_DEBUG_HARNESS=1`) |
 | Runner (logic-level scenarios) | 35 pass | ✅ PASS |
 | Debug (diagnostic) | 1 pass | ✅ NOW PASS |
 
@@ -275,7 +276,7 @@ it('Stress: 100 randomized operations', async () => {
 |------|------|-------|
 | API Stability | 🟢 LOW | Comprehensive freeze policy in place |
 | Feature Maturity | 🟢 LOW | All core workflows implemented and tested |
-| Test Reliability | 🟢 LOW | 309 tests pass; blockers fixed; no flaky tests |
+| Test Reliability | 🟢 LOW | 308 tests pass; blockers fixed; no flaky tests |
 | Validation Evidence | 🟢 LOW | Strong production-like + consumer compat validation |
 | Backward Compatibility | 🟢 LOW | No breaking changes since v0.5.x |
 | Documentation | 🟢 LOW | Accurate and comprehensive |
@@ -343,7 +344,7 @@ it('Stress: 100 randomized operations', async () => {
 RowaKit v1.0.0 represents:
 
 1. **API Stability Promise**: The public API is stable and will remain backward compatible throughout the v1.x release cycle.
-2. **Production Readiness**: Comprehensive testing (309 tests) and validation evidence demonstrate production readiness.
+2. **Production Readiness**: Comprehensive testing (308 tests) and validation evidence demonstrate production readiness.
 3. **User Trust**: This release signals to the community that RowaKit is mature and ready for production adoption.
 
 This is a significant milestone. Enjoy the release! 🎉

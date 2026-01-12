@@ -23,7 +23,7 @@
 
 > **Ngày:** 2026-01-12  
 > **Dự Án:** RowaKit  
-> **Phiên Bản Hiện Tại:** v0.6.0  
+> **Phiên Bản (Tại Thời Điểm Báo Cáo):** v0.6.0  
 > **Kết Luận:** 🔴 **KHÔNG SẴN SÀNG (NO-GO)** — Có 2 Blocker
 
 ---

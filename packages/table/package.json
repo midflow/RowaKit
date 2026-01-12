@@ -1,6 +1,6 @@
 {
   "name": "@rowakit/table",
-  "version": "0.6.0",
+  "version": "1.0.0",
   "private": false,
   "description": "Opinionated, server-side-first table component for internal/business apps",
   "type": "module",

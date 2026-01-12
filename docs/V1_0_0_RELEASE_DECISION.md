@@ -19,7 +19,7 @@ This document summarizes the **decision timeline**, policy evolution, and valida
 
 ### Phase 1: Initial Pre-Check (January 10, 2026)
 
-**Result:** 🔴 **NO-GO**
+**Result (historical):** 🔴 **NO-GO**
 
 **Document:** `docs/V1_0_0_RELEASE_READINESS_REPORT.md`
 
@@ -75,7 +75,7 @@ This document summarizes the **decision timeline**, policy evolution, and valida
 | API Audit | ✅ PASS | All public exports intentional and exported |
 | Feature Completeness | ✅ PASS | All 9 core workflows implemented |
 | Backward Compatibility | ✅ PASS | No breaking changes since v0.5.x |
-| Test Reliability | ✅ PASS | 309 tests pass (246 core + 63 harness) |
+| Test Reliability | ✅ PASS | 308 tests pass (246 core + 62 harness) |
 | Validation Evidence | ✅ PASS | Production-like harness + consumer compat |
 | Documentation | ✅ PASS | Accurate and comprehensive |
 | Developer Experience | ✅ PASS | Demo builds, runs, and showcases workflows |
@@ -158,7 +158,7 @@ This release signals:
 
 - API stability: Policy-driven, comprehensive
 - Feature maturity: All core workflows complete
-- Test reliability: 309 tests, zero flakes
+- Test reliability: 308 tests, zero flakes
 - Documentation: Accurate throughout
 
 ---

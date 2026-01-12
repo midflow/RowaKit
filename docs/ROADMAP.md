@@ -7,9 +7,11 @@
 
 ## Current Status
 
-**Version:** 0.5.0  
-**Stage:** E (Core Features + a11y) - ✅ **COMPLETE**  
-**Next:** v0.6.0 (demand-driven enhancements)
+**Version:** 1.0.0  
+**Stage:** v1.0.0 (Stable release) - ✅ **RELEASED**  
+**Next:** Post-1.0 roadmap (see `docs/post_1_0_public_roadmap.md`)
+
+> Note: Stages A–F below are preserved as historical planning/shipping notes.
 
 ---
 
@@ -115,7 +117,7 @@
 
 ---
 
-## Stage F — API Completeness & Release Candidate (v0.6.0) 🚀 IN PROGRESS
+## Stage F — API Completeness & Release Candidate (v0.6.0) ✅ COMPLETE
 
 **Goal:** Complete public API surface for v1.0.0 freeze. Prepare for production validation phase.
 
@@ -131,13 +133,15 @@
 - **Impact:** Improves feature discoverability and reduces user confusion
 
 ### F-03: Production Validation Tracking
-- Create `docs/PRODUCTION_USAGE.md` template for Phase 2
-- Track deployments, features used, performance data, feedback
-- **Impact:** Informs final v1.0.0 decision with real-world data
+- Validation tracking is recorded via evidence docs:
+	- `docs/VALIDATION_EVIDENCE_POLICY.md`
+	- `docs/PRODUCTION_LIKE_VALIDATION.md`
+	- `docs/CONSUMER_COMPAT_MATRIX.md`
+- **Impact:** Informs the final v1.0.0 decision with repeatable evidence
 
 **Version Bump:** 0.5.0 → 0.6.0  
-**Timeline:** 1-2 weeks (v0.6.0 RC) + 2-3 weeks production validation before v1.0.0  
-**Status:** Type exports ✅ | Docs ✅ | Production tracking (pending)
+**Timeline (historical):** 1-2 weeks (v0.6.0 RC) + 2-3 weeks production validation before v1.0.0  
+**Status:** Type exports ✅ | Docs ✅ | Validation evidence ✅
 
 **Shipped:** 2026-01-11 (RC)
 

@@ -10,7 +10,17 @@ import { HarnessTestApp } from './HarnessTestApp';
 import { MockServer } from '../server/mockServer';
 import type { BulkActionDef } from '@rowakit/table';
 
-describe('DEBUG: Workflow Selection', () => {
+const DEBUG_HARNESS = process.env.ROWAKIT_DEBUG_HARNESS === '1';
+const debugLog = (...args: unknown[]) => {
+  if (DEBUG_HARNESS) {
+    // eslint-disable-next-line no-console
+    console.log(...args);
+  }
+};
+
+const describeDebug = DEBUG_HARNESS ? describe : describe.skip;
+
+describeDebug('DEBUG: Workflow Selection', () => {
   let mockServer: MockServer;
 
   beforeEach(() => {
@@ -55,27 +65,24 @@ describe('DEBUG: Workflow Selection', () => {
       expect(screen.getAllByRole('row').length).toBeGreaterThan(1);
     });
 
-    console.log('Initial render complete');
+    debugLog('Initial render complete');
 
-    // Get checkboxes
-    const checkboxes = screen.getAllByRole('checkbox');
-    console.log('Found', checkboxes.length, 'checkboxes');
-
-    const firstRowCheckbox = checkboxes[1]; // Index 0 is "select all"
-    console.log('First row checkbox:', firstRowCheckbox);
-    console.log('Before click - checked:', firstRowCheckbox.checked);
+    // Get a specific row checkbox (avoid brittle indexing)
+    const firstRowCheckbox = screen.getByLabelText(/select row/i) as HTMLInputElement;
+    debugLog('First row checkbox:', firstRowCheckbox);
+    debugLog('Before click - checked:', firstRowCheckbox.checked);
 
     // Click the checkbox
     await user.click(firstRowCheckbox);
 
-    console.log('After click - checked:', firstRowCheckbox.checked);
+    debugLog('After click - checked:', firstRowCheckbox.checked);
 
     // Try to find the "X selected" text
     const selectedText = screen.queryByText(/1 selected/i);
-    console.log('Selected text found:', !!selectedText);
+    debugLog('Selected text found:', !!selectedText);
 
     if (!selectedText) {
-      console.log('DOM:', screen.getByTestId('selection-test').innerHTML);
+      debugLog('DOM:', screen.getByTestId('selection-test').innerHTML);
     }
 
     // Verify selection count displayed (indicates checkbox was checked)

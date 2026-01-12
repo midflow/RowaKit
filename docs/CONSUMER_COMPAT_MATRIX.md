@@ -1,7 +1,7 @@
 # Consumer Compatibility Matrix
 
 > **Project:** RowaKit  
-> **Version:** v0.6.0 Release Candidate  
+> **Version:** v1.0.0 readiness validation  
 > **Date:** 2026-01-11  
 > **Status:** ✅ **PASS**
 
@@ -208,7 +208,7 @@ Based on this validation:
 
 All TypeScript types are properly exported, no `any` escapes required, and the build system works correctly with modern bundlers (Vite).
 
-**Recommendation:** RowaKit v0.6.0 is ready for production use from a consumer compatibility perspective.
+**Recommendation:** RowaKit v1.0.0 is ready for production use from a consumer compatibility perspective.
 
 ---
 

@@ -94,7 +94,19 @@ export function UsersTable() {
 
 ---
 
-## What you get (v0.6.0 Release Candidate)
+## v1.0.0 stability guarantee
+
+RowaKit v1.0.0 marks the start of the **stable public API contract** for `@rowakit/table`.
+
+- Public API stability rules: [docs/API_STABILITY.md](docs/API_STABILITY.md)
+- API freeze summary: [docs/API_FREEZE_SUMMARY.md](docs/API_FREEZE_SUMMARY.md)
+- Canonical release decision (GO): [docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md](docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md)
+- Production-like validation evidence: [docs/PRODUCTION_LIKE_VALIDATION.md](docs/PRODUCTION_LIKE_VALIDATION.md)
+- Consumer compatibility evidence: [docs/CONSUMER_COMPAT_MATRIX.md](docs/CONSUMER_COMPAT_MATRIX.md)
+
+---
+
+## What you get (v1.0.0)
 
 ### Core
 
@@ -125,12 +137,10 @@ export function UsersTable() {
 
 ## Roadmap
 
-* ✅ Stage A–D: server-side table foundation
-* ✅ Stage E (v0.5.0): workflows + stability
-* 🚀 Stage F (v0.6.0 RC): API completeness + production validation
-* ⏭ Stage G: demand-driven enhancements
+* ✅ Stage A–F: server-side table foundation + workflows + validation
+* ⏭ Post-1.0: demand-driven enhancements
 
-See full roadmap: `docs/ROADMAP.md`
+See full roadmap: [docs/ROADMAP.md](docs/ROADMAP.md)
 
 ---
 

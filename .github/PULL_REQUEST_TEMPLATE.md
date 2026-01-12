@@ -1,29 +1,42 @@
-# PR Template — Stage D & Demo Showcase
+# Pull Request
 
 ## Summary
-What does this PR change? Why is it needed?
+
+What does this PR change and why?
 
 ## Scope
-- [ ] Stage D (polish / correctness)
-- [ ] Demo Showcase
+
+- [ ] `@rowakit/table` (library)
+- [ ] `packages/demo` (demo only)
+- [ ] Documentation / governance
+
+## API Stability (v1.x)
+
+If this PR touches the library API surface:
+
+- [ ] No public exports removed/renamed (unless this is a MAJOR / v2.0.0 plan)
+- [ ] No breaking behavior changes to frozen semantics
+- [ ] Any deprecation includes an alternative + timeline
+
+Reference:
+- `docs/API_STABILITY.md`
+- `docs/API_FREEZE_SUMMARY.md`
 
 ## Changes
-- …
 
-## Acceptance Criteria
-- [ ] Matches linked issue requirements
-- [ ] No breaking API changes
-- [ ] Demo preview, code, and notes are consistent
-- [ ] Works locally
-- [ ] Works on CodeSandbox
+- 
 
-## Screenshots / Recordings
-(UI changes if applicable)
+## Tests / Validation
 
-## Tests
-- [ ] Added/updated tests
-- [ ] CI passes
+- [ ] `pnpm test`
+- [ ] `pnpm demo:harness` (if demo/harness affected)
+- [ ] Consumer checks (if API surface affected): `pnpm consumer:typecheck` and `pnpm consumer:build`
 
-## Notes for Reviewer
-- Out of scope items:
+## Docs
+
+- [ ] Updated relevant docs/READMEs (if behavior/API changed)
+
+## Notes for reviewer
+
+- Potential risks:
 - Follow-ups:

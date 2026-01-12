@@ -23,7 +23,7 @@
 
 > **Date:** 2026-01-12  
 > **Project:** RowaKit  
-> **Current Version:** v0.6.0  
+> **Repo Version at Time:** v0.6.0  
 > **Decision:** 🔴 **NO-GO** (Blockers identified)
 
 ---

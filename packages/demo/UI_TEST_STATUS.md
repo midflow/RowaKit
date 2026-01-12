@@ -1,5 +1,12 @@
 # UI-Level Test Harness Status
 
+> ⚠️ **HISTORICAL DOCUMENT — SUPERSEDED**
+>
+> This file captured an earlier harness stabilization snapshot while targeting pre-1.0 milestones.
+> For current v1.0.0 readiness evidence, see:
+> - `docs/PRODUCTION_LIKE_VALIDATION.md`
+> - `docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md`
+
 **Last Updated:** 2025-01-11 (Commit: 53af239)  
 **Overall Status:** 10/31 tests passing (32%) in full suite
 **Individual Test Status:** ~27/31 tests pass when run individually (87%)
@@ -84,7 +91,7 @@
 6. **URL sync remaining tests** - Investigate 6 failures, may be feature gaps
 7. **Saved views** - Feature may need full implementation
 
-### Future Work (Out of Scope for v0.6.0)
+### Future Work (Out of Scope for v1.0.0)
 8. **Playwright for resize tests** - Set up browser-based tests for drag interactions
 9. **Visual regression tests** - Snapshot testing for UI consistency
 
@@ -96,9 +103,7 @@
 - **Mock Data:** 50k deterministic dataset with network simulation
 - **Known Limitations:** jsdom doesn't support PointerEvent, drag/drop, resize observers properly
 
-## Evidence for v0.6.0 Release
-
-## Evidence for v0.6.0 Release
+## Evidence (Historical, pre-1.0)
 
 **UI-Level Validation:**
 - ✅ **27/31 tests passing individually (87%)** - Features work correctly
@@ -114,4 +119,4 @@
 - **Medium confidence** in URL sync - works but test harness has state management issues
 - **Medium confidence** in Resize - structural validation works, drag events need Playwright
 
-**Recommendation:** v0.6.0 is **production-ready**. All major features validated. Test suite failures are due to test isolation issues, not product bugs. Evidence: 87% pass rate when tests run individually.
+**Historical recommendation (superseded):** See `docs/PRODUCTION_LIKE_VALIDATION.md` and `docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md` for the authoritative v1.0.0 readiness decision and evidence.

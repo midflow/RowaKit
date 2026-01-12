@@ -3,6 +3,14 @@
 **Server-side-first React table for internal & business applications.**
 Predictable API. Thin client. No data-grid bloat.
 
+## Stability
+
+`@rowakit/table` is **stable as of v1.0.0**.
+
+See:
+- `docs/API_STABILITY.md`
+- `docs/API_FREEZE_SUMMARY.md`
+
 ---
 
 ## Why @rowakit/table?
@@ -82,7 +90,7 @@ export function UsersTable() {
 
 ---
 
-## Features (v0.5.0)
+## Features (v1.0.0)
 
 ### Core table
 
@@ -119,7 +127,10 @@ export function UsersTable() {
 type Fetcher<T> = (query: {
   page: number;
   pageSize: number;
+  /** Deprecated (kept for backward compatibility; planned removal in v2.0.0). */
   sort?: { field: string; direction: 'asc' | 'desc' };
+  /** Multi-column sorting (preferred). */
+  sorts?: Array<{ field: string; direction: 'asc' | 'desc'; priority: number }>;
   filters?: Record<string, unknown>;
 }) => Promise<{ items: T[]; total: number }>;
 ```
@@ -226,11 +237,11 @@ Export is server-triggered and scales well for large datasets.
 
 ## Roadmap & Versioning
 
-* Current: **0.6.0** (Stage F Release Candidate)
-* No breaking changes in 0.6.x
-* API freeze begins at 1.0.0
+* Current: **1.0.0** (stable)
+* No breaking changes in 1.x (breaking changes require v2.0.0)
+* Public API stability policy applies from v1.0.0
 
-See roadmap: `docs/ROADMAP.md`
+See roadmap: [docs/ROADMAP.md](docs/ROADMAP.md)
 
 ---
 
