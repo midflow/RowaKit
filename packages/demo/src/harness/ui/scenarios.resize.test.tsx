@@ -110,7 +110,6 @@ describe('Column Resizing (UI Level)', () => {
     });
 
     it('should persist resize state (URL or localStorage)', async () => {
-      const user = userEvent.setup();
       const fetcher = mockServer.createFetcher();
 
       render(

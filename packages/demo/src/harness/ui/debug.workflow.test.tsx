@@ -36,13 +36,12 @@ describe('DEBUG: Workflow Selection', () => {
   it('DEBUG: should have select individual rows work', async () => {
     const user = userEvent.setup();
     const fetcher = mockServer.createFetcher();
-    const onSelectionChange = vi.fn();
 
     const bulkActions: BulkActionDef[] = [
       { id: 'dummy', label: 'Dummy', onClick: vi.fn() },
     ];
 
-    const { rerender } = render(
+    render(
       <HarnessTestApp
         fetcher={fetcher}
         enableRowSelection={true}
