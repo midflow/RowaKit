@@ -115,6 +115,34 @@
 
 ---
 
+## Stage F — API Completeness & Release Candidate (v0.6.0) 🚀 IN PROGRESS
+
+**Goal:** Complete public API surface for v1.0.0 freeze. Prepare for production validation phase.
+
+### F-01: Missing Type Exports
+- ✅ Add `SortColumn` type export (enable proper TypeScript typing for sorts)
+- ✅ Add `BulkActionDef` type export (enable proper TypeScript typing for bulk actions)
+- **Impact:** Unblocks proper TypeScript usage and IDE autocomplete
+
+### F-02: Multi-Sort Documentation
+- ✅ Document Ctrl/Cmd+Click behavior for multi-column sorting
+- ✅ Show `sorts` array format with priority-based ordering
+- ✅ Migration path: deprecate single `sort` field (removal in v2.0.0)
+- **Impact:** Improves feature discoverability and reduces user confusion
+
+### F-03: Production Validation Tracking
+- Create `docs/PRODUCTION_USAGE.md` template for Phase 2
+- Track deployments, features used, performance data, feedback
+- **Impact:** Informs final v1.0.0 decision with real-world data
+
+**Version Bump:** 0.5.0 → 0.6.0  
+**Timeline:** 1-2 weeks (v0.6.0 RC) + 2-3 weeks production validation before v1.0.0  
+**Status:** Type exports ✅ | Docs ✅ | Production tracking (pending)
+
+**Shipped:** 2026-01-11 (RC)
+
+---
+
 ## Stage E — Core Features + a11y (v0.5.0) ✅ COMPLETE
 
 **Goal:** Add essential features for production-grade tables and ensure baseline accessibility.

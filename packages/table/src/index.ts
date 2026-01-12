@@ -14,6 +14,7 @@ export type {
   FetcherResult,
   FilterValue,
   Filters,
+  SortColumn,
   // Column types
   ColumnDef,
   ColumnKind,
@@ -33,6 +34,9 @@ export type {
 // Export types
 export type { Exporter, ExporterResult } from './types/export';
 
+// Bulk actions
+export type { BulkActionDef } from './components/BulkActionBar';
+
 // Column helper factory
 export { col } from './column-helpers';
 
@@ -45,4 +49,4 @@ declare const __ROWAKIT_TABLE_VERSION__: string | undefined;
 
 export const VERSION = typeof __ROWAKIT_TABLE_VERSION__ !== 'undefined' 
   ? __ROWAKIT_TABLE_VERSION__ 
-  : '0.5.0';
+  : '0.6.0';

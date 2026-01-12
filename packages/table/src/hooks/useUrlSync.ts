@@ -55,12 +55,26 @@ function parseUrlState(
 		}
 	}
 
-	// Backward compatibility: single sort
+	// Backward compatibility: single sort in one param (e.g. sort=name:asc)
+	// NOTE: This format is used by some consumers and UI harness tests.
+	if (!result.sorts) {
+		const sortStr = params.get('sort');
+		if (sortStr) {
+			const [field, dir] = sortStr.split(':');
+			if (field && (dir === 'asc' || dir === 'desc')) {
+				result.sort = { field, direction: dir };
+				result.sorts = [{ field, direction: dir, priority: 0 }];
+			}
+		}
+	}
+
+	// Backward compatibility: single sort (two params)
 	if (!result.sorts) {
 		const sortField = params.get('sortField');
 		const sortDir = params.get('sortDirection');
 		if (sortField && (sortDir === 'asc' || sortDir === 'desc')) {
 			result.sort = { field: sortField, direction: sortDir };
+			result.sorts = [{ field: sortField, direction: sortDir, priority: 0 }];
 		}
 	}
 
@@ -164,8 +178,11 @@ export function useUrlSync<T>({
 	setColumnWidths: React.Dispatch<React.SetStateAction<Record<string, number>>>;
 }) {
 	const didHydrateUrlRef = useRef(false);
-	const didSkipInitialUrlSyncRef = useRef(false);
 	const urlSyncDebounceRef = useRef<NodeJS.Timeout | null>(null);
+	const isApplyingUrlStateRef = useRef(false);
+	const clearApplyingTimerRef = useRef<NodeJS.Timeout | null>(null);
+	const hasWrittenUrlRef = useRef(false);
+	const lastQueryForUrlRef = useRef<FetcherQuery | null>(null);
 	
 	// Store props in refs to avoid unnecessary effect re-runs during hydration
 	const defaultPageSizeRef = useRef(defaultPageSize);
@@ -181,14 +198,13 @@ export function useUrlSync<T>({
 
 	useEffect(() => {
 		if (!syncToUrl) {
-			didSkipInitialUrlSyncRef.current = false;
+			hasWrittenUrlRef.current = false;
+			lastQueryForUrlRef.current = null;
 			return;
 		}
-
-		if (!didSkipInitialUrlSyncRef.current) {
-			didSkipInitialUrlSyncRef.current = true;
-			return;
-		}
+		// Never write URL until we've hydrated state from the current URL.
+		if (!didHydrateUrlRef.current) return;
+		if (isApplyingUrlStateRef.current) return;
 
 		if (urlSyncDebounceRef.current) {
 			clearTimeout(urlSyncDebounceRef.current);
@@ -197,7 +213,22 @@ export function useUrlSync<T>({
 
 		const urlStr = serializeUrlState(query, filters, columnWidths, defaultPageSizeRef.current, enableColumnResizingRef.current);
 		const qs = urlStr ? `?${urlStr}` : '';
-		window.history.replaceState(null, '', `${window.location.pathname}${qs}${window.location.hash}`);
+		const nextUrl = `${window.location.pathname}${qs}${window.location.hash}`;
+
+		const prevQuery = lastQueryForUrlRef.current;
+		const shouldPush =
+			hasWrittenUrlRef.current &&
+			prevQuery != null &&
+			prevQuery.page !== query.page;
+
+		if (shouldPush) {
+			window.history.pushState(null, '', nextUrl);
+		} else {
+			window.history.replaceState(null, '', nextUrl);
+		}
+
+		hasWrittenUrlRef.current = true;
+		lastQueryForUrlRef.current = query;
 	}, [
 		query,
 		filters,
@@ -207,7 +238,9 @@ export function useUrlSync<T>({
 
 	useEffect(() => {
 		if (!syncToUrl || !enableColumnResizingRef.current) return;
-		if (!didSkipInitialUrlSyncRef.current) return;
+		if (!didHydrateUrlRef.current) return;
+		if (!hasWrittenUrlRef.current) return;
+		if (isApplyingUrlStateRef.current) return;
 
 		if (urlSyncDebounceRef.current) {
 			clearTimeout(urlSyncDebounceRef.current);
@@ -233,30 +266,54 @@ export function useUrlSync<T>({
 		filters,
 	]);
 
-	useEffect(() => {
-		if (!syncToUrl) {
-			didHydrateUrlRef.current = false;
-			return;
+	function scheduleClearApplyingFlag() {
+		if (clearApplyingTimerRef.current) {
+			clearTimeout(clearApplyingTimerRef.current);
+			clearApplyingTimerRef.current = null;
 		}
-		if (didHydrateUrlRef.current) return;
-		didHydrateUrlRef.current = true;
+		clearApplyingTimerRef.current = setTimeout(() => {
+			isApplyingUrlStateRef.current = false;
+			clearApplyingTimerRef.current = null;
+		}, 0);
+	}
 
+	function applyUrlToState() {
 		const params = new URLSearchParams(window.location.search);
 		const parsed = parseUrlState(params, defaultPageSizeRef.current, pageSizeOptionsRef.current);
 
-		setQuery({
+		const nextQuery: FetcherQuery = {
 			page: parsed.page,
 			pageSize: parsed.pageSize,
 			sort: parsed.sort,
 			sorts: parsed.sorts,
 			filters: parsed.filters,
-		});
+		};
 
-		if (parsed.filters) {
-			setFilters(parsed.filters);
+		isApplyingUrlStateRef.current = true;
+		scheduleClearApplyingFlag();
+
+		setQuery(nextQuery);
+
+		setFilters(parsed.filters ?? {});
+
+		// Establish a canonical baseline URL immediately after hydration.
+		// This guarantees there's a history entry for the initial state so that
+		// later page changes can use pushState and browser back/forward works.
+		if (!hasWrittenUrlRef.current) {
+			const urlStr = serializeUrlState(
+				nextQuery,
+				parsed.filters ?? {},
+				parsed.columnWidths ?? {},
+				defaultPageSizeRef.current,
+				enableColumnResizingRef.current,
+			);
+			const qs = urlStr ? `?${urlStr}` : '';
+			window.history.replaceState(null, '', `${window.location.pathname}${qs}${window.location.hash}`);
+			hasWrittenUrlRef.current = true;
+			lastQueryForUrlRef.current = nextQuery;
 		}
 
-		if (parsed.columnWidths && enableColumnResizingRef.current) {
+		if (enableColumnResizingRef.current && parsed.columnWidths) {
 			const clamped: Record<string, number> = {};
 			for (const [colId, rawWidth] of Object.entries(parsed.columnWidths)) {
 				const widthNum = typeof rawWidth === 'number' ? rawWidth : Number(rawWidth);
@@ -276,11 +333,48 @@ export function useUrlSync<T>({
 			}
 
 			setColumnWidths(clamped);
+		} else if (enableColumnResizingRef.current) {
+			setColumnWidths({});
 		}
+	}
+
+	useEffect(() => {
+		if (!syncToUrl) {
+			didHydrateUrlRef.current = false;
+			hasWrittenUrlRef.current = false;
+			lastQueryForUrlRef.current = null;
+			return;
+		}
+		if (didHydrateUrlRef.current) return;
+		didHydrateUrlRef.current = true;
+
+		applyUrlToState();
 	}, [
 		syncToUrl,
 		setQuery,
 		setFilters,
 		setColumnWidths,
 	]);
+
+	useEffect(() => {
+		if (!syncToUrl) return;
+
+		const onPopState = () => {
+			applyUrlToState();
+		};
+
+		window.addEventListener('popstate', onPopState);
+		return () => {
+			window.removeEventListener('popstate', onPopState);
+		};
+	}, [syncToUrl, setQuery, setFilters, setColumnWidths]);
+
+	useEffect(() => {
+		return () => {
+			if (clearApplyingTimerRef.current) {
+				clearTimeout(clearApplyingTimerRef.current);
+				clearApplyingTimerRef.current = null;
+			}
+		};
+	}, []);
 }

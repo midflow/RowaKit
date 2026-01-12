@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.0] - 2026-01-11 (Stage F - API Completeness & Release Candidate)
+
+### Added
+- **Stage F: Missing Type Exports**
+  - Exported `SortColumn` type for proper TypeScript typing of multi-sort queries
+  - Exported `BulkActionDef` type for bulk action configuration
+  - Enables full IDE autocomplete and type safety for power users
+
+- **Stage F: Multi-Sort Documentation**
+  - Documented Ctrl/Cmd+Click behavior for multi-column sorting
+  - Added `sorts` array format with priority-based ordering
+  - Migration guide from deprecated `sort` field (removal in v2.0.0)
+
+- **Stage F: Production Validation Template**
+  - Created `docs/PRODUCTION_USAGE.md` for Phase 2 tracking
+  - Blueprint for real-world deployment metrics and feedback
+
+### Changed
+- All package versions bumped to 0.6.0 (monorepo consistency)
+- README updated to reflect Stage F RC status
+- ROADMAP updated with Stage F details
+
+### Status
+- ✅ All 246 tests passing
+- ✅ TypeScript compilation clean
+- ✅ Build successful (ESM, CJS, DTS)
+- ✅ Ready for production validation (Phase 2)
+
+---
+
 ## [0.5.0] - 2026-01-09 (Core Features + a11y)
 
 ### Added

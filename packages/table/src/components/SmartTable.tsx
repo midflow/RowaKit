@@ -373,10 +373,18 @@ export function RowaKitTable<T>({
   const headerChecked = isAllSelected(selectedKeys, pageRowKeys);
   const headerIndeterminate = isIndeterminate(selectedKeys, pageRowKeys);
 
+  // Clear selection when row selection is disabled or page changes
+  // Note: Removed dataState.items dependency to prevent clearing on every data refresh
   useEffect(() => {
-    if (!enableRowSelection) return;
     setSelectedKeys(clearSelection());
-  }, [enableRowSelection, query.page, dataState.items]);
+  }, [query.page]);
+
+  // Clear selection if row selection feature is turned off
+  useEffect(() => {
+    if (!enableRowSelection) {
+      setSelectedKeys(clearSelection());
+    }
+  }, [enableRowSelection]);
 
   useEffect(() => {
     if (!enableRowSelection || !onSelectionChange) return;

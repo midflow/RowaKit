@@ -1,6 +1,6 @@
 {
   "name": "rowakit",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -13,6 +13,9 @@
     "typecheck": "pnpm -C packages/table typecheck",
     "lint": "pnpm -C packages/table lint",
     "demo": "pnpm --filter @rowakit/demo dev",
+    "demo:harness": "pnpm --filter @rowakit/demo harness",
+    "consumer:typecheck": "pnpm --filter @rowakit/consumer-smoke-vite typecheck",
+    "consumer:build": "pnpm --filter @rowakit/consumer-smoke-vite build",
     "format": "prettier --write \"packages/**/*.{ts,tsx,json}\"",
     "format:check": "prettier --check \"packages/**/*.{ts,tsx,json}\""
   },

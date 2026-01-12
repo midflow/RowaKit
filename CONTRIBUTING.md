@@ -1,129 +1,121 @@
 # Contributing to RowaKit
 
-Thank you for your interest in contributing to RowaKit! 🎉
+Thank you for your interest in contributing to **RowaKit**!
 
-## Before You Start
+RowaKit is designed as a **stable, server-side-first table toolkit**. Contributions are welcome, but stability and predictability are the top priorities.
 
-**Important:** RowaKit is an **opinionated, server-side-first table library**. We follow a strict scope lock:
+---
 
-✅ **We welcome:**
-- Bug fixes
-- Performance improvements
-- Documentation improvements
-- Stage B features (when we're ready): badges, number formatting, basic filters
-- Tests and type improvements
+## 🎯 Guiding Principles
 
-❌ **We will reject:**
-- Features that turn RowaKit into a generic data grid (virtualization, grouping, pivot, spreadsheet editing)
-- Client-side data engines
-- Over-engineering that conflicts with our "core small + escape hatch" philosophy
+Before contributing, please keep these principles in mind:
 
-Please read [docs/DECISIONS_SCOPE_LOCK.md](docs/DECISIONS_SCOPE_LOCK.md) to understand our design philosophy.
+1. **Stability over features**
+2. **Server-side-first by design**
+3. **No drift into data-grid territory**
+4. **Backward compatibility is mandatory**
 
-## Development Workflow
+---
 
-### 1. Setup
+## 🧭 Project Structure
 
-```bash
-# Clone the repo
-git clone https://github.com/Midflow/rowakit.git
-cd rowakit
-
-# Install dependencies (we use pnpm)
-pnpm install
-
-# Run tests
-pnpm test
-
-# Build packages
-pnpm build
+```
+root/
+  packages/table   # Core library (OSS)
+  packages/demo    # Demo & playground (non-stable)
+  docs/            # Roadmap, decisions, policies
 ```
 
-### 2. Making Changes
+Only `packages/table` is considered part of the stable API surface.
 
-1. **Fork** the repository
-2. **Create a branch**: `git checkout -b fix/issue-123` or `feat/stage-b-badges`
-3. **Make your changes** following our coding standards (see `packages/table/CONTRIBUTING.md`)
-4. **Add tests** for new functionality
-5. **Run tests**: `pnpm test`
-6. **Lint**: `pnpm lint` (if available)
-7. **Build**: `pnpm build`
-8. **Commit** with clear messages: `fix: resolve pagination edge case`
+---
 
-### 3. Submitting a Pull Request
+## 🔒 API Stability Rules (v1.0.0+)
 
-- Fill out the PR template completely
-- Check all boxes (scope guard, tests, docs)
-- Link related issues
-- Ensure CI passes
+- Public APIs are frozen starting from v1.0.0
+- Breaking changes require a major version bump
+- Internal refactors are allowed if behavior is preserved
 
-### How to open a PR
+See:
+- `docs/API_STABILITY.md`
+- `docs/API_FREEZE_SUMMARY.md`
 
-1. Fork the repository and create a descriptive branch name:
+---
 
-```bash
-git checkout -b feat/<short-description>  # or fix/<issue-number>
-```
+## 🐛 Reporting Bugs
 
-2. Make incremental, focused commits with clear messages (one logical change per commit).
+When reporting a bug:
 
-3. Run the full validation locally before pushing:
+- Use a minimal reproduction
+- Specify RowaKit version
+- Include expected vs actual behavior
+- Screenshots or CodeSandbox links are appreciated
 
-```bash
-pnpm install
-pnpm -w -r lint --if-present
-pnpm -w -r test --if-present
-pnpm -w -r build --if-present
-```
+---
 
-4. Push your branch to your fork and open a Pull Request against `main` on the upstream repository.
+## ✨ Proposing Features
 
-5. In the PR description:
-- Describe the problem and the proposed change.
-- Include reproduction steps or a minimal example if applicable.
-- List which tests were added/updated and any manual verification steps.
-- Reference related issues (e.g., `Closes #123`).
+RowaKit is **demand-driven**.
 
-6. Confirm the PR checklist:
-- PR template completed and scope-guard checked.
-- Tests pass and CI is green.
-- Documentation updated if the API changed.
+Before proposing a feature:
 
-7. Address review feedback promptly and squash/rebase as requested by maintainers.
+- Check `docs/ROADMAP.md`
+- Ensure it aligns with the server-side-first philosophy
+- Avoid proposing spreadsheet-style features
 
-8. Once approved, a maintainer will merge and create a release if appropriate.
+Feature requests without real-world demand may be deferred.
 
-## Code Style
+---
 
-- Follow the existing code style
-- TypeScript strict mode
-- Prefer composition over inheritance
-- Keep components small and focused
-- Use `col.custom()` for one-offs rather than adding new column types
+## 🧩 Pull Requests
 
-## Testing
+### Requirements
 
-- Write tests for all new features
-- Update tests when fixing bugs
-- Use `vitest` and `@testing-library/react`
-- See `packages/table/src/components/*.test.tsx` for examples
+- Follow the PR template
+- Respect scope locks for the current stage
+- Include tests for all new behavior
+- Do not break existing APIs
 
-## Documentation
+### Review Criteria
 
-- Update README if API changes
-- Add JSDoc comments for public APIs
-- Update examples if behavior changes
-- Keep docs concise
+PRs are evaluated based on:
 
-## Questions?
+- API stability
+- Behavioral correctness
+- Test coverage
+- Long-term maintainability
 
-- Open a [Discussion](https://github.com/Midflow/rowakit/discussions)
-- File an issue using the "question" template
+---
 
-## Code of Conduct
+## 🧪 Tests
 
-This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold this code.
+- All tests must pass
+- New features require new tests
+- Avoid snapshot-only tests for behavior changes
 
-## License
+---
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+## 📚 Documentation
+
+If your change affects behavior or API:
+
+- Update relevant documentation
+- Ensure examples remain correct
+
+---
+
+## 🤝 Code of Conduct
+
+Please be respectful and constructive.
+
+RowaKit values:
+- Clear communication
+- Thoughtful technical decisions
+- Long-term project health
+
+---
+
+## 🙏 Thank You
+
+Every contribution — code, documentation, issues, or feedback — helps make RowaKit better.
+
