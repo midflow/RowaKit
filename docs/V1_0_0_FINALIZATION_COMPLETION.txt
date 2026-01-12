@@ -1,0 +1,245 @@
+# v1.0.0 Finalization Task — Completion Report
+
+> **Task:** Finalize v1.0.0 release decision and resolve contradictory reports  
+> **Status:** ✅ **COMPLETE**  
+> **Date:** January 12, 2026
+
+---
+
+## Executive Confirmation
+
+```
+RowaKit v1.0.0 release decision is internally consistent, auditable,
+and ready for tagging.
+```
+
+✅ All requirements from the finalization prompt have been satisfied.
+
+---
+
+## Files Modified
+
+### 1. `docs/V1_0_0_RELEASE_READINESS_REPORT.md` — SUPERSEDED NOTICE ADDED
+
+**Action:** Added prominent notice block at the very top of the document.
+
+**Exact Notice Text Added:**
+
+```markdown
+> ⚠️ **HISTORICAL DOCUMENT — SUPERSEDED**
+>
+> **Status:** This report concluded **NO-GO** on January 10, 2026.
+>
+> It has been **superseded** by subsequent events:
+> - Missing type exports (e.g., `BulkActionDef`) have been **fixed** in the codebase
+> - `VALIDATION_EVIDENCE_POLICY.md` was **adopted** to accept production-like validation as alternative to production usage
+> - Production-like UI Harness validation (B) and Consumer Compatibility tests (C) were **completed successfully**
+> - Final decision was re-assessed as **GO** (January 12, 2026)
+>
+> **Canonical v1.0.0 Release Decision:** See [`docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md`](docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md)
+>
+> **Decision Summary:** See [`docs/V1_0_0_RELEASE_DECISION.md`](docs/V1_0_0_RELEASE_DECISION.md)
+>
+> This document is preserved for **auditability and decision traceability** purposes.
+```
+
+**Outcome:** 
+- ✅ Historical evidence preserved
+- ✅ Clearly marked as outdated
+- ✅ Reason for change explained
+- ✅ Links to current decision documents provided
+- ✅ Non-ambiguous to future readers
+
+---
+
+### 2. `docs/V1_0_0_RELEASE_DECISION.md` — ENHANCED TO EXECUTIVE SUMMARY
+
+**Action:** Completely rewrote to serve as authoritative 5-minute executive summary.
+
+**Key Enhancements:**
+- Added full decision timeline (NO-GO → Fixes → GO)
+- Documented all fixes applied (API exports, validation policy, test fixes)
+- Provided clear authority statement: "Final Authority: `docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md`"
+- Listed all mandatory check results
+- Created document hierarchy for future reference
+- Added explicit "Decision: GO for RowaKit v1.0.0" conclusion
+- Included policy context and governance framework links
+
+**Verification:**
+- ✅ Opens with clear GO statement
+- ✅ Under 1 page (readable in ~5 minutes)
+- ✅ Links to canonical authority (FINAL_GO_NO_GO_REPORT)
+- ✅ Explains why NO-GO is now superseded
+- ✅ All validation evidence referenced
+
+---
+
+### 3. `docs/V1_0_0_FINALIZATION_RECORD.md` — NEW FILE CREATED
+
+**Purpose:** Audit trail documenting the finalization process itself.
+
+**Contents:**
+- Problem statement (contradictory reports)
+- Solution implemented (supersede + designate canonical + enhance summary)
+- Detailed explanation of changes
+- Verification checklist
+- Document reference map for future maintainers
+- Final confirmation and sign-off
+
+**Outcome:**
+- ✅ Full auditability
+- ✅ Clear decision timeline
+- ✅ Future maintainers understand what was done and why
+
+---
+
+## Canonical Release Decision Document
+
+**File:** `docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md`
+
+**Status:** ✅ **CONFIRMED AS CANONICAL AUTHORITY**
+
+**Opening Statement:**
+```
+# v1.0.0 Release Readiness — Final Report
+
+> **Date:** 2026-01-12  
+> **Project:** RowaKit  
+> **Current Version:** v0.6.0  
+> **Status:** 🟢 **GO** (All blockers resolved)  
+> **Recommendation:** Ready for v1.0.0 tag
+```
+
+**Body:**
+- Comprehensive checklist results (all PASS)
+- 309 tests passing (246 core + 63 harness)
+- Complete validation evidence
+- Risk assessment: LOW
+- Final recommendation: Ready for v1.0.0 tag
+
+**No modifications required** — already comprehensive and authoritative.
+
+---
+
+## Verification Results
+
+### ✅ Clarity Test
+
+Future maintainer scenario: *"Is RowaKit ready for v1.0.0?"*
+
+**Can be answered in 5 minutes?** ✅ YES
+- Read: `docs/V1_0_0_RELEASE_DECISION.md` → Opens with "**RowaKit v1.0.0 release is APPROVED**"
+- See timeline: NO-GO (Jan 10) → Fixes → GO (Jan 12)
+- See evidence: B (production-like harness) + C (consumer compat) both PASS
+- See authority: Reference to `FINAL_GO_NO_GO_REPORT` for details
+
+---
+
+### ✅ Auditability Test
+
+Future maintainer scenario: *"Why was this initially NO-GO?"*
+
+**Can be explained from current documents?** ✅ YES
+- Read: `docs/V1_0_0_RELEASE_READINESS_REPORT.md` (superseded report)
+- See notice: "Initially concluded NO-GO on January 10, 2026"
+- See reasons: Missing type exports, no production validation
+- See resolution: "Missing type exports have been fixed", "Validation policy adopted"
+- See evidence: Links to `FINAL_GO_NO_GO_REPORT` and `RELEASE_DECISION`
+
+---
+
+### ✅ Non-Contradiction Test
+
+**Search all docs:** Any active decision document claims NO-GO?
+
+```
+V1_0_0_FINAL_GO_NO_GO_REPORT.md       → 🟢 GO ✅
+V1_0_0_RELEASE_DECISION.md            → 🟢 GO ✅
+V1_0_0_FINALIZATION_RECORD.md         → 🟢 GO ✅
+V1_0_0_RELEASE_READINESS_REPORT.md    → 🔴 NO-GO (MARKED AS SUPERSEDED) ✅
+V1_0_0_PRE_CHECK_REPORT.md            → Historical (earlier pre-check) ✅
+```
+
+**Result:** ✅ No active decision claims NO-GO. All point to same canonical authority.
+
+---
+
+## Document Hierarchy (For Future Reference)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    RELEASE DECISION                          │
+└─────────────────────────────────────────────────────────────┘
+                              △
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        │                     │                     │
+    QUICK REF           DETAILED              AUDIT TRAIL
+    (5 min)             DECISION              (Full Context)
+        │                     │                     │
+    RELEASE_          FINAL_GO_NO_GO_         FINALIZATION_
+    DECISION            REPORT                   RECORD
+        │                     │                     │
+        └─────────────────────┼─────────────────────┘
+                              │
+                    ┌─────────┴──────────┐
+                    │                    │
+            SUPERSEDED REPORT    HISTORICAL DOCS
+            (Jan 10 NO-GO)       (Earlier pre-checks)
+            (Marked as outdated)  (Context only)
+```
+
+---
+
+## Summary of Changes
+
+| Document | Action | Purpose |
+|----------|--------|---------|
+| `V1_0_0_RELEASE_READINESS_REPORT.md` | Marked SUPERSEDED | Historical context + explanation of outdatedness |
+| `V1_0_0_RELEASE_DECISION.md` | Enhanced | Executive summary with timeline and governance links |
+| `V1_0_0_FINALIZATION_RECORD.md` | Created | Audit trail of finalization process |
+
+**Files NOT modified** (preserved as-is):
+- `V1_0_0_FINAL_GO_NO_GO_REPORT.md` (already canonical)
+- `PRODUCTION_LIKE_VALIDATION.md` (validation evidence)
+- `CONSUMER_COMPAT_MATRIX.md` (validation evidence)
+- `VALIDATION_EVIDENCE_POLICY.md` (governance)
+- `API_STABILITY.md`, `API_FREEZE_SUMMARY.md` (governance)
+
+---
+
+## Final Confirmation Statement
+
+```
+✅ COMPLETE
+
+RowaKit v1.0.0 release decision is internally consistent, auditable,
+and ready for tagging.
+
+The repository now has:
+- One clear canonical decision (FINAL_GO_NO_GO_REPORT → GO)
+- One executive summary (RELEASE_DECISION → 5 min read)
+- One audit trail (FINALIZATION_RECORD → full context)
+- One superseded historical report (marked as outdated with explanation)
+
+Future maintainers can understand the entire decision arc in under
+5 minutes and can trace the reasoning back to the original pre-check
+for auditability.
+
+No ambiguity remains. Release-ready. 🚀
+```
+
+---
+
+## Action Items for Release Team
+
+- [ ] Review `docs/V1_0_0_RELEASE_DECISION.md` (executive summary)
+- [ ] Reference `docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md` for detailed decision
+- [ ] Tag release as `v1.0.0`
+- [ ] Publish `@rowakit/table@1.0.0` to npm
+- [ ] Update CHANGELOG with major version milestone
+- [ ] Archive finalization documents with release notes
+
+---
+
+**Release governance finalization complete. Ready to ship.** 🚀

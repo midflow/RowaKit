@@ -1,5 +1,23 @@
 # v1.0.0 Release Readiness Report
 
+> ⚠️ **HISTORICAL DOCUMENT — SUPERSEDED**
+>
+> **Status:** This report concluded **NO-GO** on January 10, 2026.
+>
+> It has been **superseded** by subsequent events:
+> - Missing type exports (e.g., `BulkActionDef`) have been **fixed** in the codebase
+> - `VALIDATION_EVIDENCE_POLICY.md` was **adopted** to accept production-like validation as alternative to production usage
+> - Production-like UI Harness validation (B) and Consumer Compatibility tests (C) were **completed successfully**
+> - Final decision was re-assessed as **GO** (January 12, 2026)
+>
+> **Canonical v1.0.0 Release Decision:** See [`docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md`](docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md)
+>
+> **Decision Summary:** See [`docs/V1_0_0_RELEASE_DECISION.md`](docs/V1_0_0_RELEASE_DECISION.md)
+>
+> This document is preserved for **auditability and decision traceability** purposes.
+
+---
+
 **Date:** January 10, 2026  
 **Auditor:** AI Agent (Senior OSS Release Engineer)  
 **Project:** RowaKit  
