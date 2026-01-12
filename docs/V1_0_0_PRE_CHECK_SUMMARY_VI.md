@@ -1,5 +1,26 @@
 # Báo Cáo Kiểm Tra v1.0.0 — RowaKit
 
+> ⚠️ **TÀI LIỆU LỊCH SỬ — ĐÃ BỊ THAY THẾ**
+>
+> **Trạng thái:** Báo cáo này ghi nhận trạng thái **NO-GO** vào ngày 12/01/2026 do 2 blocker.
+>
+> Tài liệu này đã được **thay thế** sau khi:
+> - Blocker được sửa và test được chạy lại thành công
+> - Bằng chứng validation production-like (B) và consumer compatibility (C) vẫn **PASS** theo policy đã chấp nhận
+> - Quyết định chính thức được chốt là **GO**
+>
+> **Quyết định chính thức v1.0.0:** Xem [docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md](docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md)
+>
+> **Bằng chứng validation production-like (B):** Xem [docs/PRODUCTION_LIKE_VALIDATION.md](docs/PRODUCTION_LIKE_VALIDATION.md)
+>
+> **Validation policy:** Xem [docs/VALIDATION_EVIDENCE_POLICY.md](docs/VALIDATION_EVIDENCE_POLICY.md)
+>
+> **Tóm tắt quyết định:** Xem [docs/V1_0_0_RELEASE_DECISION.md](docs/V1_0_0_RELEASE_DECISION.md)
+>
+> Tài liệu này được giữ lại cho mục đích **auditability và traceability**.
+
+---
+
 > **Ngày:** 2026-01-12  
 > **Dự Án:** RowaKit  
 > **Phiên Bản Hiện Tại:** v0.6.0  

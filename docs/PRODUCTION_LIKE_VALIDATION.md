@@ -144,6 +144,14 @@ All scenarios completed successfully with no failures or timeouts.
 
 ---
 
+## Harness Logs
+
+Harness logs are generated locally during `pnpm demo:harness` runs. They may appear under `.harness-logs/` on a developer machine.
+
+Important:
+- Log files are not expected to be present in repository snapshots or release ZIPs because the repo ignores `*.log` via the root `.gitignore`.
+- For audit/release artifacts, attach logs externally (or configure CI to upload them) rather than committing them.
+
 ## Commands
 
 ```bash

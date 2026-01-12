@@ -1,5 +1,26 @@
 # v1.0.0 Release Readiness — Pre-Check Report
 
+> ⚠️ **HISTORICAL DOCUMENT — SUPERSEDED**
+>
+> **Status:** This report recorded a **NO-GO** state on 2026-01-12 due to two blockers.
+>
+> It has been **superseded** after:
+> - Blockers were fixed and tests were re-run successfully
+> - Production-like validation evidence (B) and consumer compatibility (C) remained **PASS** under the accepted policy
+> - The canonical decision was finalized as **GO**
+>
+> **Canonical v1.0.0 Release Decision:** See [docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md](docs/V1_0_0_FINAL_GO_NO_GO_REPORT.md)
+>
+> **Production-like Validation (B):** See [docs/PRODUCTION_LIKE_VALIDATION.md](docs/PRODUCTION_LIKE_VALIDATION.md)
+>
+> **Validation Policy:** See [docs/VALIDATION_EVIDENCE_POLICY.md](docs/VALIDATION_EVIDENCE_POLICY.md)
+>
+> **Decision Summary:** See [docs/V1_0_0_RELEASE_DECISION.md](docs/V1_0_0_RELEASE_DECISION.md)
+>
+> This document is preserved for **auditability and blocker traceability**.
+
+---
+
 > **Date:** 2026-01-12  
 > **Project:** RowaKit  
 > **Current Version:** v0.6.0  

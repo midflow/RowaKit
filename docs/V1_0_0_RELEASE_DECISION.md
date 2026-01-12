@@ -152,17 +152,6 @@ This release signals:
 
 ---
 
-## Action Items
-
-- [ ] Tag release as `v1.0.0`
-- [ ] Publish `@rowakit/table@1.0.0` to npm
-- [ ] Update CHANGELOG with major version milestone
-- [ ] Archive this report as release evidence
-
-**Ready to ship.** 🚀
-
----
-
 ## Risk Assessment
 
 **Overall Risk:** 🟢 **LOW**
