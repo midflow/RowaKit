@@ -25,6 +25,79 @@ RowaKit Table is intentionally different:
 
 ---
 
+## Is RowaKit for You?
+
+### ✅ Good Fit
+
+* **Internal tools & admin dashboards** — CRUD management, data entry
+* **Server-side data** — Backend pagination, sorting, filtering
+* **Business workflows** — Selection, bulk actions, export
+* **Scalability** — Thousands of rows handled by backend
+* **Predictable needs** — You know what users will do with the table
+
+### ❌ Not a Good Fit
+
+* **Client-side-only data** — All rows already in memory (< 1000 rows)
+* **Spreadsheet-style apps** — Pivot tables, formulas, cell editing
+* **Highly customized appearance** — Extensive CSS overrides
+* **Real-time collaboration** — Live editing, conflict resolution
+* **Complex visualizations** — Charts, sparklines, nested data
+
+### 🤔 Unsure?
+
+Ask yourself:
+- Is my backend the source of truth for ordering, filtering?
+- Do I need more than one page of results?
+- Do my users perform bulk operations?
+
+If yes → RowaKit is probably right.
+
+---
+
+## Server-Side-First Mental Model
+
+RowaKit reverses how most client-side tables work:
+
+### Traditional (Client-First)
+```
+Client: "Here's all 10,000 rows"
+Table: "I'll sort, filter, and paginate them"
+```
+
+**Problem:** Network bandwidth, memory, sorting speed all suffer.
+
+### RowaKit (Server-First)
+```
+User: "Sort by Name (ascending)"
+Table: "Backend, please send users sorted by Name, page 1"
+Backend: "Here's the first 20, sorted. Total: 523."
+Table: Render 20 rows.
+```
+
+**Benefit:** Backend does the heavy lifting. Frontend stays thin.
+
+### How It Works
+
+1. **User changes page/sort/filter**
+2. **Table sends query** → `{ page: 2, pageSize: 20, sort: { field: 'name', direction: 'asc' } }`
+3. **Your fetcher** calls your backend API with these parameters
+4. **Backend** executes the query (filters, sorts, paginates)
+5. **Backend** returns `{ items: [...20 rows], total: 523 }`
+6. **Table** renders and waits for next user action
+
+### URL Sync: Shareable State
+
+URL automatically reflects table state:
+
+```
+/users → page 1
+/users?page=2&sort=name&sortDir=asc → page 2, sorted by name
+```
+
+Share the URL → recipient sees the same view.
+
+---
+
 ## Installation
 
 ```bash
@@ -241,7 +314,29 @@ Export is server-triggered and scales well for large datasets.
 * No breaking changes in 1.x (breaking changes require v2.0.0)
 * Public API stability policy applies from v1.0.0
 
-See roadmap: [docs/ROADMAP.md](docs/ROADMAP.md)
+See roadmap: [docs/ROADMAP.md](../../docs/ROADMAP.md)
+
+---
+
+## Quick Links & Resources
+
+### Getting Started
+- **[Quick Start (10 min)](../../docs/quickstart.md)** — Minimal working example
+- **Basic Usage Example** — [packages/table/examples/basic-usage.tsx](./examples/basic-usage.tsx)
+- **Mock Server Example** — [packages/table/examples/mock-server.tsx](./examples/mock-server.tsx) (testing without backend)
+
+### Learning
+- **Server-Side-First Model** — See "Server-Side-First Mental Model" section above
+- **API Documentation** — [API_STABILITY.md](../../docs/API_STABILITY.md)
+- **Decisions & Scope** — [ROADMAP.md](../../docs/ROADMAP.md)
+
+### Examples
+- **Custom Columns** — [packages/table/examples/custom-columns.tsx](./examples/custom-columns.tsx)
+- **Styling** — [packages/table/examples/styling.tsx](./examples/styling.tsx)
+
+---
+
+## Roadmap & Versioning
 
 ---
 

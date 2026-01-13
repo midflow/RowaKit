@@ -1,11 +1,18 @@
 /**
- * Custom Columns Example - Using col.custom() for Complex Rendering
+ * Custom Columns Example - Using col.custom() for Complete Rendering Control
  * 
  * This example demonstrates:
  * - Using col.custom() for complete rendering control
- * - Combining multiple fields in a single column
- * - Adding custom styling and components
- * - Creating computed columns
+ * - Combining multiple fields into a single column
+ * - Custom styling and components
+ * - Computed columns (calculated from other fields)
+ * - Rich formatting (avatars, stars, currency)
+ * 
+ * When to use col.custom():
+ * - Multiple fields in one column (name + email in same cell)
+ * - Computed values (tenure calculated from hireDate)
+ * - Complex rendering (stars, badges, custom HTML)
+ * - When built-in col.text/col.number/col.date don't fit
  */
 
 /* eslint-disable no-console */
@@ -25,8 +32,9 @@ interface Employee {
   performance: number; // 1-5 scale
 }
 
-// Mock fetcher
+// Mock fetcher - in production this calls your backend API
 const fetchEmployees: Fetcher<Employee> = async (_query) => {
+  // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 300));
 
   const employees: Employee[] = [
@@ -72,17 +80,22 @@ export function EmployeesTableWithCustomColumns() {
   return (
     <div>
       <h1>Employee Directory</h1>
+      <p style={{ color: '#6b7280', marginBottom: '1rem' }}>
+        This example shows custom columns with rich formatting, avatars, and computed values.
+      </p>
       
       <RowaKitTable
         fetcher={fetchEmployees}
         columns={[
-          // Custom column: Full name with avatar
+          // CUSTOM COLUMN 1: Avatar + Full Name + Email
+          // Use case: Display multiple related fields together
           col.custom<Employee>(
-            'fullName',
+            'fullName',  // ID (must be unique per column)
             {
-              header: 'Employee',
-              renderCell: (employee) => (
+              header: 'Employee',  // Column header
+              renderCell: (employee) => (  // Your rendering function
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  {/* Avatar with initials */}
                   <div
                     style={{
                       width: '40px',
@@ -99,6 +112,7 @@ export function EmployeesTableWithCustomColumns() {
                   >
                     {employee.firstName[0]}{employee.lastName[0]}
                   </div>
+                  {/* Name and email */}
                   <div>
                     <div style={{ fontWeight: '600' }}>
                       {employee.firstName} {employee.lastName}
@@ -112,17 +126,20 @@ export function EmployeesTableWithCustomColumns() {
             }
           ),
 
+          // Regular text column
           col.text<Employee>('department', {
             header: 'Department',
           }),
 
-          // Custom column: Formatted salary with currency
+          // CUSTOM COLUMN 2: Formatted Salary
+          // Use case: Currency formatting, alignment, styling
           col.custom<Employee>(
-            'salary',
+            'salary',  // Column ID
             {
               header: 'Annual Salary',
               renderCell: (employee) => (
                 <div style={{ textAlign: 'right', fontWeight: '500' }}>
+                  {/* Use Intl.NumberFormat for currency formatting */}
                   {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'USD',
@@ -133,12 +150,14 @@ export function EmployeesTableWithCustomColumns() {
             }
           ),
 
-          // Custom column: Tenure calculation
+          // CUSTOM COLUMN 3: Computed Tenure
+          // Use case: Calculate derived values from data
           col.custom<Employee>(
-            'tenure',
+            'tenure',  // Column ID
             {
               header: 'Tenure',
               renderCell: (employee) => {
+                // Calculate years from hireDate to now
                 const years = Math.floor(
                   (Date.now() - new Date(employee.hireDate).getTime()) / (1000 * 60 * 60 * 24 * 365)
                 );
@@ -151,9 +170,10 @@ export function EmployeesTableWithCustomColumns() {
             }
           ),
 
-          // Custom column: Performance rating with stars
+          // CUSTOM COLUMN 4: Star Rating
+          // Use case: Visual indicators, rich formatting
           col.custom<Employee>(
-            'performance',
+            'performance',  // Column ID
             {
               header: 'Performance',
               renderCell: (employee) => {
@@ -162,8 +182,10 @@ export function EmployeesTableWithCustomColumns() {
                 
                 return (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    {/* Display star count */}
                     {'⭐'.repeat(fullStars)}
                     {hasHalfStar && '⭐'}
+                    {/* Show numeric value */}
                     <span style={{ marginLeft: '0.5rem', fontSize: '0.875rem', color: '#6b7280' }}>
                       {employee.performance.toFixed(1)}
                     </span>
@@ -173,12 +195,14 @@ export function EmployeesTableWithCustomColumns() {
             }
           ),
 
+          // Action column
           col.actions<Employee>([
             {
               id: 'view-profile',
               label: 'Profile',
               onClick: (employee) => {
                 console.log('View profile:', employee);
+                // Navigate to detail page
               },
             },
           ]),

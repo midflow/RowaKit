@@ -55,3 +55,15 @@ jobs:
           fi
           test -f packages/table/dist/index.cjs
           test -f packages/table/dist/index.d.ts
+
+      - name: Validate consumer packages
+        run: |
+          echo "Validating consumer-smoke-vite..."
+          pnpm --filter @rowakit/consumer-smoke-vite typecheck
+          pnpm --filter @rowakit/consumer-smoke-vite build
+          echo "✓ consumer-smoke-vite validated"
+
+          echo "Validating consumer-smoke-next..."
+          pnpm --filter @rowakit/consumer-smoke-next typecheck
+          pnpm --filter @rowakit/consumer-smoke-next build
+          echo "✓ consumer-smoke-next validated"

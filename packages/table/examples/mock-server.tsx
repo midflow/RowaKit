@@ -2,9 +2,16 @@
  * Mock Server Example - Testing Without a Real Backend
  * 
  * This example demonstrates:
- * - Creating a mock server-side fetcher
- * - Simulating pagination, sorting, and delays
+ * - Creating a mock server-side fetcher (no real HTTP calls)
+ * - Simulating pagination, sorting, and network delays
  * - Testing table behavior without a real API
+ * 
+ * Use this pattern when:
+ * - Building/designing before backend API exists
+ * - Demoing table features offline
+ * - Writing tests with deterministic data
+ * 
+ * This is NOT production code. Replace fetchProducts with real API calls.
  */
 
 /* eslint-disable no-console */
@@ -22,7 +29,7 @@ interface Product {
   lastUpdated: Date;
 }
 
-// Mock data
+// Mock dataset - in real app, this comes from your backend
 const MOCK_PRODUCTS: Product[] = [
   { id: 1, name: 'Laptop Pro', category: 'Electronics', price: 1299, inStock: true, lastUpdated: new Date('2024-01-15') },
   { id: 2, name: 'Wireless Mouse', category: 'Accessories', price: 29, inStock: true, lastUpdated: new Date('2024-02-20') },
@@ -38,15 +45,24 @@ const MOCK_PRODUCTS: Product[] = [
   { id: 12, name: 'Microphone', category: 'Audio', price: 119, inStock: false, lastUpdated: new Date('2024-01-20') },
 ];
 
-// Mock fetcher with realistic server behavior
+/**
+ * Mock fetcher that simulates a backend API
+ * 
+ * In production, this would be:
+ *   const res = await fetch('/api/products?page=' + query.page);
+ *   return res.json();
+ * 
+ * This example does pagination/sorting in-memory to demonstrate
+ * how the table would behave with a real server.
+ */
 const fetchProducts: Fetcher<Product> = async (query: FetcherQuery) => {
-  // Simulate network delay
+  // Simulate network delay (500ms like a real API)
   await new Promise((resolve) => setTimeout(resolve, 500));
 
-  // Copy data for manipulation
+  // Copy data for manipulation (don't mutate original)
   const data = [...MOCK_PRODUCTS];
 
-  // Apply sorting
+  // Apply sorting if user clicked a sortable column
   if (query.sort) {
     data.sort((a, b) => {
       const aVal = a[query.sort!.field as keyof Product];
@@ -58,18 +74,20 @@ const fetchProducts: Fetcher<Product> = async (query: FetcherQuery) => {
     });
   }
 
-  // Calculate pagination
+  // Calculate pagination: slice array based on page and pageSize
   const start = (query.page - 1) * query.pageSize;
   const end = start + query.pageSize;
   const paginatedData = data.slice(start, end);
 
+  // Return expected format: { items: T[], total: number }
   return {
     items: paginatedData,
-    total: data.length,
+    total: data.length,  // Total rows available (for pagination display)
   };
 };
 
 export function ProductsTableWithMockServer() {
+  // Example action handlers
   const handleView = (product: Product) => {
     alert(`Viewing product: ${product.name}`);
   };
@@ -78,21 +96,25 @@ export function ProductsTableWithMockServer() {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log('Restocking:', product.name);
+    // In real app: await fetch('/api/restock', { body: { productId: product.id } })
   };
 
   return (
     <div>
       <h1>Products Inventory</h1>
       <p style={{ color: '#6b7280', marginBottom: '1rem' }}>
-        This example uses a mock server with simulated delays and sorting.
+        This example uses a mock server with simulated delays, sorting, and pagination.
+        Try clicking column headers to sort or navigate between pages.
       </p>
       
       <RowaKitTable
+        // Pass the mock fetcher - table will call it for each page/sort change
         fetcher={fetchProducts}
+        // Define columns: what data to show and how
         columns={[
           col.text<Product>('name', {
             header: 'Product Name',
-            sortable: true,
+            sortable: true,  // User can click to sort; fetcher receives sort params
           }),
           col.text<Product>('category', {
             header: 'Category',
@@ -116,6 +138,7 @@ export function ProductsTableWithMockServer() {
               day: 'numeric',
             }),
           }),
+          // Action buttons
           col.actions<Product>([
             {
               id: 'view',
@@ -127,14 +150,17 @@ export function ProductsTableWithMockServer() {
               id: 'restock',
               label: 'Restock',
               icon: '📦',
-              disabled: (product) => product.inStock,
-              confirm: true,
+              disabled: (product) => product.inStock,  // Disable for in-stock items
+              confirm: true,  // Show confirmation dialog
               onClick: handleRestock,
             },
           ]),
         ]}
+        // Unique identifier per row
         rowKey="id"
+        // Start with 5 rows per page for demo (default is 10)
         defaultPageSize={5}
+        // Allow user to change page size
         pageSizeOptions={[5, 10, 20]}
       />
     </div>

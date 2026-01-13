@@ -94,6 +94,32 @@ export function UsersTable() {
 
 ---
 
+## Development setup
+
+This project uses **pnpm** as the official package manager. To contribute:
+
+```bash
+# Install dependencies
+pnpm install
+
+# Run tests (core library)
+pnpm test
+
+# Run UI harness tests (optional, requires ROWAKIT_DEBUG_HARNESS=1)
+ROWAKIT_DEBUG_HARNESS=1 pnpm demo:harness
+
+# Start development server
+pnpm dev
+```
+
+- **Why pnpm?** Strict dependency isolation and workspace monorepo support.
+- **TypeScript**: All packages are TypeScript-first with strict mode.
+- **Testing**: Vitest + React Testing Library for comprehensive coverage.
+
+See [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) for contributor documentation.
+
+---
+
 ## v1.0.0 stability guarantee
 
 RowaKit v1.0.0 marks the start of the **stable public API contract** for `@rowakit/table`.

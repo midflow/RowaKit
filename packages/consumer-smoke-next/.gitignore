@@ -1,0 +1,22 @@
+# Next.js
+.next/
+out/
+*.tsbuildinfo
+
+# Node
+node_modules/
+pnpm-lock.yaml
+
+# Environment
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
