@@ -1,4 +1,12 @@
+
 # Quick Start Guide — Get a Table Working in 10 Minutes
+
+**Try live:** [CodeSandbox Playground](https://codesandbox.io/p/github/midflow/rowakit/main)
+
+**See more examples:**
+- [Basic usage](../packages/table/examples/basic-usage.tsx)
+- [Custom columns](../packages/table/examples/custom-columns.tsx)
+- [Mock server pattern](../packages/table/examples/mock-server.tsx)
 
 This guide walks you through building a working RowaKit table from scratch.
 

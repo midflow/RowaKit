@@ -1,37 +1,45 @@
 # RowaKit
 
-**Server-side-first table components for React — built for internal tools & business apps.**
-Fast to adopt. Predictable by design. No data-grid bloat.
+**Server-side React table with pagination, sorting, filters, URL-synced state, saved views, and CSV export hooks — built for admin & data-heavy apps.**
+
+▶ **[Live Playground (CodeSandbox)](https://codesandbox.io/p/github/midflow/rowakit/main)**
 
 ---
 
-## Why RowaKit?
+## Use cases
 
-Most table libraries optimize for **client-first** flexibility and end up as heavy data grids.
-RowaKit takes the opposite stance:
-
-* ✅ **Server-side-first**: pagination, sorting, filtering live on the backend
-* ✅ **Opinionated, minimal API**: fewer decisions, less boilerplate
-* ✅ **Business workflows built-in**: selection, bulk actions, export
-* ✅ **No grid bloat**: no virtualization, no pivoting, no spreadsheet UX
-
-> RowaKit is designed for **real internal tools**, not spreadsheet-style data grids.
+- Admin user management (pagination, filters, export)
+- Product inventory dashboards
+- Financial reporting (date range, CSV export)
+- Operations monitoring (bulk actions, URL sync)
+- Customer support queues (status filters, saved views)
 
 ---
 
-## Try it live
+## Recipes
 
-▶ **Live Playground (CodeSandbox)**
-[https://codesandbox.io/p/github/midflow/rowakit/main](https://codesandbox.io/p/github/midflow/rowakit/main)
+**1. Server-side pagination + sorting**
+```tsx
+<RowaKitTable fetcher={fetchUsers} columns={[col.text('name', {sortable: true})]} />
+```
+**2. Column filters**
+```tsx
+<RowaKitTable fetcher={fetchUsers} columns={[col.text('email', {filter: true})]} />
+```
+**3. CSV export via exporter callback**
+```tsx
+<RowaKitTable fetcher={fetchUsers} exporter={myCsvExporter} />
+```
+See [examples](./packages/table/examples/README.md) for more.
 
-Demo highlights:
+---
 
-* Server-side pagination, sorting, filtering
-* Column resizing (pointer-based + double-click auto-fit)
-* URL sync (shareable table state)
-* Saved views (localStorage)
-* Row selection + bulk actions
-* Export callback (CSV flow)
+## Why not TanStack Table / AG Grid?
+
+- No grid bloat: no virtualization, pivoting, or spreadsheet UX
+- Server-side-first: backend owns pagination, sorting, filtering
+- Opinionated API: less boilerplate, predictable patterns
+- Built for admin/data apps, not spreadsheets
 
 ---
 
@@ -115,6 +123,13 @@ pnpm dev
 - **Why pnpm?** Strict dependency isolation and workspace monorepo support.
 - **TypeScript**: All packages are TypeScript-first with strict mode.
 - **Testing**: Vitest + React Testing Library for comprehensive coverage.
+
+
+---
+
+## Origin
+
+RowaKit was created for real-world admin panels and data-heavy business apps, not generic spreadsheets. Born from internal tools, now open for all.
 
 See [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) for contributor documentation.
 

@@ -1,15 +1,23 @@
+
 # @rowakit/table
 
-**Server-side-first React table for internal & business applications.**
-Predictable API. Thin client. No data-grid bloat.
+**Server-side React table with pagination, sorting, filters, URL sync, saved views, and CSV export hooks — built for admin & data-heavy apps.**
 
-## Stability
+**Features:**
+- Server-side pagination, sorting, filtering
+- Column filters and custom columns
+- CSV export hooks and exporter callback
+- URL-synced state and saved views
+- Bulk actions, selection, and error/loading states
+
+
+---
 
 `@rowakit/table` is **stable as of v1.0.0**.
 
 See:
-- `docs/API_STABILITY.md`
-- `docs/API_FREEZE_SUMMARY.md`
+- [API Stability](../../docs/API_STABILITY.md)
+- [API Freeze Summary](../../docs/API_FREEZE_SUMMARY.md)
 
 ---
 
@@ -29,15 +37,15 @@ RowaKit Table is intentionally different:
 
 ### ✅ Good Fit
 
-* **Internal tools & admin dashboards** — CRUD management, data entry
-* **Server-side data** — Backend pagination, sorting, filtering
-* **Business workflows** — Selection, bulk actions, export
-* **Scalability** — Thousands of rows handled by backend
-* **Predictable needs** — You know what users will do with the table
+- **Admin panels & dashboards** — CRUD management, data entry
+- **Data-heavy apps** — Backend pagination, sorting, filtering
+- **Business workflows** — Selection, bulk actions, export
+- **Scalable tables** — Thousands of rows handled by backend
+- **Predictable needs** — You know what users will do with the table
 
 ### ❌ Not a Good Fit
 
-* **Client-side-only data** — All rows already in memory (< 1000 rows)
+- **Client-side-only data** — All rows already in memory (< 1000 rows)
 * **Spreadsheet-style apps** — Pivot tables, formulas, cell editing
 * **Highly customized appearance** — Extensive CSS overrides
 * **Real-time collaboration** — Live editing, conflict resolution
