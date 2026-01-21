@@ -1,5 +1,5 @@
 import { RowaKitTable, col } from '@rowakit/table';
-import type { Fetcher, BulkActionDef, Exporter } from '@rowakit/table';
+import type { Fetcher, BulkActionDef, Exporter, FetcherQuery } from '@rowakit/table';
 
 /**
  * Consumer Smoke Test — Type Safety Validation
@@ -39,7 +39,7 @@ const generateUsers = (count: number): User[] => {
 const allUsers = generateUsers(1000);
 
 // Fetcher with proper typing (no `any`)
-const fetchUsers: Fetcher<User> = async (query) => {
+const fetchUsers: Fetcher<User> = async (query: FetcherQuery) => {
   await new Promise((resolve) => setTimeout(resolve, 300)); // Simulate network
 
   let filtered = [...allUsers];
@@ -109,7 +109,7 @@ const bulkActions: BulkActionDef[] = [
   {
     id: 'activate',
     label: 'Activate selected',
-    onClick: (keys) => {
+    onClick: (keys: Array<string | number>) => {
       console.log('Activating users:', keys);
       alert(`Would activate ${keys.length} users`);
     },
@@ -121,7 +121,7 @@ const bulkActions: BulkActionDef[] = [
       title: 'Confirm deletion',
       description: 'Are you sure you want to delete these users?',
     },
-    onClick: (keys) => {
+    onClick: (keys: Array<string | number>) => {
       console.log('Deleting users:', keys);
       alert(`Would delete ${keys.length} users`);
     },
@@ -129,7 +129,7 @@ const bulkActions: BulkActionDef[] = [
 ];
 
 // Exporter with proper typing (no `any`)
-const exporter: Exporter = async (query) => {
+const exporter: Exporter = async (query: FetcherQuery) => {
   await new Promise((resolve) => setTimeout(resolve, 500));
   
   console.log('Export requested with query:', query);
@@ -184,7 +184,7 @@ function App() {
           col.number('salary', {
             header: 'Salary',
             sortable: true,
-            format: (val) => new Intl.NumberFormat('en-US', {
+            format: (val: number) => new Intl.NumberFormat('en-US', {
               style: 'currency',
               currency: 'USD',
             }).format(val),
@@ -201,18 +201,18 @@ function App() {
             { 
               id: 'edit', 
               label: 'Edit',
-              onClick: (row) => alert(`Edit user: ${row.name}`),
+              onClick: (row: User) => alert(`Edit user: ${row.name}`),
             },
             { 
               id: 'view', 
               label: 'View',
-              onClick: (row) => alert(`View user: ${row.name}`),
+              onClick: (row: User) => alert(`View user: ${row.name}`),
             },
             { 
               id: 'delete', 
               label: 'Delete', 
               confirm: true,
-              onClick: (row) => console.log('Delete user:', row.id),
+              onClick: (row: User) => console.log('Delete user:', row.id),
             },
           ]),
         ]}
