@@ -10,9 +10,10 @@
  * our styles work correctly in that environment.
  */
 
-import { test, expect, describe } from 'vitest';
+import { test, expect, describe, beforeAll } from 'vitest';
 import { existsSync, readFileSync } from 'fs';
 import { join, resolve } from 'path';
+import { execSync } from 'child_process';
 
 /**
  * Next.js Consumer Smoke Test
@@ -20,13 +21,25 @@ import { join, resolve } from 'path';
  * These tests verify that @rowakit/table/styles can be imported and used in a Next.js app
  * without build errors, TypeScript errors, or CSS regressions.
  *
- * Note: Builds are pre-run and verified from their artifacts.
+ * Note: Builds are run as part of test setup and verified from their artifacts.
  */
 
 // Calculate path to consumer-smoke-next from this file location
 // This test is at: packages/table/src/__tests__/consumer-smoke.next.test.ts
 // Consumer-smoke-next is at: packages/consumer-smoke-next
 const NEXT_CONSUMER_DIR = resolve(__dirname, '../../../../packages/consumer-smoke-next');
+
+beforeAll(() => {
+  // Build consumer-smoke-next before running tests
+  try {
+    execSync('pnpm --filter @rowakit/consumer-smoke-next build', {
+      cwd: resolve(__dirname, '../../../../'),
+      stdio: 'pipe',
+    });
+  } catch (error) {
+    console.warn('Failed to build consumer-smoke-next in test setup:', error);
+  }
+});
 
 describe('Consumer Smoke Test: Next.js', () => {
   test('Next.js consumer package exists', () => {

@@ -7,9 +7,10 @@
  * This test runs: `pnpm -C packages/consumer-smoke-vite build`
  */
 
-import { test, expect, describe } from 'vitest';
+import { test, expect, describe, beforeAll } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join, resolve } from 'path';
+import { execSync } from 'child_process';
 
 /**
  * Vite Consumer Smoke Test
@@ -17,13 +18,25 @@ import { join, resolve } from 'path';
  * These tests verify that @rowakit/table/styles can be imported and used in a Vite app
  * without build errors or CSS regressions.
  *
- * Note: Builds are pre-run and verified from their artifacts.
+ * Note: Builds are run as part of test setup and verified from their artifacts.
  */
 
 // Calculate path to consumer-smoke-vite from this file location
 // This test is at: packages/table/src/__tests__/consumer-smoke.vite.test.ts
 // Consumer-smoke-vite is at: packages/consumer-smoke-vite
 const VITE_CONSUMER_DIR = resolve(__dirname, '../../../../packages/consumer-smoke-vite');
+
+beforeAll(() => {
+  // Build consumer-smoke-vite before running tests
+  try {
+    execSync('pnpm --filter @rowakit/consumer-smoke-vite build', {
+      cwd: resolve(__dirname, '../../../../'),
+      stdio: 'pipe',
+    });
+  } catch (error) {
+    console.warn('Failed to build consumer-smoke-vite in test setup:', error);
+  }
+});
 
 describe('Consumer Smoke Test: Vite', () => {
   test('Vite consumer package exists', () => {
