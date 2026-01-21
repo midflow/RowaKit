@@ -11,7 +11,7 @@
  */
 
 import { test, expect, describe } from 'vitest';
-import { existsSync, readdirSync, readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { join, resolve } from 'path';
 
 /**
