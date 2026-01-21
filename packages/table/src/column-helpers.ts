@@ -38,6 +38,8 @@ interface TextOptions {
   align?: 'left' | 'center' | 'right';
   /** Enable text truncation with ellipsis */
   truncate?: boolean;
+  /** Optional custom column ID (defaults to field name) */
+  id?: string;
 }
 
 interface DateOptions {
@@ -119,7 +121,7 @@ function text<T>(
   options?: TextOptions
 ): TextColumnDef<T> {
   return {
-    id: field,
+    id: options?.id ?? field,
     kind: 'text',
     field,
     header: options?.header,

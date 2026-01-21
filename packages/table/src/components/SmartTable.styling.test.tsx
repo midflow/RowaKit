@@ -182,12 +182,12 @@ describe('SmartTable Styling', () => {
         <SmartTable
           fetcher={fetcher}
           columns={[
-            col.text<User>('name', { key: 'name-1' }),
-            col.text<User>('email', { key: 'email-1' }),
-            col.text<User>('name', { key: 'name-2', header: 'Name Copy 1' }),
-            col.text<User>('email', { key: 'email-2', header: 'Email Copy 1' }),
-            col.text<User>('name', { key: 'name-3', header: 'Name Copy 2' }),
-            col.text<User>('email', { key: 'email-3', header: 'Email Copy 2' }),
+            col.text<User>('name', { id: 'name-1' }),
+            col.text<User>('email', { id: 'email-1' }),
+            col.text<User>('name', { id: 'name-2', header: 'Name Copy 1' }),
+            col.text<User>('email', { id: 'email-2', header: 'Email Copy 1' }),
+            col.text<User>('name', { id: 'name-3', header: 'Name Copy 2' }),
+            col.text<User>('email', { id: 'email-3', header: 'Email Copy 2' }),
           ]}
         />
       );
