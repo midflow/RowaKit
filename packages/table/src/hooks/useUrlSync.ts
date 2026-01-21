@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import type { ColumnDef, FetcherQuery, FilterValue, SortColumn } from '../types';
 
 function parseUrlState(
@@ -277,7 +277,7 @@ export function useUrlSync<T>({
 		}, 0);
 	}
 
-	function applyUrlToState() {
+	const applyUrlToState = useCallback(() => {
 		const params = new URLSearchParams(window.location.search);
 		const parsed = parseUrlState(params, defaultPageSizeRef.current, pageSizeOptionsRef.current);
 
@@ -336,7 +336,7 @@ export function useUrlSync<T>({
 		} else if (enableColumnResizingRef.current) {
 			setColumnWidths({});
 		}
-	}
+	}, [setQuery, setFilters, setColumnWidths]);
 
 	useEffect(() => {
 		if (!syncToUrl) {
@@ -354,6 +354,7 @@ export function useUrlSync<T>({
 		setQuery,
 		setFilters,
 		setColumnWidths,
+		applyUrlToState,
 	]);
 
 	useEffect(() => {
@@ -367,7 +368,7 @@ export function useUrlSync<T>({
 		return () => {
 			window.removeEventListener('popstate', onPopState);
 		};
-	}, [syncToUrl, setQuery, setFilters, setColumnWidths]);
+	}, [syncToUrl, setQuery, setFilters, setColumnWidths, applyUrlToState]);
 
 	useEffect(() => {
 		return () => {
