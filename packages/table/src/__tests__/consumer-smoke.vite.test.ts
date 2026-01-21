@@ -28,14 +28,14 @@ const VITE_CONSUMER_DIR = resolve(__dirname, '../../../../packages/consumer-smok
 
 beforeAll(() => {
   // Build consumer-smoke-vite before running tests
-  try {
-    execSync('pnpm --filter @rowakit/consumer-smoke-vite build', {
-      cwd: resolve(__dirname, '../../../../'),
-      stdio: 'pipe',
-    });
-  } catch (error) {
-    console.warn('Failed to build consumer-smoke-vite in test setup:', error);
-  }
+  execSync('pnpm --filter @rowakit/table build', {
+    cwd: resolve(__dirname, '../../../../'),
+    stdio: 'inherit',
+  });
+  execSync('pnpm --filter @rowakit/consumer-smoke-vite build', {
+    cwd: resolve(__dirname, '../../../../'),
+    stdio: 'inherit',
+  });
 });
 
 describe('Consumer Smoke Test: Vite', () => {

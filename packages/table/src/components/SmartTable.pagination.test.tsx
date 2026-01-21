@@ -112,7 +112,7 @@ describe('SmartTable - Pagination (A-06)', () => {
       });
 
       // Navigate to page 2
-      const nextButton = screen.getByRole('button', { name: 'Next page' });
+      const nextButton = await screen.findByRole('button', { name: 'Next page' });
       await user.click(nextButton);
 
       await waitFor(() => {
