@@ -1,0 +1,225 @@
+### Page state
+- Page URL: http://localhost:5173/#toolkit-combined
+- Page Title: RowaKit Table - Demo
+- Page Snapshot:
+```yaml
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - complementary [ref=e5]:
+      - generic [ref=e6]:
+        - heading "RowaKit Demo Gallery" [level=1] [ref=e7]
+        - paragraph [ref=e8]: v1.0.0 • Progressive Demos
+      - navigation [ref=e9]:
+        - generic [ref=e10]:
+          - heading "Getting Started 3" [level=3] [ref=e11]:
+            - text: Getting Started
+            - generic [ref=e12]: "3"
+          - list [ref=e13]:
+            - listitem [ref=e14]:
+              - button "Basic Table pagination" [ref=e15] [cursor=pointer]:
+                - generic [ref=e16]: Basic Table
+                - generic "pagination, sorting, intro" [ref=e18]: pagination
+            - listitem [ref=e19]:
+              - button "Columns & Formatting columns" [ref=e20] [cursor=pointer]:
+                - generic [ref=e21]: Columns & Formatting
+                - generic "columns, formatting" [ref=e23]: columns
+            - listitem [ref=e24]:
+              - button "Row Actions actions" [ref=e25] [cursor=pointer]:
+                - generic [ref=e26]: Row Actions
+                - generic "actions, events" [ref=e28]: actions
+        - generic [ref=e29]:
+          - heading "Real-world Examples 3" [level=3] [ref=e30]:
+            - text: Real-world Examples
+            - generic [ref=e31]: "3"
+          - list [ref=e32]:
+            - listitem [ref=e33]:
+              - button "Server-side Filters filters" [ref=e34] [cursor=pointer]:
+                - generic [ref=e35]: Server-side Filters
+                - generic "filters, search" [ref=e37]: filters
+            - listitem [ref=e38]:
+              - button "URL Synchronization url" [ref=e39] [cursor=pointer]:
+                - generic [ref=e40]: URL Synchronization
+                - generic "url, sharing" [ref=e42]: url
+            - listitem [ref=e43]:
+              - button "Saved Views storage" [ref=e44] [cursor=pointer]:
+                - generic [ref=e45]: Saved Views
+                - generic "storage, views" [ref=e47]: storage
+        - generic [ref=e48]:
+          - heading "Advanced 2" [level=3] [ref=e49]:
+            - text: Advanced
+            - generic [ref=e50]: "2"
+          - list [ref=e51]:
+            - listitem [ref=e52]:
+              - button "Column Sizing columns" [ref=e53] [cursor=pointer]:
+                - generic [ref=e54]: Column Sizing
+                - generic "columns, ui" [ref=e56]: columns
+            - listitem [ref=e57]:
+              - button "Advanced Query Patterns advanced" [ref=e58] [cursor=pointer]:
+                - generic [ref=e59]: Advanced Query Patterns
+                - generic "advanced, combo" [ref=e61]: advanced
+        - generic [ref=e62]:
+          - heading "Stage E (v0.5.0) 8" [level=3] [ref=e63]:
+            - text: Stage E (v0.5.0)
+            - generic [ref=e64]: "8"
+          - list [ref=e65]:
+            - listitem [ref=e66]:
+              - button "Row Selection selection" [ref=e67] [cursor=pointer]:
+                - generic [ref=e68]: Row Selection
+                - generic "selection, workflow" [ref=e70]: selection
+            - listitem [ref=e71]:
+              - button "Bulk Actions bulk" [ref=e72] [cursor=pointer]:
+                - generic [ref=e73]: Bulk Actions
+                - generic "bulk, actions" [ref=e75]: bulk
+            - listitem [ref=e76]:
+              - button "CSV Export export" [ref=e77] [cursor=pointer]:
+                - generic [ref=e78]: CSV Export
+                - generic "export, download" [ref=e80]: export
+            - listitem [ref=e81]:
+              - button "Multi-Column Sorting sorting" [ref=e82] [cursor=pointer]:
+                - generic [ref=e83]: Multi-Column Sorting
+                - generic "sorting, advanced" [ref=e85]: sorting
+            - listitem [ref=e86]:
+              - button "Accessibility Baseline a11y" [ref=e87] [cursor=pointer]:
+                - generic [ref=e88]: Accessibility Baseline
+                - generic "a11y, keyboard" [ref=e90]: a11y
+            - listitem [ref=e91]:
+              - button "QueryToolbar Component toolkit" [ref=e92] [cursor=pointer]:
+                - generic [ref=e93]: QueryToolbar Component
+                - generic "toolkit, search, filters" [ref=e95]: toolkit
+            - listitem [ref=e96]:
+              - button "ActionBar Component toolkit" [ref=e97] [cursor=pointer]:
+                - generic [ref=e98]: ActionBar Component
+                - generic "toolkit, selection, bulk-actions" [ref=e100]: toolkit
+            - listitem [ref=e101]:
+              - button "Table Toolkit Combined toolkit" [active] [ref=e102] [cursor=pointer]:
+                - generic [ref=e103]: Table Toolkit Combined
+                - generic "toolkit, integration, complete" [ref=e105]: toolkit
+      - paragraph [ref=e107]:
+        - link "GitHub" [ref=e108] [cursor=pointer]:
+          - /url: https://github.com/yourusername/rowakit
+        - text: •
+        - link "Docs" [ref=e109] [cursor=pointer]:
+          - /url: https://rowakit.dev/docs
+    - main
+  - generic [ref=e111]:
+    - banner [ref=e112]:
+      - generic [ref=e113]:
+        - heading "Table Toolkit Combined" [level=1] [ref=e202]
+        - paragraph [ref=e115]: Complete toolkit showcasing RowaKitTable, QueryToolbar, and ActionBar working together.
+        - generic [ref=e116]:
+          - generic [ref=e203]: toolkit
+          - generic [ref=e204]: integration
+          - generic [ref=e205]: complete
+    - generic [ref=e120]:
+      - button "Preview" [ref=e121] [cursor=pointer]
+      - button "Code" [ref=e122] [cursor=pointer]
+      - button "Notes" [ref=e123] [cursor=pointer]
+    - generic [ref=e206]:
+      - heading "Table Toolkit Combined Demo" [level=2] [ref=e207]
+      - paragraph [ref=e208]:
+        - text: This demo shows
+        - strong [ref=e209]: RowaKitTable + QueryToolbar + ActionBar
+        - text: working together as a complete toolkit for server-side data management.
+      - generic [ref=e210]:
+        - generic [ref=e211]:
+          - textbox "Search users..." [ref=e213]
+          - button "Toggle filters" [ref=e214]: 🔍 Filters
+          - generic [ref=e215]: ↕️ Default sort
+        - button "📥 Export All" [ref=e217] [cursor=pointer]
+      - generic [ref=e218]:
+        - table [ref=e219]:
+          - rowgroup [ref=e220]:
+            - row "Select all rows Name Email Department" [ref=e221]:
+              - columnheader "Select all rows" [ref=e222]:
+                - checkbox "Select all rows" [ref=e223]
+              - button "Name" [ref=e224] [cursor=pointer]
+              - columnheader "Email" [ref=e225]
+              - columnheader "Department" [ref=e226]
+          - rowgroup [ref=e227]:
+            - row "Select row 1 User 1 user1@example.com Engineering" [ref=e228]:
+              - cell "Select row 1" [ref=e229]:
+                - checkbox "Select row 1" [ref=e230]
+              - cell "User 1" [ref=e231]
+              - cell "user1@example.com" [ref=e232]
+              - cell "Engineering" [ref=e233]
+            - row "Select row 2 User 2 user2@example.com Sales" [ref=e234]:
+              - cell "Select row 2" [ref=e235]:
+                - checkbox "Select row 2" [ref=e236]
+              - cell "User 2" [ref=e237]
+              - cell "user2@example.com" [ref=e238]
+              - cell "Sales" [ref=e239]
+            - row "Select row 3 User 3 user3@example.com Marketing" [ref=e240]:
+              - cell "Select row 3" [ref=e241]:
+                - checkbox "Select row 3" [ref=e242]
+              - cell "User 3" [ref=e243]
+              - cell "user3@example.com" [ref=e244]
+              - cell "Marketing" [ref=e245]
+            - row "Select row 4 User 4 user4@example.com Support" [ref=e246]:
+              - cell "Select row 4" [ref=e247]:
+                - checkbox "Select row 4" [ref=e248]
+              - cell "User 4" [ref=e249]
+              - cell "user4@example.com" [ref=e250]
+              - cell "Support" [ref=e251]
+            - row "Select row 5 User 5 user5@example.com Engineering" [ref=e252]:
+              - cell "Select row 5" [ref=e253]:
+                - checkbox "Select row 5" [ref=e254]
+              - cell "User 5" [ref=e255]
+              - cell "user5@example.com" [ref=e256]
+              - cell "Engineering" [ref=e257]
+            - row "Select row 6 User 6 user6@example.com Sales" [ref=e258]:
+              - cell "Select row 6" [ref=e259]:
+                - checkbox "Select row 6" [ref=e260]
+              - cell "User 6" [ref=e261]
+              - cell "user6@example.com" [ref=e262]
+              - cell "Sales" [ref=e263]
+            - row "Select row 7 User 7 user7@example.com Marketing" [ref=e264]:
+              - cell "Select row 7" [ref=e265]:
+                - checkbox "Select row 7" [ref=e266]
+              - cell "User 7" [ref=e267]
+              - cell "user7@example.com" [ref=e268]
+              - cell "Marketing" [ref=e269]
+            - row "Select row 8 User 8 user8@example.com Support" [ref=e270]:
+              - cell "Select row 8" [ref=e271]:
+                - checkbox "Select row 8" [ref=e272]
+              - cell "User 8" [ref=e273]
+              - cell "user8@example.com" [ref=e274]
+              - cell "Support" [ref=e275]
+            - row "Select row 9 User 9 user9@example.com Engineering" [ref=e276]:
+              - cell "Select row 9" [ref=e277]:
+                - checkbox "Select row 9" [ref=e278]
+              - cell "User 9" [ref=e279]
+              - cell "user9@example.com" [ref=e280]
+              - cell "Engineering" [ref=e281]
+            - row "Select row 10 User 10 user10@example.com Sales" [ref=e282]:
+              - cell "Select row 10" [ref=e283]:
+                - checkbox "Select row 10" [ref=e284]
+              - cell "User 10" [ref=e285]
+              - cell "user10@example.com" [ref=e286]
+              - cell "Sales" [ref=e287]
+        - generic [ref=e288]:
+          - generic [ref=e289]:
+            - generic [ref=e290]: "Rows per page:"
+            - combobox "Rows per page:" [ref=e291] [cursor=pointer]:
+              - option "10" [selected]
+              - option "20"
+              - option "50"
+          - generic [ref=e292]: Page 1 of 5 (50 total)
+          - generic [ref=e293]:
+            - button "Previous page" [disabled] [ref=e294]: Previous
+            - button "Next page" [ref=e295] [cursor=pointer]: Next
+      - generic [ref=e296]:
+        - heading "Toolkit Benefits:" [level=3] [ref=e297]
+        - list [ref=e298]:
+          - listitem [ref=e299]:
+            - strong [ref=e300]: "QueryToolbar:"
+            - text: Centralized query controls (search, filters, sort, actions)
+          - listitem [ref=e301]:
+            - strong [ref=e302]: "ActionBar:"
+            - text: Clear selection state with bulk operations
+          - listitem [ref=e303]:
+            - strong [ref=e304]: "RowaKitTable:"
+            - text: Server-side pagination, sorting, selection
+          - listitem [ref=e305]:
+            - strong [ref=e306]: "Composable:"
+            - text: Use standalone or together, consumer orchestrates state
+```

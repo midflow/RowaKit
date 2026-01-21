@@ -19,6 +19,9 @@ import BulkActionsDemo from '../demos/10-bulk-actions/Demo';
 import CsvExportDemo from '../demos/11-csv-export/Demo';
 import MultiSortDemo from '../demos/12-multi-sort/Demo';
 import AccessibilityDemo from '../demos/13-accessibility/Demo';
+import QueryToolbarDemo from '../demos/12-query-toolbar/Demo';
+import ActionBarDemo from '../demos/13-action-bar/Demo';
+import ToolkitCombinedDemo from '../demos/14-toolkit-combined/Demo';
 
 // Demo metadata (contains learning outcomes and documentation)
 import { meta as basicMeta } from '../demos/01-basic/meta';
@@ -34,6 +37,9 @@ import { meta as bulkActionsMeta } from '../demos/10-bulk-actions/meta';
 import { meta as csvExportMeta } from '../demos/11-csv-export/meta';
 import { meta as multiSortMeta } from '../demos/12-multi-sort/meta';
 import { meta as a11yMeta } from '../demos/13-accessibility/meta';
+import { meta as queryToolbarMeta } from '../demos/12-query-toolbar/meta';
+import { meta as actionBarMeta } from '../demos/13-action-bar/meta';
+import { meta as toolkitCombinedMeta } from '../demos/14-toolkit-combined/meta';
 
 // Import raw code snippets from Code.tsx files (using Vite ?raw query)
 import basicCode from '../demos/01-basic/Code.tsx?raw';
@@ -49,6 +55,9 @@ import bulkActionsCode from '../demos/10-bulk-actions/Code.tsx?raw';
 import csvExportCode from '../demos/11-csv-export/Code.tsx?raw';
 import multiSortCode from '../demos/12-multi-sort/Code.tsx?raw';
 import a11yCode from '../demos/13-accessibility/Code.tsx?raw';
+import queryToolbarCode from '../demos/12-query-toolbar/Code.tsx?raw';
+import actionBarCode from '../demos/13-action-bar/Code.tsx?raw';
+import toolkitCombinedCode from '../demos/14-toolkit-combined/Code.tsx?raw';
 
 /**
  * DemoMeta interface with learning outcomes and documentation
@@ -193,6 +202,30 @@ export const DEMO_REGISTRY: DemoConfig[] = [
     component: AccessibilityDemo,
     code: a11yCode,
     tags: ['a11y', 'keyboard'],
+  } as DemoConfig,
+  {
+    ...queryToolbarMeta,
+    slug: 'query-toolbar',
+    category: 'stage-e',
+    component: QueryToolbarDemo,
+    code: queryToolbarCode,
+    tags: ['toolkit', 'search', 'filters'],
+  } as DemoConfig,
+  {
+    ...actionBarMeta,
+    slug: 'action-bar',
+    category: 'stage-e',
+    component: ActionBarDemo,
+    code: actionBarCode,
+    tags: ['toolkit', 'selection', 'bulk-actions'],
+  } as DemoConfig,
+  {
+    ...toolkitCombinedMeta,
+    slug: 'toolkit-combined',
+    category: 'stage-e',
+    component: ToolkitCombinedDemo,
+    code: toolkitCombinedCode,
+    tags: ['toolkit', 'integration', 'complete'],
   } as DemoConfig,
 ];
 

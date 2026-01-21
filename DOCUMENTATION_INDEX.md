@@ -1,6 +1,6 @@
-# RowaKit Documentation Index
+# RowaKit Table Toolkit Documentation Index
 
-This guide helps you navigate RowaKit documentation by audience and purpose.
+This guide helps you navigate RowaKit Table Toolkit documentation by audience and purpose.
 
 ---
 

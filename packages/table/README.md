@@ -1,7 +1,12 @@
 
 # @rowakit/table
 
-**Server-side React table with pagination, sorting, filters, URL sync, saved views, and CSV export hooks — built for admin & data-heavy apps.**
+**A React Table Toolkit for server-side data: Table + QueryToolbar + ActionBar — built for admin & data-heavy apps.**
+
+**What's included:**
+- **RowaKitTable** — Server-side table with pagination, sorting, filtering, URL sync, saved views, CSV export
+- **QueryToolbar** — Control and visualize query state (search, filters, sort)
+- **ActionBar** — Selection summary + bulk action triggers
 
 **Features:**
 - Server-side pagination, sorting, filtering

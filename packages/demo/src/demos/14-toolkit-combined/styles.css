@@ -1,0 +1,79 @@
+/* Toolkit Combined Demo Styles */
+
+.rowakit-toolkit-demo {
+	padding: 20px;
+}
+
+/* Toolbar Container: Wraps QueryToolbar + ActionBar */
+.rowakit-toolbar-container {
+	background: #f9fafb;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	padding: 12px;
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+/* Toolbar action button styling */
+.rowakit-toolbar-action-btn {
+	padding: 8px 14px;
+	height: 36px;
+	background: #ffffff;
+	color: #1f2937;
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+}
+
+.rowakit-toolbar-action-btn:hover {
+	background: #f3f4f6;
+	border-color: #9ca3af;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.rowakit-toolbar-action-btn:focus {
+	outline: 2px solid #3b82f6;
+	outline-offset: 2px;
+}
+
+/* Benefits section styling */
+.rowakit-toolkit-benefits {
+	margin-top: 20px;
+	padding: 16px;
+	background: #f9fafb;
+	border-radius: 6px;
+}
+
+.rowakit-toolkit-benefits h3 {
+	margin: 0 0 12px 0;
+	font-size: 16px;
+	font-weight: 600;
+	color: #1f2937;
+}
+
+.rowakit-toolkit-benefits ul {
+	margin: 0;
+	padding-left: 20px;
+	list-style: none;
+}
+
+.rowakit-toolkit-benefits li {
+	margin: 8px 0;
+	color: #374151;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.rowakit-toolkit-benefits strong {
+	color: #1f2937;
+	font-weight: 600;
+}

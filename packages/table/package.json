@@ -2,7 +2,7 @@
   "name": "@rowakit/table",
   "version": "1.0.0",
   "private": false,
-  "description": "Server-side React table component with pagination, sorting, filtering, URL sync, saved views, and CSV export hooks for admin & data-heavy apps",
+  "description": "React Table Toolkit for server-side data: Table + QueryToolbar + ActionBar with pagination, sorting, filtering, URL sync, saved views, and CSV export for admin & data-heavy apps",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -23,7 +23,8 @@
   },
   "files": [
     "dist",
-    "src/styles"
+    "src/styles",
+    "src/components/**/*.css"
   ],
   "scripts": {
     "build": "tsup",
@@ -43,6 +44,8 @@
     "react-data-table",
     "table",
     "data-table",
+    "toolkit",
+    "table-toolkit",
     "datagrid",
     "server-side",
     "server-side-pagination",
@@ -56,6 +59,9 @@
     "url-sync",
     "saved-views",
     "actions",
+    "query-toolbar",
+    "action-bar",
+    "bulk-actions",
     "typescript",
     "business-app",
     "admin",
