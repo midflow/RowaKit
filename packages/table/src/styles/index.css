@@ -16,3 +16,7 @@
 
 @import './tokens.css';
 @import './table.css';
+
+/* Toolkit component styles */
+@import '../components/query-toolbar/QueryToolbar.css';
+@import '../components/action-bar/ActionBar.css';

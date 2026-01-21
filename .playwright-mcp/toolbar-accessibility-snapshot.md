@@ -1,0 +1,192 @@
+### Page state
+- Page URL: http://localhost:5173/
+- Page Title: RowaKit Table - Demo
+- Page Snapshot:
+```yaml
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - complementary [ref=e5]:
+      - generic [ref=e6]:
+        - heading "RowaKit Demo Gallery" [level=1] [ref=e7]
+        - paragraph [ref=e8]: v1.0.0 • Progressive Demos
+      - navigation [ref=e9]:
+        - generic [ref=e10]:
+          - heading "Getting Started 3" [level=3] [ref=e11]:
+            - text: Getting Started
+            - generic [ref=e12]: "3"
+          - list [ref=e13]:
+            - listitem [ref=e14]:
+              - button "Basic Table pagination" [ref=e15] [cursor=pointer]:
+                - generic [ref=e16]: Basic Table
+                - generic "pagination, sorting, intro" [ref=e18]: pagination
+            - listitem [ref=e19]:
+              - button "Columns & Formatting columns" [ref=e20] [cursor=pointer]:
+                - generic [ref=e21]: Columns & Formatting
+                - generic "columns, formatting" [ref=e23]: columns
+            - listitem [ref=e24]:
+              - button "Row Actions actions" [ref=e25] [cursor=pointer]:
+                - generic [ref=e26]: Row Actions
+                - generic "actions, events" [ref=e28]: actions
+        - generic [ref=e29]:
+          - heading "Real-world Examples 3" [level=3] [ref=e30]:
+            - text: Real-world Examples
+            - generic [ref=e31]: "3"
+          - list [ref=e32]:
+            - listitem [ref=e33]:
+              - button "Server-side Filters filters" [ref=e34] [cursor=pointer]:
+                - generic [ref=e35]: Server-side Filters
+                - generic "filters, search" [ref=e37]: filters
+            - listitem [ref=e38]:
+              - button "URL Synchronization url" [ref=e39] [cursor=pointer]:
+                - generic [ref=e40]: URL Synchronization
+                - generic "url, sharing" [ref=e42]: url
+            - listitem [ref=e43]:
+              - button "Saved Views storage" [ref=e44] [cursor=pointer]:
+                - generic [ref=e45]: Saved Views
+                - generic "storage, views" [ref=e47]: storage
+        - generic [ref=e48]:
+          - heading "Advanced 2" [level=3] [ref=e49]:
+            - text: Advanced
+            - generic [ref=e50]: "2"
+          - list [ref=e51]:
+            - listitem [ref=e52]:
+              - button "Column Sizing columns" [ref=e53] [cursor=pointer]:
+                - generic [ref=e54]: Column Sizing
+                - generic "columns, ui" [ref=e56]: columns
+            - listitem [ref=e57]:
+              - button "Advanced Query Patterns advanced" [ref=e58] [cursor=pointer]:
+                - generic [ref=e59]: Advanced Query Patterns
+                - generic "advanced, combo" [ref=e61]: advanced
+        - generic [ref=e62]:
+          - heading "Stage E (v0.5.0) 8" [level=3] [ref=e63]:
+            - text: Stage E (v0.5.0)
+            - generic [ref=e64]: "8"
+          - list [ref=e65]:
+            - listitem [ref=e66]:
+              - button "Row Selection selection" [ref=e67] [cursor=pointer]:
+                - generic [ref=e68]: Row Selection
+                - generic "selection, workflow" [ref=e70]: selection
+            - listitem [ref=e71]:
+              - button "Bulk Actions bulk" [ref=e72] [cursor=pointer]:
+                - generic [ref=e73]: Bulk Actions
+                - generic "bulk, actions" [ref=e75]: bulk
+            - listitem [ref=e76]:
+              - button "CSV Export export" [ref=e77] [cursor=pointer]:
+                - generic [ref=e78]: CSV Export
+                - generic "export, download" [ref=e80]: export
+            - listitem [ref=e81]:
+              - button "Multi-Column Sorting sorting" [ref=e82] [cursor=pointer]:
+                - generic [ref=e83]: Multi-Column Sorting
+                - generic "sorting, advanced" [ref=e85]: sorting
+            - listitem [ref=e86]:
+              - button "Accessibility Baseline a11y" [ref=e87] [cursor=pointer]:
+                - generic [ref=e88]: Accessibility Baseline
+                - generic "a11y, keyboard" [ref=e90]: a11y
+            - listitem [ref=e91]:
+              - button "QueryToolbar Component toolkit" [ref=e92] [cursor=pointer]:
+                - generic [ref=e93]: QueryToolbar Component
+                - generic "toolkit, search, filters" [ref=e95]: toolkit
+            - listitem [ref=e96]:
+              - button "ActionBar Component toolkit" [ref=e97] [cursor=pointer]:
+                - generic [ref=e98]: ActionBar Component
+                - generic "toolkit, selection, bulk-actions" [ref=e100]: toolkit
+            - listitem [ref=e101]:
+              - button "Table Toolkit Combined toolkit" [ref=e102] [cursor=pointer]:
+                - generic [ref=e103]: Table Toolkit Combined
+                - generic "toolkit, integration, complete" [ref=e105]: toolkit
+      - paragraph [ref=e107]:
+        - link "GitHub" [ref=e108] [cursor=pointer]:
+          - /url: https://github.com/yourusername/rowakit
+        - text: •
+        - link "Docs" [ref=e109] [cursor=pointer]:
+          - /url: https://rowakit.dev/docs
+    - main
+  - generic [ref=e111]:
+    - banner [ref=e112]:
+      - generic [ref=e113]:
+        - heading "Basic Table" [level=1] [ref=e114]
+        - paragraph [ref=e115]: Minimal table with columns, pagination, and sorting.
+        - generic [ref=e116]:
+          - generic [ref=e117]: pagination
+          - generic [ref=e118]: sorting
+          - generic [ref=e119]: intro
+    - generic [ref=e120]:
+      - button "Preview" [ref=e121] [cursor=pointer]
+      - button "Code" [ref=e122] [cursor=pointer]
+      - button "Notes" [ref=e123] [cursor=pointer]
+    - generic [ref=e127]:
+      - heading "Basic Table with Pagination & Sorting" [level=2] [ref=e128]
+      - paragraph [ref=e129]: Click column headers to sort. Use pagination controls at the bottom.
+      - generic [ref=e130]:
+        - table [ref=e131]:
+          - rowgroup [ref=e132]:
+            - row "User Name email role Joined Status actions" [ref=e133]:
+              - button "User Name" [ref=e134] [cursor=pointer]
+              - button "email" [ref=e135] [cursor=pointer]
+              - button "role" [ref=e136] [cursor=pointer]
+              - button "Joined" [ref=e137] [cursor=pointer]
+              - columnheader "Status" [ref=e138]
+              - columnheader "actions" [ref=e139]
+          - rowgroup [ref=e140]:
+            - row "Alice Johnson alice@example.com admin 1/15/2023 Yes Edit Delete" [ref=e144]:
+              - cell "Alice Johnson" [ref=e145]
+              - cell "alice@example.com" [ref=e146]
+              - cell "admin" [ref=e147]
+              - cell "1/15/2023" [ref=e148]
+              - cell "Yes" [ref=e149]
+              - cell "Edit Delete" [ref=e150]:
+                - generic [ref=e151]:
+                  - button "Edit" [ref=e152] [cursor=pointer]
+                  - button "Delete" [ref=e153] [cursor=pointer]
+            - row "Bob Smith bob@example.com user 3/22/2023 Yes Edit Delete" [ref=e154]:
+              - cell "Bob Smith" [ref=e155]
+              - cell "bob@example.com" [ref=e156]
+              - cell "user" [ref=e157]
+              - cell "3/22/2023" [ref=e158]
+              - cell "Yes" [ref=e159]
+              - cell "Edit Delete" [ref=e160]:
+                - generic [ref=e161]:
+                  - button "Edit" [ref=e162] [cursor=pointer]
+                  - button "Delete" [ref=e163] [cursor=pointer]
+            - row "Charlie Brown charlie@example.com user 5/10/2023 No Edit Delete" [ref=e164]:
+              - cell "Charlie Brown" [ref=e165]
+              - cell "charlie@example.com" [ref=e166]
+              - cell "user" [ref=e167]
+              - cell "5/10/2023" [ref=e168]
+              - cell "No" [ref=e169]
+              - cell "Edit Delete" [ref=e170]:
+                - generic [ref=e171]:
+                  - button "Edit" [ref=e172] [cursor=pointer]
+                  - button "Delete" [ref=e173] [cursor=pointer]
+            - row "Diana Prince diana@example.com admin 2/28/2023 Yes Edit Delete" [ref=e174]:
+              - cell "Diana Prince" [ref=e175]
+              - cell "diana@example.com" [ref=e176]
+              - cell "admin" [ref=e177]
+              - cell "2/28/2023" [ref=e178]
+              - cell "Yes" [ref=e179]
+              - cell "Edit Delete" [ref=e180]:
+                - generic [ref=e181]:
+                  - button "Edit" [ref=e182] [cursor=pointer]
+                  - button "Delete" [ref=e183] [cursor=pointer]
+            - row "Ethan Hunt ethan@example.com guest 6/15/2023 Yes Edit Delete" [ref=e184]:
+              - cell "Ethan Hunt" [ref=e185]
+              - cell "ethan@example.com" [ref=e186]
+              - cell "guest" [ref=e187]
+              - cell "6/15/2023" [ref=e188]
+              - cell "Yes" [ref=e189]
+              - cell "Edit Delete" [ref=e190]:
+                - generic [ref=e191]:
+                  - button "Edit" [ref=e192] [cursor=pointer]
+                  - button "Delete" [ref=e193] [cursor=pointer]
+        - generic [ref=e194]:
+          - generic [ref=e195]:
+            - generic [ref=e196]: "Rows per page:"
+            - combobox "Rows per page:" [ref=e197] [cursor=pointer]:
+              - option "10"
+              - option "20" [selected]
+              - option "50"
+          - generic [ref=e198]: Page 1 of 1 (5 total)
+          - generic [ref=e199]:
+            - button "Previous page" [disabled] [ref=e200]: Previous
+            - button "Next page" [disabled] [ref=e201]: Next
+```
