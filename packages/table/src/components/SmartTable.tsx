@@ -330,6 +330,10 @@ export function RowaKitTable<T>({
 
   // Stage E: Row selection state (page-scoped)
   const [selectedKeys, setSelectedKeys] = useState<Array<string | number>>([]);
+  const selectedKeysRef = useRef<Array<string | number>>(selectedKeys);
+  useEffect(() => {
+    selectedKeysRef.current = selectedKeys;
+  }, [selectedKeys]);
 
   // Stage E: Bulk action confirmation state
   const [bulkConfirmState, setBulkConfirmState] = useState<{
@@ -376,12 +380,16 @@ export function RowaKitTable<T>({
   // Clear selection when row selection is disabled or page changes
   // Note: Removed dataState.items dependency to prevent clearing on every data refresh
   useEffect(() => {
+    // Only clear selection on page change if there was an existing selection
+    if (selectedKeysRef.current.length === 0) return;
     setSelectedKeys(clearSelection());
   }, [query.page]);
 
   // Clear selection if row selection feature is turned off
   useEffect(() => {
     if (!enableRowSelection) {
+      // Only update if there is something to clear to avoid unnecessary state updates
+      if (selectedKeysRef.current.length === 0) return;
       setSelectedKeys(clearSelection());
     }
   }, [enableRowSelection]);

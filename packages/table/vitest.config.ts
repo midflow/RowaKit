@@ -8,6 +8,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    setupFiles: ['vitest.setup.ts'],
     include: ['src/**/*.test.{ts,tsx}', 'src/__tests__/**/*.test.{ts,tsx}'],
     // Windows: avoid occasional worker-thread heap OOM in CI/local runs.
     pool: 'threads',
